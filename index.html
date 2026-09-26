@@ -6,6 +6,7 @@
 <title>SLS Store | Cosmetics</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -76,16 +77,27 @@ nav a{
   font-weight:700
 }
 
+
+/* ================================
+HERO
+================================ */
+
 .hero{
   max-width:1150px;
   margin:25px auto;
-  padding:55px 35px;
+  padding:40px 35px;
   border-radius:25px;
   background:linear-gradient(120deg,#f8d8e6,#fff0f6);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:25px
+  gap:30px;
+  overflow:hidden
+}
+
+.hero-content{
+  flex:1;
+  min-width:0
 }
 
 .hero h1{
@@ -100,6 +112,22 @@ nav a{
   margin-bottom:22px
 }
 
+.hero-image{
+  width:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+
+.hero-image img{
+  width:100%;
+  max-width:540px;
+  height:300px;
+  object-fit:cover;
+  border-radius:22px;
+  box-shadow:0 10px 30px #00000018
+}
+
 .btn{
   display:inline-block;
   border:0;
@@ -110,6 +138,11 @@ nav a{
   cursor:pointer;
   font-weight:700
 }
+
+
+/* ================================
+SECTIONS
+================================ */
 
 .section{
   max-width:1150px;
@@ -134,6 +167,11 @@ nav a{
   text-align:center;
   border:1px solid #f0dce5
 }
+
+
+/* ================================
+PRODUCTS
+================================ */
 
 .products{
   display:grid;
@@ -183,6 +221,11 @@ nav a{
   cursor:pointer
 }
 
+
+/* ================================
+FOOTER
+================================ */
+
 footer{
   margin-top:50px;
   background:#2c2025;
@@ -190,6 +233,11 @@ footer{
   padding:30px 18px;
   text-align:center
 }
+
+
+/* ================================
+CART
+================================ */
 
 .overlay{
   display:none;
@@ -241,6 +289,11 @@ footer{
   padding-top:10px
 }
 
+
+/* ================================
+FORM
+================================ */
+
 .form input,
 .form textarea{
   width:100%;
@@ -262,6 +315,11 @@ footer{
   border-radius:10px
 }
 
+
+/* ================================
+MOBILE
+================================ */
+
 @media(max-width:800px){
 
   nav{
@@ -274,11 +332,22 @@ footer{
 
   .hero{
     margin:15px 12px;
-    padding:35px 22px
+    padding:30px 22px;
+    display:block
   }
 
   .hero h1{
     font-size:31px
+  }
+
+  .hero-image{
+    width:100%;
+    margin-top:25px
+  }
+
+  .hero-image img{
+    max-width:100%;
+    height:250px
   }
 
   .cats,
@@ -286,6 +355,7 @@ footer{
     grid-template-columns:repeat(2,1fr)
   }
 }
+
 
 @media(max-width:480px){
 
@@ -305,6 +375,10 @@ footer{
     display:block
   }
 
+  .hero-image img{
+    height:220px
+  }
+
   .cats,
   .products{
     grid-template-columns:1fr 1fr
@@ -314,10 +388,13 @@ footer{
     height:145px
   }
 }
+
 </style>
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -349,11 +426,17 @@ oninput="renderProducts()"
 </header>
 
 
+
 <main id="home">
+
+
+<!-- ================================
+HERO SECTION
+================================ -->
 
 <section class="hero">
 
-<div>
+<div class="hero-content">
 
 <h1>
 Beauty that feels like you ✨
@@ -371,12 +454,23 @@ Shop Now / কিনুন
 
 </div>
 
-<div style="font-size:110px">
-💄
+
+<div class="hero-image">
+
+<img
+src="lipstick-banner.png"
+alt="SLS Store Lipstick"
+>
+
 </div>
 
 </section>
 
+
+
+<!-- ================================
+CATEGORIES
+================================ -->
 
 <section class="section" id="categories">
 
@@ -423,6 +517,11 @@ Categories / ক্যাটাগরি
 </section>
 
 
+
+<!-- ================================
+SHOP
+================================ -->
+
 <section class="section" id="shop">
 
 <h2>
@@ -434,6 +533,7 @@ Featured Products / জনপ্রিয় পণ্য
 </section>
 
 </main>
+
 
 
 <footer>
@@ -451,6 +551,11 @@ Cosmetics • Bangla + English
 </footer>
 
 
+
+<!-- ================================
+CART OVERLAY
+================================ -->
+
 <div id="overlay" class="overlay">
 
 <div class="drawer">
@@ -466,8 +571,13 @@ Shopping Cart / কার্ট
 <div id="cartItems"></div>
 
 <div class="total">
+
 Total:
-<span id="total">৳0</span>
+
+<span id="total">
+৳0
+</span>
+
 </div>
 
 
@@ -477,15 +587,18 @@ Total:
 Checkout / অর্ডার করুন
 </h3>
 
+
 <input
 id="name"
 placeholder="Name / নাম"
 >
 
+
 <input
 id="phone"
 placeholder="Phone / মোবাইল নম্বর"
 >
+
 
 <textarea
 id="address"
@@ -493,7 +606,29 @@ placeholder="Full Address / সম্পূর্ণ ঠিকানা"
 ></textarea>
 
 
-<div style="margin-top:8px;padding:12px;border:1px solid #f0dce5;border-radius:12px;background:#fff7fa"><div style="font-weight:700;margin-bottom:5px">Delivery / ডেলিভারি</div><div id="deliveryInfo">ঠিকানা লিখলে ডেলিভারি চার্জ স্বয়ংক্রিয়ভাবে নির্ধারণ হবে।</div></div>
+<label
+style="display:block;margin-top:8px;font-weight:700"
+>
+
+Delivery Area / ডেলিভারি এলাকা
+
+</label>
+
+
+<select
+id="deliveryArea"
+onchange="updateCart()"
+>
+
+<option value="inside">
+Inside Dhaka — ৳80
+</option>
+
+<option value="outside">
+Outside Dhaka — ৳150
+</option>
+
+</select>
 
 
 <button
@@ -501,7 +636,9 @@ class="btn"
 style="width:100%"
 onclick="placeOrder()"
 >
+
 Place Order / অর্ডার করুন
+
 </button>
 
 </div>
@@ -511,24 +648,22 @@ Place Order / অর্ডার করুন
 </div>
 
 
+
 <script>
 
-/*
-==================================================
-SLS STORE GOOGLE APPS SCRIPT URL
+
+/* ==================================
+GOOGLE APPS SCRIPT
 VERSION 6
-==================================================
-*/
+================================== */
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbzM7SovJLfIllxSk6GMn_fMMq-EKqCdUH_IylHH-tXNCD7hJemy5A2YUiT3c7eGdHeY/exec";
 
 
-/*
-==================================================
+/* ==================================
 PRODUCTS
-==================================================
-*/
+================================== */
 
 const products = [
 
@@ -602,11 +737,9 @@ icon:"💋"
 let cart = [];
 
 
-/*
-==================================================
+/* ==================================
 RENDER PRODUCTS
-==================================================
-*/
+================================== */
 
 function renderProducts(){
 
@@ -663,11 +796,9 @@ Add to Cart / কার্টে যোগ করুন
 }
 
 
-/*
-==================================================
+/* ==================================
 ADD TO CART
-==================================================
-*/
+================================== */
 
 function add(id){
 
@@ -695,41 +826,113 @@ qty:1
 }
 
 updateCart();
+
 openCart();
 
 }
 
 
-/*
-==================================================
+/* ==================================
 UPDATE CART
-==================================================
-*/
-
-function getDeliveryInfo(){
-  const address=document.getElementById('address').value.trim().toLowerCase();
-  const dhakaKeywords=['dhaka','ঢাকা','dhanmondi','ধানমন্ডি','gulshan','গুলশান','banani','বনানী','uttara','উত্তরা','mirpur','মিরপুর','mohammadpur','মোহাম্মদপুর','tejgaon','তেজগাঁও','badda','বাড্ডা','khilgaon','খিলগাঁও','malibagh','মালিবাগ','ramna','রমনা','motijheel','মতিঝিল','farmgate','ফার্মগেট','wari','ওয়ারী','পুরান ঢাকা','old dhaka','jatrabari','যাত্রাবাড়ী','demra','ডেমরা','cantonment','ক্যান্টনমেন্ট','bashundhara','বসুন্ধরা','baridhara','বারিধারা','niketan','নিকেতন','khilkhet','খিলক্ষেত','kafrul','কাফরুল','pallabi','পল্লবী','adabor','আদাবর','shabujbagh','সবুজবাগ','basabo','বাসাবো'];
-  const inside=dhakaKeywords.some(k=>address.includes(k));
-  return {area:inside?'inside':'outside',charge:inside?80:150};
-}
-
-function updateDeliveryDisplay(){
-  const el=document.getElementById('deliveryInfo');
-  if(!el) return;
-  const address=document.getElementById('address').value.trim();
-  if(!address){el.innerHTML='ঠিকানা লিখলে ডেলিভারি চার্জ স্বয়ংক্রিয়ভাবে নির্ধারণ হবে।';return;}
-  const d=getDeliveryInfo();
-  el.innerHTML=d.area==='inside'?'📍 Inside Dhaka / ঢাকার ভিতরে — <b>৳80</b>':'🚚 Outside Dhaka / ঢাকার বাইরে — <b>৳150</b>';
-}
+================================== */
 
 function updateCart(){
-  document.getElementById('count').textContent=cart.reduce((a,b)=>a+b.qty,0);
-  document.getElementById('cartItems').innerHTML=cart.length?cart.map(p=>`<div class="cart-item"><div><b>${p.name}</b><br>৳${p.price} × ${p.qty}</div><button onclick="removeItem(${p.id})">Remove</button></div>`).join(''):'<p style="padding:20px 0">Your cart is empty / কার্ট খালি</p>';
-  const productTotal=cart.reduce((a,b)=>a+b.price*b.qty,0);
-  const deliveryCharge=getDeliveryInfo().charge;
-  document.getElementById('total').innerHTML=`<div>Product Total / পণ্যের মোট: ৳${productTotal}</div><div>Delivery Charge / ডেলিভারি চার্জ: ৳${deliveryCharge}</div><div class="grand-total">Grand Total / সর্বমোট: ৳${productTotal+deliveryCharge}</div>`;
-  updateDeliveryDisplay();
+
+document.getElementById('count').textContent =
+
+cart.reduce(
+(a,b) => a + b.qty,
+0
+);
+
+
+document.getElementById('cartItems').innerHTML =
+
+cart.length
+
+?
+
+cart.map(p => `
+
+<div class="cart-item">
+
+<div>
+
+<b>
+${p.name}
+</b>
+
+<br>
+
+৳${p.price} × ${p.qty}
+
+</div>
+
+<button onclick="removeItem(${p.id})">
+Remove
+</button>
+
+</div>
+
+`).join('')
+
+:
+
+'<p style="padding:20px 0">Your cart is empty / কার্ট খালি</p>';
+
+
+const productTotal =
+
+cart.reduce(
+(a,b) => a + b.price * b.qty,
+0
+);
+
+
+const area =
+
+document
+.getElementById('deliveryArea')
+?.value || 'inside';
+
+
+const deliveryCharge =
+
+area === 'outside'
+?
+150
+:
+80;
+
+
+document.getElementById('total').innerHTML = `
+
+<div>
+Product Total / পণ্যের মোট:
+৳${productTotal}
+</div>
+
+<div>
+Delivery Charge / ডেলিভারি চার্জ:
+৳${deliveryCharge}
+</div>
+
+<div class="grand-total">
+
+Grand Total / সর্বমোট:
+
+৳${productTotal + deliveryCharge}
+
+</div>
+
+`;
+
 }
+
+
+/* ==================================
+REMOVE ITEM
+================================== */
 
 function removeItem(id){
 
@@ -743,11 +946,9 @@ updateCart();
 }
 
 
-/*
-==================================================
+/* ==================================
 OPEN CART
-==================================================
-*/
+================================== */
 
 function openCart(){
 
@@ -761,11 +962,9 @@ updateCart();
 }
 
 
-/*
-==================================================
+/* ==================================
 CLOSE CART
-==================================================
-*/
+================================== */
 
 function closeCart(){
 
@@ -777,67 +976,242 @@ document
 }
 
 
-/*
-==================================================
+/* ==================================
 PLACE ORDER
-==================================================
-*/
+================================== */
 
 async function placeOrder(){
-  if(!cart.length) return alert('Please add products first / আগে পণ্য যোগ করুন');
-  const name=document.getElementById('name').value.trim();
-  const phone=document.getElementById('phone').value.trim();
-  const address=document.getElementById('address').value.trim();
-  if(!name||!phone||!address) return alert('Please fill all information / সব তথ্য পূরণ করুন');
-  const productTotal=cart.reduce((a,b)=>a+b.price*b.qty,0);
-  const delivery=getDeliveryInfo();
-  const deliveryArea=delivery.area;
-  const deliveryCharge=delivery.charge;
-  const total=productTotal+deliveryCharge;
-  const clientOrderId='SLSWEB-'+Date.now()+'-'+Math.random().toString(36).substring(2,8);
-  const payload={clientOrderId,name,phone,address,deliveryArea,deliveryCharge,productTotal,paymentMethod:'Cash on Delivery',total,items:cart.map(p=>({id:p.id,name:p.name,price:p.price,qty:p.qty}))};
-  try{
-    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    document.getElementById('successName').textContent=name;
-    document.getElementById('successProductTotal').textContent='৳'+productTotal;
-    document.getElementById('successDelivery').textContent='৳'+deliveryCharge;
-    document.getElementById('successGrandTotal').textContent='৳'+total;
-    document.getElementById('successOverlay').style.display='block';
-    cart=[];
-    document.getElementById('name').value='';
-    document.getElementById('phone').value='';
-    document.getElementById('address').value='';
-    updateCart(); closeCart();
-  }catch(error){
-    alert('Order could not be submitted. Please try again. / অর্ডার পাঠানো যায়নি, আবার চেষ্টা করুন।');
-  }
+
+if(!cart.length){
+
+return alert(
+'Please add products first / আগে পণ্য যোগ করুন'
+);
+
 }
 
-function closeSuccess(){document.getElementById('successOverlay').style.display='none';}
 
-function printReceipt(){
-  const receipt=document.getElementById('receipt');
-  const w=window.open('','_blank');
-  if(!w) return alert('Please allow pop-ups to print the invoice. / PDF করার জন্য browser pop-up অনুমতি দিন।');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>SLS Store Receipt</title><style>body{font-family:Arial,"Noto Sans Bengali",sans-serif;padding:30px;color:#222}.grand-total{font-size:20px;font-weight:800;border-top:1px solid #ddd;padding-top:10px}</style></head><body>${receipt.innerHTML}<div id="successOverlay" class="overlay" style="z-index:50"><div class="drawer" style="left:50%;right:auto;top:50%;height:auto;max-height:90%;transform:translate(-50%,-50%);width:min(520px,94%);border-radius:20px"><button class="close" onclick="closeSuccess()">✕</button><div id="receipt" style="padding:10px 4px"><h2 style="color:#7d1749;margin-bottom:10px">Order Submitted! 🎉</h2><p style="line-height:1.6;margin-bottom:15px">আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে।</p><div style="border-top:1px solid #eee;border-bottom:1px solid #eee;padding:12px 0;margin:12px 0;line-height:1.9"><div>Customer / ক্রেতা: <b id="successName"></b></div><div>Product Total / পণ্যের মোট: <b id="successProductTotal"></b></div><div>Delivery Charge / ডেলিভারি চার্জ: <b id="successDelivery"></b></div><div class="grand-total">Grand Total / সর্বমোট: <span id="successGrandTotal"></span></div><div>Payment / পেমেন্ট: <b>Cash on Delivery</b></div></div><p style="font-size:13px;line-height:1.5">অর্ডারটি Google Sheets-এ পাঠানো হয়েছে। আমাদের পক্ষ থেকে যোগাযোগ করা হবে।</p><button class="btn" style="width:100%;margin-top:14px" onclick="printReceipt()">🖨️ Print / Save as PDF</button><button class="btn" style="width:100%;margin-top:8px;background:#eee;color:#333" onclick="closeSuccess()">Close / বন্ধ করুন</button></div></div></div>
-</body></html>`);
-  w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
+const name =
+
+document
+.getElementById('name')
+.value
+.trim();
+
+
+const phone =
+
+document
+.getElementById('phone')
+.value
+.trim();
+
+
+const address =
+
+document
+.getElementById('address')
+.value
+.trim();
+
+
+if(!name || !phone || !address){
+
+return alert(
+'Please fill all information / সব তথ্য পূরণ করুন'
+);
+
 }
 
-/*
-==================================================
-INITIALIZE WEBSITE
-==================================================
-*/
+
+if(
+APPS_SCRIPT_URL.includes(
+'PASTE_YOUR_'
+)
+){
+
+return alert(
+'Google Sheets connection is not configured yet. / Google Sheets সংযোগ এখনো সেট করা হয়নি।'
+);
+
+}
+
+
+const productTotal =
+
+cart.reduce(
+(a,b) => a + b.price * b.qty,
+0
+);
+
+
+const deliveryArea =
+
+document
+.getElementById('deliveryArea')
+.value;
+
+
+const deliveryCharge =
+
+deliveryArea === 'outside'
+?
+150
+:
+80;
+
+
+const total =
+
+productTotal + deliveryCharge;
+
+
+/* ==================================
+ORDER DATA
+================================== */
+
+const payload = {
+
+name:name,
+
+phone:phone,
+
+address:address,
+
+deliveryArea:deliveryArea,
+
+deliveryCharge:deliveryCharge,
+
+productTotal:productTotal,
+
+paymentMethod:'Cash on Delivery',
+
+total:total,
+
+items:
+
+cart.map(
+
+p => ({
+
+id:p.id,
+
+name:p.name,
+
+price:p.price,
+
+qty:p.qty
+
+})
+
+)
+
+};
+
+
+/* ==================================
+SEND TO GOOGLE SHEETS
+================================== */
+
+try{
+
+await fetch(
+
+APPS_SCRIPT_URL,
+
+{
+
+method:'POST',
+
+mode:'no-cors',
+
+headers:{
+
+'Content-Type':
+'text/plain;charset=utf-8'
+
+},
+
+body:
+
+JSON.stringify(payload)
+
+}
+
+);
+
+
+/* ==================================
+SUCCESS MESSAGE
+================================== */
+
+alert(
+
+`ধন্যবাদ ${name}!
+
+আপনার অর্ডার গ্রহণ করা হয়েছে।
+
+মোট: ৳${total}
+
+অর্ডারটি Google Sheets-এ পাঠানো হয়েছে।`
+
+);
+
+
+/* ==================================
+CLEAR CART
+================================== */
+
+cart = [];
+
+
+document
+.getElementById('name')
+.value = '';
+
+
+document
+.getElementById('phone')
+.value = '';
+
+
+document
+.getElementById('address')
+.value = '';
+
+
+document
+.getElementById('deliveryArea')
+.value = 'inside';
+
+
+updateCart();
+
+closeCart();
+
+
+}catch(error){
+
+alert(
+
+'Order could not be submitted. Please try again. / অর্ডার পাঠানো যায়নি, আবার চেষ্টা করুন।'
+
+);
+
+}
+
+}
+
+
+/* ==================================
+INITIALIZE
+================================== */
 
 renderProducts();
 
 updateCart();
 
-document.getElementById('address').addEventListener('input', updateCart);
-
 </script>
 
-<div id="successOverlay" class="overlay" style="z-index:50"><div class="drawer" style="left:50%;right:auto;top:50%;height:auto;max-height:90%;transform:translate(-50%,-50%);width:min(520px,94%);border-radius:20px"><button class="close" onclick="closeSuccess()">✕</button><div id="receipt" style="padding:10px 4px"><h2 style="color:#7d1749;margin-bottom:10px">Order Submitted! 🎉</h2><p style="line-height:1.6;margin-bottom:15px">আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে।</p><div style="border-top:1px solid #eee;border-bottom:1px solid #eee;padding:12px 0;margin:12px 0;line-height:1.9"><div>Customer / ক্রেতা: <b id="successName"></b></div><div>Product Total / পণ্যের মোট: <b id="successProductTotal"></b></div><div>Delivery Charge / ডেলিভারি চার্জ: <b id="successDelivery"></b></div><div class="grand-total">Grand Total / সর্বমোট: <span id="successGrandTotal"></span></div><div>Payment / পেমেন্ট: <b>Cash on Delivery</b></div></div><p style="font-size:13px;line-height:1.5">অর্ডারটি Google Sheets-এ পাঠানো হয়েছে। আমাদের পক্ষ থেকে যোগাযোগ করা হবে।</p><button class="btn" style="width:100%;margin-top:14px" onclick="printReceipt()">🖨️ Print / Save as PDF</button><button class="btn" style="width:100%;margin-top:8px;background:#eee;color:#333" onclick="closeSuccess()">Close / বন্ধ করুন</button></div></div></div>
 </body>
 </html>
