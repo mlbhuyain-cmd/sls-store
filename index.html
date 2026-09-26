@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
 <title>SLS Store | Cosmetics</title>
 
+
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -59,7 +67,8 @@ header p{
 
 .products{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  grid-template-columns:
+    repeat(auto-fit,minmax(210px,1fr));
   gap:18px;
 }
 
@@ -68,7 +77,8 @@ header p{
   padding:18px;
   border-radius:16px;
   text-align:center;
-  box-shadow:0 3px 15px rgba(0,0,0,.08);
+  box-shadow:
+    0 3px 15px rgba(0,0,0,.08);
 }
 
 .product-image{
@@ -113,7 +123,8 @@ button{
   margin-top:25px;
   padding:20px;
   border-radius:16px;
-  box-shadow:0 3px 15px rgba(0,0,0,.08);
+  box-shadow:
+    0 3px 15px rgba(0,0,0,.08);
 }
 
 .cart-item{
@@ -145,13 +156,12 @@ button{
   display:flex;
   justify-content:space-between;
   border-bottom:1px solid #eee;
-  padding:5px 0;
+  padding:6px 0;
 }
 
 .grand-total{
   font-size:23px;
   font-weight:bold;
-  margin-top:8px;
 }
 
 label{
@@ -223,6 +233,16 @@ textarea{
   line-height:1.8;
 }
 
+.print-btn{
+  display:none;
+  width:100%;
+  margin-top:12px;
+  background:#222;
+  color:#fff;
+  font-size:17px;
+  padding:13px;
+}
+
 footer{
   text-align:center;
   padding:30px 15px;
@@ -248,168 +268,216 @@ footer{
   }
 
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
   <h1>SLS Store</h1>
-  <p>Cosmetics • Beauty • Friendly Service</p>
+
+  <p>
+    Cosmetics • Beauty • Friendly Service
+  </p>
+
 </header>
 
 
 <div class="container">
 
-  <section class="hero">
 
-    <h2>আপনার পছন্দের Beauty Products</h2>
+<section class="hero">
 
-    <p>
-      Quality Cosmetics with Friendly Service
-    </p>
+  <h2>
+    আপনার পছন্দের Beauty Products
+  </h2>
 
-    <p>
-      🚚 Cash on Delivery Available
-    </p>
+  <p>
+    Quality Cosmetics with Friendly Service
+  </p>
 
-  </section>
+  <p>
+    🚚 Cash on Delivery Available
+  </p>
 
-
-  <!-- ================= PRODUCTS ================= -->
-
-  <div class="products" id="products"></div>
+</section>
 
 
-  <!-- ================= CART ================= -->
 
-  <div class="cart">
+<!-- PRODUCTS -->
 
-    <h2>🛒 Cart / কার্ট</h2>
-
-    <div id="cartItems">
-      <div class="empty">
-        Cart is empty / কার্ট খালি
-      </div>
-    </div>
+<div
+  class="products"
+  id="products"
+></div>
 
 
-    <div class="summary">
 
-      <div class="total-row">
-        <span>
-          Product Total / পণ্যের মোট দাম
-        </span>
+<!-- CART -->
 
-        <strong id="productTotal">
-          ৳0
-        </strong>
-      </div>
+<div class="cart">
+
+  <h2>
+    🛒 Cart / কার্ট
+  </h2>
 
 
-      <div class="total-row">
-        <span>
-          Delivery Charge / ডেলিভারি চার্জ
-        </span>
+  <div id="cartItems">
 
-        <strong id="deliveryCharge">
-          ৳0
-        </strong>
-      </div>
+    <div class="empty">
 
-
-      <div class="total-row grand-total">
-
-        <span>
-          Grand Total / সর্বমোট
-        </span>
-
-        <span id="grandTotal">
-          ৳0
-        </span>
-
-      </div>
+      Cart is empty / কার্ট খালি
 
     </div>
 
   </div>
 
 
-  <!-- ================= CHECKOUT ================= -->
-
-  <div class="checkout">
-
-    <h2>📦 Checkout / অর্ডার করুন</h2>
+  <div class="summary">
 
 
-    <label>
-      Name / নাম
-    </label>
+    <div class="total-row">
 
-    <input
-      id="name"
-      type="text"
-      placeholder="আপনার নাম লিখুন"
-    >
+      <span>
+        Product Total / পণ্যের মোট
+      </span>
 
-
-    <label>
-      Phone / ফোন
-    </label>
-
-    <input
-      id="phone"
-      type="tel"
-      placeholder="01XXXXXXXXX"
-    >
-
-
-    <label>
-      Address / সম্পূর্ণ ঠিকানা
-    </label>
-
-    <textarea
-      id="address"
-      placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন"
-    ></textarea>
-
-
-    <!-- DELIVERY INFORMATION -->
-
-    <div class="delivery-box">
-
-      <div id="deliveryText">
-        📍 ঠিকানা লিখুন — Delivery Charge automatically নির্ধারণ হবে।
-      </div>
-
-      <div id="deliveryAmount"></div>
+      <strong id="productTotal">
+        ৳0
+      </strong>
 
     </div>
 
 
-    <label>
-      Payment / পেমেন্ট
-    </label>
+    <div class="total-row">
 
-    <div>
-      💵 Cash on Delivery
+      <span>
+        Delivery Charge / ডেলিভারি
+      </span>
+
+      <strong id="deliveryCharge">
+        ৳0
+      </strong>
+
     </div>
 
 
-    <button
-      class="order-btn"
-      id="placeOrder"
-    >
-      Place Order / অর্ডার করুন
-    </button>
+    <div class="total-row grand-total">
 
+      <span>
+        Grand Total / সর্বমোট
+      </span>
 
-    <div
-      class="success-box"
-      id="successBox"
-    ></div>
+      <span id="grandTotal">
+        ৳0
+      </span>
+
+    </div>
+
 
   </div>
+
+</div>
+
+
+
+<!-- CHECKOUT -->
+
+<div class="checkout">
+
+  <h2>
+    📦 Checkout / অর্ডার করুন
+  </h2>
+
+
+  <label>
+    Name / নাম
+  </label>
+
+  <input
+    id="name"
+    type="text"
+    placeholder="আপনার নাম লিখুন"
+  >
+
+
+  <label>
+    Phone / ফোন
+  </label>
+
+  <input
+    id="phone"
+    type="tel"
+    placeholder="01XXXXXXXXX"
+  >
+
+
+  <label>
+    Address / সম্পূর্ণ ঠিকানা
+  </label>
+
+  <textarea
+    id="address"
+    placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন"
+  ></textarea>
+
+
+  <div class="delivery-box">
+
+    <div id="deliveryText">
+
+      📍 ঠিকানা লিখুন — Delivery Charge
+      automatically নির্ধারণ হবে।
+
+    </div>
+
+    <div id="deliveryAmount"></div>
+
+  </div>
+
+
+  <label>
+    Payment / পেমেন্ট
+  </label>
+
+  <div>
+    💵 Cash on Delivery
+  </div>
+
+
+  <button
+    class="order-btn"
+    id="placeOrder"
+  >
+
+    Place Order / অর্ডার করুন
+
+  </button>
+
+
+  <div
+    class="success-box"
+    id="successBox"
+  ></div>
+
+
+  <button
+    class="print-btn"
+    id="printInvoice"
+  >
+
+    🖨️ Print / Save as PDF
+
+  </button>
+
+
+</div>
+
 
 </div>
 
@@ -425,10 +493,12 @@ footer{
 </footer>
 
 
+
 <script>
 
+
 /* =====================================================
-   GOOGLE APPS SCRIPT WEB APP URL
+   GOOGLE APPS SCRIPT URL
    ===================================================== */
 
 const APPS_SCRIPT_URL =
@@ -442,45 +512,45 @@ const APPS_SCRIPT_URL =
 const products = [
 
   {
-    id: 1,
-    name: "Velvet Matte Lipstick",
-    price: 450,
-    icon: "💄"
+    id:1,
+    name:"Velvet Matte Lipstick",
+    price:450,
+    icon:"💄"
   },
 
   {
-    id: 2,
-    name: "Hydrating Face Serum",
-    price: 650,
-    icon: "🧴"
+    id:2,
+    name:"Hydrating Face Serum",
+    price:650,
+    icon:"🧴"
   },
 
   {
-    id: 3,
-    name: "Glow Foundation",
-    price: 550,
-    icon: "✨"
+    id:3,
+    name:"Glow Foundation",
+    price:550,
+    icon:"✨"
   },
 
   {
-    id: 4,
-    name: "Vitamin C Cream",
-    price: 590,
-    icon: "🍊"
+    id:4,
+    name:"Vitamin C Cream",
+    price:590,
+    icon:"🍊"
   },
 
   {
-    id: 5,
-    name: "Face Wash",
-    price: 350,
-    icon: "🫧"
+    id:5,
+    name:"Face Wash",
+    price:350,
+    icon:"🫧"
   },
 
   {
-    id: 6,
-    name: "Moisturizing Cream",
-    price: 490,
-    icon: "🌸"
+    id:6,
+    name:"Moisturizing Cream",
+    price:490,
+    icon:"🌸"
   }
 
 ];
@@ -488,15 +558,18 @@ const products = [
 
 let cart = [];
 
+let lastInvoice = null;
+
 
 /* =====================================================
-   MONEY FORMAT
+   MONEY
    ===================================================== */
 
 function money(number){
 
   return "৳" +
-    Number(number || 0).toLocaleString("en-BD");
+    Number(number || 0)
+      .toLocaleString("en-BD");
 
 }
 
@@ -512,6 +585,7 @@ function renderProducts(){
 
 
   box.innerHTML =
+
     products.map(function(product){
 
       return `
@@ -519,22 +593,33 @@ function renderProducts(){
         <div class="product">
 
           <div class="product-image">
+
             ${product.icon}
+
           </div>
+
 
           <h3>
+
             ${product.name}
+
           </h3>
 
+
           <div class="price">
+
             ${money(product.price)}
+
           </div>
+
 
           <button
             class="add-btn"
             onclick="addToCart(${product.id})"
           >
+
             Add to Cart / কার্টে যোগ করুন
+
           </button>
 
         </div>
@@ -547,14 +632,16 @@ function renderProducts(){
 
 
 /* =====================================================
-   ADD PRODUCT TO CART
+   ADD TO CART
    ===================================================== */
 
 function addToCart(id){
 
   const product =
     products.find(function(item){
+
       return item.id === id;
+
     });
 
 
@@ -565,7 +652,9 @@ function addToCart(id){
 
   const existing =
     cart.find(function(item){
+
       return item.id === id;
+
     });
 
 
@@ -577,13 +666,13 @@ function addToCart(id){
 
     cart.push({
 
-      id: product.id,
+      id:product.id,
 
-      name: product.name,
+      name:product.name,
 
-      price: product.price,
+      price:product.price,
 
-      qty: 1
+      qty:1
 
     });
 
@@ -596,14 +685,16 @@ function addToCart(id){
 
 
 /* =====================================================
-   CHANGE QUANTITY
+   QUANTITY
    ===================================================== */
 
-function changeQty(id, amount){
+function changeQty(id,amount){
 
   const item =
     cart.find(function(product){
+
       return product.id === id;
+
     });
 
 
@@ -619,7 +710,9 @@ function changeQty(id, amount){
 
     cart =
       cart.filter(function(product){
+
         return product.id !== id;
+
       });
 
   }
@@ -638,10 +731,13 @@ function getProductTotal(){
 
   return cart.reduce(
 
-    function(total, item){
+    function(total,item){
 
       return total +
-        (Number(item.price) * Number(item.qty));
+        (
+          Number(item.price) *
+          Number(item.qty)
+        );
 
     },
 
@@ -653,7 +749,7 @@ function getProductTotal(){
 
 
 /* =====================================================
-   INSIDE DHAKA AREA KEYWORDS
+   DHAKA KEYWORDS
    ===================================================== */
 
 const dhakaKeywords = [
@@ -737,7 +833,7 @@ const dhakaKeywords = [
 
 
 /* =====================================================
-   CHECK INSIDE DHAKA
+   INSIDE DHAKA
    ===================================================== */
 
 function isInsideDhaka(address){
@@ -762,7 +858,7 @@ function isInsideDhaka(address){
 
 
 /* =====================================================
-   DELIVERY CHARGE
+   DELIVERY
    ===================================================== */
 
 function getDeliveryCharge(){
@@ -781,20 +877,15 @@ function getDeliveryCharge(){
   }
 
 
-  if(isInsideDhaka(address)){
-
-    return 80;
-
-  }
-
-
-  return 150;
+  return isInsideDhaka(address)
+    ? 80
+    : 150;
 
 }
 
 
 /* =====================================================
-   UPDATE DELIVERY DISPLAY
+   UPDATE DELIVERY
    ===================================================== */
 
 function updateDelivery(){
@@ -865,7 +956,7 @@ function updateDelivery(){
 
 
 /* =====================================================
-   RENDER CART
+   CART
    ===================================================== */
 
 function renderCart(){
@@ -892,15 +983,15 @@ function renderCart(){
   if(cart.length === 0){
 
     box.innerHTML =
-      `
-      <div class="empty">
-        Cart is empty / কার্ট খালি
-      </div>
-      `;
+
+      '<div class="empty">' +
+      'Cart is empty / কার্ট খালি' +
+      '</div>';
 
   }else{
 
     box.innerHTML =
+
       cart.map(function(item){
 
         return `
@@ -921,7 +1012,10 @@ function renderCart(){
 
               =
               <strong>
-                ${money(item.price * item.qty)}
+                ${money(
+                  item.price *
+                  item.qty
+                )}
               </strong>
 
             </div>
@@ -930,17 +1024,23 @@ function renderCart(){
             <div class="qty">
 
               <button
-                onclick="changeQty(${item.id},-1)"
+                onclick="changeQty(
+                  ${item.id},-1
+                )"
               >
                 −
               </button>
+
 
               <strong>
                 ${item.qty}
               </strong>
 
+
               <button
-                onclick="changeQty(${item.id},1)"
+                onclick="changeQty(
+                  ${item.id},1
+                )"
               >
                 +
               </button>
@@ -989,13 +1089,287 @@ document
 
 
 /* =====================================================
+   PRINT / SAVE AS PDF
+   ===================================================== */
+
+document
+  .getElementById("printInvoice")
+  .addEventListener(
+    "click",
+    function(){
+
+      if(!lastInvoice){
+
+        alert(
+          "আগে একটি order করুন।"
+        );
+
+        return;
+
+      }
+
+
+      const invoice =
+        lastInvoice;
+
+
+      const productRows =
+
+        invoice.items
+          .map(function(item){
+
+            const total =
+              item.price *
+              item.qty;
+
+            return `
+
+              <tr>
+
+                <td>
+                  ${item.name}
+                </td>
+
+                <td>
+                  ${item.qty}
+                </td>
+
+                <td>
+                  ${money(item.price)}
+                </td>
+
+                <td>
+                  ${money(total)}
+                </td>
+
+              </tr>
+
+            `;
+
+          })
+          .join("");
+
+
+      const printWindow =
+        window.open(
+          "",
+          "_blank"
+        );
+
+
+      printWindow.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+          <title>
+            ${invoice.orderId} - SLS Store
+          </title>
+
+          <style>
+
+            body{
+              font-family:Arial;
+              padding:30px;
+              color:#222;
+            }
+
+            h1{
+              text-align:center;
+              margin-bottom:5px;
+            }
+
+            .center{
+              text-align:center;
+            }
+
+            table{
+              width:100%;
+              border-collapse:collapse;
+              margin-top:20px;
+            }
+
+            th,td{
+              border:1px solid #999;
+              padding:9px;
+            }
+
+            th{
+              background:#eee;
+            }
+
+            .total{
+              text-align:right;
+              margin-top:20px;
+              line-height:2;
+            }
+
+            .grand{
+              font-size:20px;
+              font-weight:bold;
+            }
+
+            @media print{
+              button{
+                display:none;
+              }
+            }
+
+          </style>
+
+        </head>
+
+        <body>
+
+
+          <h1>
+            SLS Store
+          </h1>
+
+
+          <div class="center">
+
+            Cosmetics • Beauty • Friendly Service
+
+            <br><br>
+
+            <strong>
+              ORDER INVOICE
+            </strong>
+
+          </div>
+
+
+          <p>
+
+            <strong>Order ID:</strong>
+            ${invoice.orderId}
+
+            <br>
+
+            <strong>Customer:</strong>
+            ${invoice.name}
+
+            <br>
+
+            <strong>Phone:</strong>
+            ${invoice.phone}
+
+            <br>
+
+            <strong>Address:</strong>
+            ${invoice.address}
+
+            <br>
+
+            <strong>Delivery:</strong>
+            ${invoice.deliveryArea}
+
+            <br>
+
+            <strong>Payment:</strong>
+            Cash on Delivery
+
+          </p>
+
+
+          <table>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                Qty
+              </th>
+
+              <th>
+                Price
+              </th>
+
+              <th>
+                Total
+              </th>
+
+            </tr>
+
+            ${productRows}
+
+          </table>
+
+
+          <div class="total">
+
+            Product Total:
+            <strong>
+              ${money(invoice.productTotal)}
+            </strong>
+
+            <br>
+
+            Delivery Charge:
+            <strong>
+              ${money(invoice.deliveryCharge)}
+            </strong>
+
+            <br>
+
+            <span class="grand">
+
+              Grand Total:
+              ${money(invoice.grandTotal)}
+
+            </span>
+
+          </div>
+
+
+          <p class="center">
+
+            Thank you for shopping with SLS Store.
+
+          </p>
+
+
+          <script>
+
+            window.onload = function(){
+
+              window.print();
+
+            };
+
+          <\/script>
+
+
+        </body>
+
+        </html>
+
+      `);
+
+
+      printWindow.document.close();
+
+    }
+  );
+
+
+/* =====================================================
    PLACE ORDER
    ===================================================== */
 
 document
   .getElementById("placeOrder")
   .addEventListener(
+
     "click",
+
     async function(){
 
       const button = this;
@@ -1022,12 +1396,12 @@ document
           .trim();
 
 
-      /* CART CHECK */
+      /* CART */
 
       if(cart.length === 0){
 
         alert(
-          "আগে Cart-এ অন্তত একটি Product যোগ করুন।"
+          "আগে Cart-এ একটি Product যোগ করুন।"
         );
 
         return;
@@ -1035,7 +1409,7 @@ document
       }
 
 
-      /* CUSTOMER INFORMATION */
+      /* NAME */
 
       if(!name){
 
@@ -1043,14 +1417,12 @@ document
           "আপনার নাম লিখুন।"
         );
 
-        document
-          .getElementById("name")
-          .focus();
-
         return;
 
       }
 
+
+      /* PHONE */
 
       if(!phone){
 
@@ -1058,24 +1430,18 @@ document
           "আপনার ফোন নম্বর লিখুন।"
         );
 
-        document
-          .getElementById("phone")
-          .focus();
-
         return;
 
       }
 
+
+      /* ADDRESS */
 
       if(!address){
 
         alert(
           "আপনার সম্পূর্ণ ঠিকানা লিখুন।"
         );
-
-        document
-          .getElementById("address")
-          .focus();
 
         return;
 
@@ -1096,20 +1462,18 @@ document
           : 150;
 
 
-      /* PRODUCT TOTAL */
+      /* TOTAL */
 
       const productTotal =
         getProductTotal();
 
-
-      /* GRAND TOTAL */
 
       const grandTotal =
         productTotal +
         deliveryCharge;
 
 
-      /* ONE CHECKOUT = ONE CLIENT ORDER ID */
+      /* CLIENT ORDER ID */
 
       const clientOrderId =
         "WEB-" +
@@ -1120,19 +1484,24 @@ document
           .substring(2,8);
 
 
-      /* ORDER DATA */
+      /* PAYLOAD */
 
       const payload = {
 
-        clientOrderId: clientOrderId,
+        clientOrderId:
+          clientOrderId,
 
-        name: name,
+        name:
+          name,
 
-        phone: phone,
+        phone:
+          phone,
 
-        address: address,
+        address:
+          address,
 
-        deliveryArea: deliveryArea,
+        deliveryArea:
+          deliveryArea,
 
         items:
 
@@ -1140,11 +1509,14 @@ document
 
             return {
 
-              name: item.name,
+              name:
+                item.name,
 
-              price: Number(item.price),
+              price:
+                Number(item.price),
 
-              qty: Number(item.qty)
+              qty:
+                Number(item.qty)
 
             };
 
@@ -1153,7 +1525,54 @@ document
       };
 
 
-      /* BUTTON LOCK */
+      /* SAVE LOCAL INVOICE */
+
+      lastInvoice = {
+
+        orderId:
+          "Pending",
+
+        name:
+          name,
+
+        phone:
+          phone,
+
+        address:
+          address,
+
+        deliveryArea:
+          deliveryArea,
+
+        items:
+          cart.map(function(item){
+
+            return {
+
+              name:
+                item.name,
+
+              price:
+                Number(item.price),
+
+              qty:
+                Number(item.qty)
+
+            };
+
+          }),
+
+        productTotal:
+          productTotal,
+
+        deliveryCharge:
+          deliveryCharge,
+
+        grandTotal:
+          grandTotal
+
+      };
+
 
       button.disabled = true;
 
@@ -1163,17 +1582,20 @@ document
 
       try{
 
+
         await fetch(
 
           APPS_SCRIPT_URL,
 
           {
 
-            method: "POST",
+            method:
+              "POST",
 
-            mode: "no-cors",
+            mode:
+              "no-cors",
 
-            headers: {
+            headers:{
 
               "Content-Type":
                 "text/plain;charset=utf-8"
@@ -1188,7 +1610,7 @@ document
         );
 
 
-        /* SUCCESS MESSAGE */
+        /* SUCCESS */
 
         const successBox =
           document.getElementById(
@@ -1202,10 +1624,7 @@ document
 
         successBox.innerHTML =
 
-          "<strong>✅ Order Sent Successfully!</strong>" +
-
-          "<br>Customer: " +
-          name +
+          "<strong>✅ Order Submitted!</strong>" +
 
           "<br>Product Total: " +
           money(productTotal) +
@@ -1216,9 +1635,15 @@ document
           "<br>Grand Total: " +
           money(grandTotal) +
 
-          "<br>Payment: Cash on Delivery" +
+          "<br>Payment: Cash on Delivery";
 
-          "<br><br>আপনার অর্ডারটি গ্রহণ করা হয়েছে।";
+
+        document
+          .getElementById(
+            "printInvoice"
+          )
+          .style.display =
+          "block";
 
 
         alert(
@@ -1232,9 +1657,7 @@ document
           money(deliveryCharge) +
 
           "\nGrand Total: " +
-          money(grandTotal) +
-
-          "\n\nPayment: Cash on Delivery"
+          money(grandTotal)
 
         );
 
@@ -1270,10 +1693,7 @@ document
 
 
         alert(
-
-          "❌ অর্ডার পাঠাতে সমস্যা হয়েছে।\n" +
-          "কিছুক্ষণ পর আবার চেষ্টা করুন।"
-
+          "অর্ডার পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।"
         );
 
       }
@@ -1290,7 +1710,7 @@ document
 
 
 /* =====================================================
-   START WEBSITE
+   START
    ===================================================== */
 
 renderProducts();
@@ -1299,5 +1719,7 @@ renderCart();
 
 </script>
 
+
 </body>
+
 </html>
