@@ -1,18 +1,15 @@
 const SHEET_NAME = "Orders";
 
+/*
+========================================================
+SLS STORE - GOOGLE SHEETS ORDER SYSTEM
+========================================================
+একজন Customer-এর পুরো Cart = ১টি Order
+Inside Dhaka Delivery = ৳80
+Outside Dhaka Delivery = ৳150
+========================================================
+*/
 
-// =====================================================
-// SLS STORE - GOOGLE SHEETS ORDER SYSTEM
-// =====================================================
-// Product Total       = শুধু পণ্যের মোট দাম
-// Delivery Charge     = Inside Dhaka ৳80 / Outside Dhaka ৳150
-// Grand Total         = Product Total + Delivery Charge
-// =====================================================
-
-
-// -----------------------------------------------------
-// SETUP SHEET
-// -----------------------------------------------------
 function setupSLSStore() {
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -38,40 +35,33 @@ function setupSLSStore() {
     "Status"
   ];
 
-  // যদি sheet একদম খালি থাকে
+  /*
+  যদি Sheet একদম খালি থাকে,
+  তাহলে Header তৈরি করবে
+  */
+
   if (sheet.getLastRow() === 0) {
 
-    sheet.getRange(1, 1, 1, headers.length)
-      .setValues([headers]);
+    sheet.appendRow(headers);
 
-  } else {
+    sheet.setFrozenRows(1);
 
-    // প্রথম row-তে নতুন header বসানো
-    sheet.getRange(1, 1, 1, headers.length)
-      .setValues([headers]);
+    sheet
+      .getRange(1, 1, 1, headers.length)
+      .setFontWeight("bold");
+
+    sheet.autoResizeColumns(1, headers.length);
   }
 
-  // Header formatting
-  sheet.getRange(1, 1, 1, headers.length)
-    .setFontWeight("bold");
-
-  sheet.setFrozenRows(1);
-
-  // Number formatting
-  if (sheet.getMaxRows() > 1) {
-
-    sheet.getRange(2, 8, sheet.getMaxRows() - 1, 3)
-      .setNumberFormat('৳#,##0');
-
-  }
-
-  sheet.autoResizeColumns(1, headers.length);
 }
 
 
-// -----------------------------------------------------
-// GET REQUEST TEST
-// -----------------------------------------------------
+/*
+========================================================
+GET REQUEST
+========================================================
+*/
+
 function doGet(e) {
 
   return ContentService
@@ -82,20 +72,34 @@ function doGet(e) {
       })
     )
     .setMimeType(ContentService.MimeType.JSON);
+
 }
 
 
-// -----------------------------------------------------
-// RECEIVE ORDER
-// -----------------------------------------------------
+/*
+========================================================
+POST ORDER
+========================================================
+*/
+
 function doPost(e) {
 
   try {
 
     setupSLSStore();
 
-    // Check incoming data
-    if (!e || !e.postData || !e.postData.contents) {
+
+    /*
+    ----------------------------------------------------
+    Check incoming data
+    ----------------------------------------------------
+    */
+
+    if (
+      !e ||
+      !e.postData ||
+      !e.postData.contents
+    ) {
 
       return jsonResponse({
         success: false,
@@ -105,13 +109,22 @@ function doPost(e) {
     }
 
 
-    // Convert JSON data
-    const data = JSON.parse(e.postData.contents);
+    /*
+    ----------------------------------------------------
+    Read customer order
+    ----------------------------------------------------
+    */
+
+    const data = JSON.parse(
+      e.postData.contents
+    );
 
 
-    // -------------------------------------------------
-    // BASIC VALIDATION
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    Basic validation
+    ----------------------------------------------------
+    */
 
     if (
       !data.name ||
@@ -124,126 +137,141 @@ function doPost(e) {
 
       return jsonResponse({
         success: false,
-        message: "Customer information or products are missing."
+        message:
+          "Customer information or products are missing."
       });
 
     }
 
 
-    // -------------------------------------------------
-    // DELIVERY AREA
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    DELIVERY AREA
+    ----------------------------------------------------
+    */
 
-    const deliveryArea =
-      data.deliveryArea === "Inside Dhaka"
-        ? "Inside Dhaka"
-        : "Outside Dhaka";
+    let deliveryArea = "Outside Dhaka";
 
+    if (
+      String(data.deliveryArea || "")
+        .toLowerCase()
+        .includes("inside")
+    ) {
 
-    // -------------------------------------------------
-    // DELIVERY CHARGE
-    // -------------------------------------------------
+      deliveryArea = "Inside Dhaka";
 
-    const deliveryCharge =
-      deliveryArea === "Inside Dhaka"
-        ? 80
-        : 150;
-
-
-    // -------------------------------------------------
-    // PRODUCT TOTAL
-    // -------------------------------------------------
-
-    const productTotal = data.items.reduce(
-      function(sum, item) {
-
-        const price = Number(item.price) || 0;
-        const qty = Number(item.qty) || 0;
-
-        return sum + (price * qty);
-
-      },
-      0
-    );
+    }
 
 
-    // -------------------------------------------------
-    // GRAND TOTAL
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    DELIVERY CHARGE
+    ----------------------------------------------------
+    */
+
+    let deliveryCharge = 150;
+
+    if (deliveryArea === "Inside Dhaka") {
+
+      deliveryCharge = 80;
+
+    }
+
+
+    /*
+    ----------------------------------------------------
+    PRODUCT TOTAL
+    ----------------------------------------------------
+    */
+
+    let productTotal = 0;
+
+
+    data.items.forEach(function(item) {
+
+      const price =
+        Number(item.price) || 0;
+
+      const qty =
+        Number(item.qty) || 0;
+
+      productTotal +=
+        price * qty;
+
+    });
+
+
+    /*
+    ----------------------------------------------------
+    GRAND TOTAL
+    ----------------------------------------------------
+    */
 
     const grandTotal =
       productTotal + deliveryCharge;
 
 
-    // -------------------------------------------------
-    // DUPLICATE ORDER PROTECTION
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    CREATE ONE ORDER ID
+    ----------------------------------------------------
+    
+    IMPORTANT:
+    পুরো Cart-এর জন্য মাত্র ১টি Order ID হবে।
+    
+    Example:
+    SLS-00001
+    
+    Products:
+    Lipstick x1
+    Serum x2
+    Foundation x1
+    
+    সবগুলো একই Order ID-এর মধ্যে থাকবে।
+    
+    ----------------------------------------------------
+    */
 
-    const clientOrderId =
-      String(data.clientOrderId || "").trim();
-
-
-    const properties =
-      PropertiesService.getScriptProperties();
-
-
-    if (clientOrderId) {
-
-      const oldOrderId =
-        properties.getProperty(
-          "CLIENT_ORDER_" + clientOrderId
-        );
-
-
-      if (oldOrderId) {
-
-        return jsonResponse({
-
-          success: true,
-
-          duplicate: true,
-
-          orderId: oldOrderId,
-
-          message:
-            "This order has already been received."
-
-        });
-
-      }
-
-    }
+    const orderId =
+      createOrderId();
 
 
-    // -------------------------------------------------
-    // CREATE ORDER ID
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    PRODUCT LIST
+    ----------------------------------------------------
+    */
 
-    const orderId = createOrderId();
+    const products =
+      data.items
+        .map(function(item) {
+
+          const name =
+            String(item.name || "");
+
+          const qty =
+            Number(item.qty) || 0;
+
+          const price =
+            Number(item.price) || 0;
+
+          return (
+            name +
+            " x" +
+            qty +
+            " @ ৳" +
+            price
+          );
+
+        })
+        .join(" | ");
 
 
-    // -------------------------------------------------
-    // PRODUCT LIST
-    // -------------------------------------------------
-
-    const products = data.items
-      .map(function(item) {
-
-        return (
-          item.name +
-          " x" +
-          item.qty +
-          " @ ৳" +
-          item.price
-        );
-
-      })
-      .join(" | ");
-
-
-    // -------------------------------------------------
-    // GET SHEET
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    GET SHEET
+    ----------------------------------------------------
+    */
 
     const sheet =
       SpreadsheetApp
@@ -251,9 +279,11 @@ function doPost(e) {
         .getSheetByName(SHEET_NAME);
 
 
-    // -------------------------------------------------
-    // SAVE ORDER
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    SAVE ONE COMPLETE ORDER
+    ----------------------------------------------------
+    */
 
     sheet.appendRow([
 
@@ -284,37 +314,11 @@ function doPost(e) {
     ]);
 
 
-    // -------------------------------------------------
-    // SAVE CLIENT ORDER ID
-    // -------------------------------------------------
-
-    if (clientOrderId) {
-
-      properties.setProperty(
-
-        "CLIENT_ORDER_" + clientOrderId,
-
-        orderId
-
-      );
-
-    }
-
-
-    // -------------------------------------------------
-    // FORMAT MONEY CELLS
-    // -------------------------------------------------
-
-    const lastRow = sheet.getLastRow();
-
-    sheet
-      .getRange(lastRow, 8, 1, 3)
-      .setNumberFormat('৳#,##0');
-
-
-    // -------------------------------------------------
-    // SUCCESS RESPONSE
-    // -------------------------------------------------
+    /*
+    ----------------------------------------------------
+    SUCCESS RESPONSE
+    ----------------------------------------------------
+    */
 
     return jsonResponse({
 
@@ -328,6 +332,8 @@ function doPost(e) {
 
       grandTotal: grandTotal,
 
+      deliveryArea: deliveryArea,
+
       message:
         "Order received successfully."
 
@@ -335,7 +341,6 @@ function doPost(e) {
 
 
   } catch (error) {
-
 
     return jsonResponse({
 
@@ -350,18 +355,24 @@ function doPost(e) {
 }
 
 
-// -----------------------------------------------------
-// CREATE ORDER ID
-// -----------------------------------------------------
+/*
+========================================================
+CREATE ORDER ID
+========================================================
+*/
+
 function createOrderId() {
 
   const properties =
-    PropertiesService.getScriptProperties();
+    PropertiesService
+      .getScriptProperties();
 
 
   let number =
     Number(
-      properties.getProperty("ORDER_NUMBER") || "0"
+      properties.getProperty(
+        "ORDER_NUMBER"
+      ) || "0"
     );
 
 
@@ -382,9 +393,12 @@ function createOrderId() {
 }
 
 
-// -----------------------------------------------------
-// JSON RESPONSE
-// -----------------------------------------------------
+/*
+========================================================
+JSON RESPONSE
+========================================================
+*/
+
 function jsonResponse(data) {
 
   return ContentService
