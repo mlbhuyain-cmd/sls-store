@@ -6,17 +6,21 @@
 <title>SLS Store | Cosmetics</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
   font-family:Arial,"Noto Sans Bengali",sans-serif;
   background:#fff7fa;
-  color:#2b2025
+  color:#2b2025;
 }
 
 a{
   text-decoration:none;
-  color:inherit
+  color:inherit;
 }
 
 header{
@@ -24,7 +28,7 @@ header{
   position:sticky;
   top:0;
   z-index:20;
-  box-shadow:0 2px 12px #00000012
+  box-shadow:0 2px 12px #00000012;
 }
 
 .top{
@@ -33,24 +37,24 @@ header{
   padding:15px 18px;
   display:flex;
   align-items:center;
-  gap:22px
+  gap:22px;
 }
 
 .logo{
   font-size:25px;
   font-weight:800;
   color:#c0266d;
-  white-space:nowrap
+  white-space:nowrap;
 }
 
 nav{
   display:flex;
   gap:18px;
-  flex:1
+  flex:1;
 }
 
 nav a{
-  font-size:14px
+  font-size:14px;
 }
 
 .search{
@@ -59,7 +63,7 @@ nav a{
   padding:10px 13px;
   border:1px solid #ead8df;
   border-radius:25px;
-  outline:none
+  outline:none;
 }
 
 .cart{
@@ -69,7 +73,7 @@ nav a{
   padding:10px 15px;
   border-radius:22px;
   cursor:pointer;
-  font-weight:700
+  font-weight:700;
 }
 
 .hero{
@@ -81,19 +85,19 @@ nav a{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:25px
+  gap:25px;
 }
 
 .hero h1{
   font-size:42px;
   margin-bottom:12px;
-  color:#7d1749
+  color:#7d1749;
 }
 
 .hero p{
   font-size:18px;
   line-height:1.6;
-  margin-bottom:22px
+  margin-bottom:22px;
 }
 
 .btn{
@@ -104,23 +108,23 @@ nav a{
   padding:12px 22px;
   border-radius:25px;
   cursor:pointer;
-  font-weight:700
+  font-weight:700;
 }
 
 .section{
   max-width:1150px;
   margin:35px auto;
-  padding:0 18px
+  padding:0 18px;
 }
 
 .section h2{
-  margin-bottom:18px
+  margin-bottom:18px;
 }
 
 .cats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:14px
+  gap:14px;
 }
 
 .cat{
@@ -128,13 +132,13 @@ nav a{
   padding:22px;
   border-radius:18px;
   text-align:center;
-  border:1px solid #f0dce5
+  border:1px solid #f0dce5;
 }
 
 .products{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:18px
+  gap:18px;
 }
 
 .card{
@@ -142,7 +146,7 @@ nav a{
   border-radius:18px;
   overflow:hidden;
   border:1px solid #f0dce5;
-  box-shadow:0 5px 18px #00000008
+  box-shadow:0 5px 18px #00000008;
 }
 
 .pic{
@@ -151,22 +155,22 @@ nav a{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:60px
+  font-size:60px;
 }
 
 .card-body{
-  padding:15px
+  padding:15px;
 }
 
 .card h3{
   font-size:16px;
-  margin-bottom:7px
+  margin-bottom:7px;
 }
 
 .price{
   font-weight:800;
   color:#c0266d;
-  margin:8px 0 12px
+  margin:8px 0 12px;
 }
 
 .card button{
@@ -176,7 +180,7 @@ nav a{
   border-radius:12px;
   background:#c0266d;
   color:#fff;
-  cursor:pointer
+  cursor:pointer;
 }
 
 footer{
@@ -184,7 +188,7 @@ footer{
   background:#2c2025;
   color:#fff;
   padding:30px 18px;
-  text-align:center
+  text-align:center;
 }
 
 .overlay{
@@ -192,7 +196,7 @@ footer{
   position:fixed;
   inset:0;
   background:#0008;
-  z-index:30
+  z-index:30;
 }
 
 .drawer{
@@ -203,7 +207,7 @@ footer{
   width:min(430px,100%);
   background:white;
   padding:22px;
-  overflow:auto
+  overflow:auto;
 }
 
 .close{
@@ -212,20 +216,20 @@ footer{
   background:#eee;
   border-radius:50%;
   width:32px;
-  height:32px
+  height:32px;
 }
 
 .cart-item{
   display:flex;
   justify-content:space-between;
   padding:13px 0;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
 
 .total{
   font-size:20px;
   font-weight:800;
-  margin:20px 0
+  margin:20px 0;
 }
 
 .form input,
@@ -234,63 +238,63 @@ footer{
   padding:11px;
   margin:7px 0;
   border:1px solid #ddd;
-  border-radius:10px
+  border-radius:10px;
 }
 
 .form textarea{
-  height:80px
+  height:80px;
 }
 
 @media(max-width:800px){
 
   nav{
-    display:none
+    display:none;
   }
 
   .search{
-    max-width:none
+    max-width:none;
   }
 
   .hero{
     margin:15px 12px;
-    padding:35px 22px
+    padding:35px 22px;
   }
 
   .hero h1{
-    font-size:31px
+    font-size:31px;
   }
 
   .cats,
   .products{
-    grid-template-columns:repeat(2,1fr)
+    grid-template-columns:repeat(2,1fr);
   }
 }
 
 @media(max-width:480px){
 
   .top{
-    gap:8px
+    gap:8px;
   }
 
   .logo{
-    font-size:21px
+    font-size:21px;
   }
 
   .search{
-    width:100%
+    width:100%;
   }
 
   .hero{
-    display:block
+    display:block;
   }
 
   .cats,
   .products{
-    grid-template-columns:1fr 1fr
+    grid-template-columns:1fr 1fr;
   }
 
   .pic{
-    height:145px
+    height:145px;
   }
 }
 </style>
@@ -366,26 +370,34 @@ Categories / ক্যাটাগরি
 <div class="cats">
 
 <div class="cat">
-💋<br>
-<b>Lipstick</b><br>
+💋
+<br>
+<b>Lipstick</b>
+<br>
 লিপস্টিক
 </div>
 
 <div class="cat">
-🧴<br>
-<b>Skincare</b><br>
+🧴
+<br>
+<b>Skincare</b>
+<br>
 স্কিন কেয়ার
 </div>
 
 <div class="cat">
-👁️<br>
-<b>Eye Makeup</b><br>
+👁️
+<br>
+<b>Eye Makeup</b>
+<br>
 আই মেকআপ
 </div>
 
 <div class="cat">
-✨<br>
-<b>Beauty Tools</b><br>
+✨
+<br>
+<b>Beauty Tools</b>
+<br>
 বিউটি টুলস
 </div>
 
@@ -480,19 +492,20 @@ Place Order / অর্ডার করুন
 
 <script>
 
-/* =========================================
-   GOOGLE APPS SCRIPT CONNECTION
-   ========================================= */
+/* =====================================================
+   GOOGLE APPS SCRIPT WEB APP URL
+   আপনার URL এখানে আগে থেকেই বসানো আছে
+===================================================== */
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwPlw1hx1i8aBFiEv6NGUeOlCcw6cqZVAKTa0l9MrMpdH6S7vilBJCLlimreduBNw/exec";
+"https://script.google.com/macros/s/AKfycbxF5abLva0NYBvYyh2hQFsBxJsCiIXe_8xF5IR_SiauS5A_xZXafV-CKG6uoCgDPNHr/exec";
 
 
-/* =========================================
+/* =====================================================
    PRODUCTS
-   ========================================= */
+===================================================== */
 
-const products=[
+const products = [
 
 {
 id:1,
@@ -561,30 +574,31 @@ icon:"💋"
 ];
 
 
-let cart=[];
+let cart = [];
 
 
-/* =========================================
+/* =====================================================
    SHOW PRODUCTS
-   ========================================= */
+===================================================== */
 
 function renderProducts(){
 
 const q =
-document
-.getElementById('search')
+document.getElementById('search')
 .value
 .toLowerCase();
 
 const list =
-products.filter(p =>
-(p.name+" "+p.bn)
+products.filter(
+p =>
+(p.name + " " + p.bn)
 .toLowerCase()
 .includes(q)
 );
 
 document.getElementById('products').innerHTML =
-list.map(p=>`
+
+list.map(p => `
 
 <div class="card">
 
@@ -619,23 +633,30 @@ Add to Cart / কার্টে যোগ করুন
 }
 
 
-/* =========================================
+/* =====================================================
    ADD TO CART
-   ========================================= */
+===================================================== */
 
 function add(id){
 
 const p =
-products.find(x=>x.id===id);
+products.find(x => x.id === id);
 
 const x =
-cart.find(x=>x.id===id);
+cart.find(x => x.id === id);
 
-x
-?
-x.qty++
-:
-cart.push({...p,qty:1});
+if(x){
+
+x.qty++;
+
+}else{
+
+cart.push({
+...p,
+qty:1
+});
+
+}
 
 updateCart();
 
@@ -644,15 +665,16 @@ openCart();
 }
 
 
-/* =========================================
+/* =====================================================
    UPDATE CART
-   ========================================= */
+===================================================== */
 
 function updateCart(){
 
 document.getElementById('count').textContent =
+
 cart.reduce(
-(a,b)=>a+b.qty,
+(a,b) => a + b.qty,
 0
 );
 
@@ -663,7 +685,7 @@ cart.length
 
 ?
 
-cart.map(p=>`
+cart.map(p => `
 
 <div class="cart-item">
 
@@ -695,113 +717,127 @@ Remove
 document.getElementById('total').textContent =
 
 cart.reduce(
-(a,b)=>a+b.price*b.qty,
+(a,b) => a + b.price * b.qty,
 0
 );
 
 }
 
 
-/* =========================================
+/* =====================================================
    REMOVE ITEM
-   ========================================= */
+===================================================== */
 
 function removeItem(id){
 
 cart =
-cart.filter(x=>x.id!==id);
+cart.filter(x => x.id !== id);
 
 updateCart();
 
 }
 
 
-/* =========================================
+/* =====================================================
    OPEN CART
-   ========================================= */
+===================================================== */
 
 function openCart(){
 
 document.getElementById('overlay')
-.style.display='block';
+.style.display = 'block';
 
 updateCart();
 
 }
 
 
-/* =========================================
+/* =====================================================
    CLOSE CART
-   ========================================= */
+===================================================== */
 
 function closeCart(){
 
 document.getElementById('overlay')
-.style.display='none';
+.style.display = 'none';
 
 }
 
 
-/* =========================================
+/* =====================================================
    PLACE ORDER
-   ========================================= */
+===================================================== */
 
 async function placeOrder(){
 
-if(!cart.length)
+/* CART EMPTY */
+
+if(!cart.length){
 
 return alert(
 'Please add products first / আগে পণ্য যোগ করুন'
 );
 
+}
+
+
+/* CUSTOMER INFORMATION */
 
 const name =
-document
-.getElementById('name')
+document.getElementById('name')
 .value
 .trim();
-
 
 const phone =
-document
-.getElementById('phone')
+document.getElementById('phone')
 .value
 .trim();
-
 
 const address =
-document
-.getElementById('address')
+document.getElementById('address')
 .value
 .trim();
 
 
-if(!name || !phone || !address)
+/* CHECK INFORMATION */
+
+if(!name || !phone || !address){
 
 return alert(
 'Please fill all information / সব তথ্য পূরণ করুন'
 );
 
+}
+
+
+/* CHECK GOOGLE SCRIPT URL */
 
 if(
 APPS_SCRIPT_URL.includes(
 'PASTE_YOUR_'
 )
-)
+){
 
 return alert(
 'Google Sheets connection is not configured yet. / Google Sheets সংযোগ এখনো সেট করা হয়নি।'
 );
 
+}
+
+
+/* CALCULATE TOTAL */
 
 const total =
+
 cart.reduce(
-(a,b)=>a+b.price*b.qty,
+(a,b) => a + b.price * b.qty,
 0
 );
 
 
-const payload={
+/* ORDER DATA */
+
+const payload = {
 
 name:name,
 
@@ -809,13 +845,15 @@ phone:phone,
 
 address:address,
 
-paymentMethod:'Cash on Delivery',
+paymentMethod:
+'Cash on Delivery',
 
 total:total,
 
 items:
 
-cart.map(p=>({
+cart.map(
+p => ({
 
 id:p.id,
 
@@ -825,17 +863,18 @@ price:p.price,
 
 qty:p.qty
 
-}))
+})
+)
 
 };
 
 
+/* SEND TO GOOGLE APPS SCRIPT */
+
 try{
 
 await fetch(
-
 APPS_SCRIPT_URL,
-
 {
 
 method:'POST',
@@ -851,14 +890,17 @@ body:
 JSON.stringify(payload)
 
 }
-
 );
 
+
+/* SUCCESS MESSAGE */
 
 alert(
 
 `ধন্যবাদ ${name}!
+
 আপনার অর্ডার গ্রহণ করা হয়েছে।
+
 মোট: ৳${total}
 
 অর্ডারটি Google Sheets-এ পাঠানো হয়েছে।`
@@ -866,15 +908,24 @@ alert(
 );
 
 
-cart=[];
+/* CLEAR CART */
+
+cart = [];
 
 
-document.getElementById('name').value='';
+/* CLEAR FORM */
 
-document.getElementById('phone').value='';
+document.getElementById('name')
+.value = '';
 
-document.getElementById('address').value='';
+document.getElementById('phone')
+.value = '';
 
+document.getElementById('address')
+.value = '';
+
+
+/* UPDATE */
 
 updateCart();
 
@@ -896,9 +947,9 @@ alert(
 }
 
 
-/* =========================================
-   START
-   ========================================= */
+/* =====================================================
+   START WEBSITE
+===================================================== */
 
 renderProducts();
 
