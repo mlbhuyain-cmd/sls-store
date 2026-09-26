@@ -4,173 +4,907 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SLS Store | Cosmetics</title>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,"Noto Sans Bengali",sans-serif;background:#fff7fa;color:#2b2025}
-a{text-decoration:none;color:inherit}
-header{background:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px #00000012}
-.top{max-width:1150px;margin:auto;padding:15px 18px;display:flex;align-items:center;gap:22px}
-.logo{font-size:25px;font-weight:800;color:#c0266d;white-space:nowrap}
-nav{display:flex;gap:18px;flex:1}
-nav a{font-size:14px}
-.search{flex:1;max-width:300px;padding:10px 13px;border:1px solid #ead8df;border-radius:25px;outline:none}
-.cart{border:0;background:#c0266d;color:white;padding:10px 15px;border-radius:22px;cursor:pointer;font-weight:700}
-.hero{max-width:1150px;margin:25px auto;padding:55px 35px;border-radius:25px;background:linear-gradient(120deg,#f8d8e6,#fff0f6);display:flex;align-items:center;justify-content:space-between;gap:25px}
-.hero h1{font-size:42px;margin-bottom:12px;color:#7d1749}
-.hero p{font-size:18px;line-height:1.6;margin-bottom:22px}
-.btn{display:inline-block;border:0;background:#c0266d;color:#fff;padding:12px 22px;border-radius:25px;cursor:pointer;font-weight:700}
-.section{max-width:1150px;margin:35px auto;padding:0 18px}
-.section h2{margin-bottom:18px}
-.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.cat{background:#fff;padding:22px;border-radius:18px;text-align:center;border:1px solid #f0dce5}
-.products{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #f0dce5;box-shadow:0 5px 18px #00000008}
-.pic{height:190px;background:linear-gradient(135deg,#f6dbe7,#fff);display:flex;align-items:center;justify-content:center;font-size:60px}
-.card-body{padding:15px}
-.card h3{font-size:16px;margin-bottom:7px}
-.price{font-weight:800;color:#c0266d;margin:8px 0 12px}
-.card button{width:100%;border:0;padding:10px;border-radius:12px;background:#c0266d;color:#fff;cursor:pointer}
-footer{margin-top:50px;background:#2c2025;color:#fff;padding:30px 18px;text-align:center}
-.overlay{display:none;position:fixed;inset:0;background:#0008;z-index:30}
-.drawer{position:absolute;right:0;top:0;height:100%;width:min(430px,100%);background:white;padding:22px;overflow:auto}
-.close{float:right;border:0;background:#eee;border-radius:50%;width:32px;height:32px}
-.cart-item{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #eee}
-.total{font-size:20px;font-weight:800;margin:20px 0}
-.form input,.form textarea{width:100%;padding:11px;margin:7px 0;border:1px solid #ddd;border-radius:10px}
-.form textarea{height:80px}
-@media(max-width:800px){nav{display:none}.search{max-width:none}.hero{margin:15px 12px;padding:35px 22px}.hero h1{font-size:31px}.cats,.products{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.top{gap:8px}.logo{font-size:21px}.search{width:100%}.hero{display:block}.cats,.products{grid-template-columns:1fr 1fr}.pic{height:145px}}
+
+body{
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#fff7fa;
+  color:#2b2025
+}
+
+a{
+  text-decoration:none;
+  color:inherit
+}
+
+header{
+  background:#fff;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 2px 12px #00000012
+}
+
+.top{
+  max-width:1150px;
+  margin:auto;
+  padding:15px 18px;
+  display:flex;
+  align-items:center;
+  gap:22px
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  color:#c0266d;
+  white-space:nowrap
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  flex:1
+}
+
+nav a{
+  font-size:14px
+}
+
+.search{
+  flex:1;
+  max-width:300px;
+  padding:10px 13px;
+  border:1px solid #ead8df;
+  border-radius:25px;
+  outline:none
+}
+
+.cart{
+  border:0;
+  background:#c0266d;
+  color:white;
+  padding:10px 15px;
+  border-radius:22px;
+  cursor:pointer;
+  font-weight:700
+}
+
+.hero{
+  max-width:1150px;
+  margin:25px auto;
+  padding:55px 35px;
+  border-radius:25px;
+  background:linear-gradient(120deg,#f8d8e6,#fff0f6);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:25px
+}
+
+.hero h1{
+  font-size:42px;
+  margin-bottom:12px;
+  color:#7d1749
+}
+
+.hero p{
+  font-size:18px;
+  line-height:1.6;
+  margin-bottom:22px
+}
+
+.btn{
+  display:inline-block;
+  border:0;
+  background:#c0266d;
+  color:#fff;
+  padding:12px 22px;
+  border-radius:25px;
+  cursor:pointer;
+  font-weight:700
+}
+
+.section{
+  max-width:1150px;
+  margin:35px auto;
+  padding:0 18px
+}
+
+.section h2{
+  margin-bottom:18px
+}
+
+.cats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px
+}
+
+.cat{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  text-align:center;
+  border:1px solid #f0dce5
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px
+}
+
+.card{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #f0dce5;
+  box-shadow:0 5px 18px #00000008
+}
+
+.pic{
+  height:190px;
+  background:linear-gradient(135deg,#f6dbe7,#fff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:60px
+}
+
+.card-body{
+  padding:15px
+}
+
+.card h3{
+  font-size:16px;
+  margin-bottom:7px
+}
+
+.price{
+  font-weight:800;
+  color:#c0266d;
+  margin:8px 0 12px
+}
+
+.card button{
+  width:100%;
+  border:0;
+  padding:10px;
+  border-radius:12px;
+  background:#c0266d;
+  color:#fff;
+  cursor:pointer
+}
+
+footer{
+  margin-top:50px;
+  background:#2c2025;
+  color:#fff;
+  padding:30px 18px;
+  text-align:center
+}
+
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:30
+}
+
+.drawer{
+  position:absolute;
+  right:0;
+  top:0;
+  height:100%;
+  width:min(430px,100%);
+  background:white;
+  padding:22px;
+  overflow:auto
+}
+
+.close{
+  float:right;
+  border:0;
+  background:#eee;
+  border-radius:50%;
+  width:32px;
+  height:32px
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  padding:13px 0;
+  border-bottom:1px solid #eee
+}
+
+.total{
+  font-size:20px;
+  font-weight:800;
+  margin:20px 0
+}
+
+.form input,
+.form textarea{
+  width:100%;
+  padding:11px;
+  margin:7px 0;
+  border:1px solid #ddd;
+  border-radius:10px
+}
+
+.form textarea{
+  height:80px
+}
+
+@media(max-width:800px){
+
+  nav{
+    display:none
+  }
+
+  .search{
+    max-width:none
+  }
+
+  .hero{
+    margin:15px 12px;
+    padding:35px 22px
+  }
+
+  .hero h1{
+    font-size:31px
+  }
+
+  .cats,
+  .products{
+    grid-template-columns:repeat(2,1fr)
+  }
+}
+
+@media(max-width:480px){
+
+  .top{
+    gap:8px
+  }
+
+  .logo{
+    font-size:21px
+  }
+
+  .search{
+    width:100%
+  }
+
+  .hero{
+    display:block
+  }
+
+  .cats,
+  .products{
+    grid-template-columns:1fr 1fr
+  }
+
+  .pic{
+    height:145px
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
+
 <div class="top">
-<div class="logo">SLS Store</div>
-<nav><a href="#home">Home</a><a href="#shop">Shop</a><a href="#categories">Categories</a></nav>
-<input id="search" class="search" placeholder="Search products / পণ্য খুঁজুন..." oninput="renderProducts()">
-<button class="cart" onclick="openCart()">🛒 <span id="count">0</span></button>
+
+<div class="logo">
+SLS Store
 </div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#shop">Shop</a>
+<a href="#categories">Categories</a>
+</nav>
+
+<input
+id="search"
+class="search"
+placeholder="Search products / পণ্য খুঁজুন..."
+oninput="renderProducts()"
+>
+
+<button class="cart" onclick="openCart()">
+🛒 <span id="count">0</span>
+</button>
+
+</div>
+
 </header>
 
+
 <main id="home">
+
 <section class="hero">
+
 <div>
-<h1>Beauty that feels like you ✨</h1>
-<p>Premium cosmetics for your everyday beauty.<br>আপনার সৌন্দর্যের যত্নে SLS Store.</p>
-<a class="btn" href="#shop">Shop Now / কিনুন</a>
+
+<h1>
+Beauty that feels like you ✨
+</h1>
+
+<p>
+Premium cosmetics for your everyday beauty.
+<br>
+আপনার সৌন্দর্যের যত্নে SLS Store.
+</p>
+
+<a class="btn" href="#shop">
+Shop Now / কিনুন
+</a>
+
 </div>
-<div style="font-size:110px">💄</div>
+
+<div style="font-size:110px">
+💄
+</div>
+
 </section>
+
 
 <section class="section" id="categories">
-<h2>Categories / ক্যাটাগরি</h2>
+
+<h2>
+Categories / ক্যাটাগরি
+</h2>
+
 <div class="cats">
-<div class="cat">💋<br><b>Lipstick</b><br>লিপস্টিক</div>
-<div class="cat">🧴<br><b>Skincare</b><br>স্কিন কেয়ার</div>
-<div class="cat">👁️<br><b>Eye Makeup</b><br>আই মেকআপ</div>
-<div class="cat">✨<br><b>Beauty Tools</b><br>বিউটি টুলস</div>
+
+<div class="cat">
+💋<br>
+<b>Lipstick</b><br>
+লিপস্টিক
 </div>
+
+<div class="cat">
+🧴<br>
+<b>Skincare</b><br>
+স্কিন কেয়ার
+</div>
+
+<div class="cat">
+👁️<br>
+<b>Eye Makeup</b><br>
+আই মেকআপ
+</div>
+
+<div class="cat">
+✨<br>
+<b>Beauty Tools</b><br>
+বিউটি টুলস
+</div>
+
+</div>
+
 </section>
+
 
 <section class="section" id="shop">
-<h2>Featured Products / জনপ্রিয় পণ্য</h2>
-<div id="products" class="products"></div>
+
+<h2>
+Featured Products / জনপ্রিয় পণ্য
+</h2>
+
+<div id="products" class="products">
+</div>
+
 </section>
+
 </main>
 
+
 <footer>
-<b>SLS Store</b><br>
-Cosmetics • Bangla + English<br><br>
+
+<b>SLS Store</b>
+<br>
+
+Cosmetics • Bangla + English
+
+<br><br>
+
 © 2026 SLS Store. All rights reserved.
+
 </footer>
 
+
 <div id="overlay" class="overlay">
+
 <div class="drawer">
-<button class="close" onclick="closeCart()">✕</button>
-<h2>Shopping Cart / কার্ট</h2>
-<div id="cartItems"></div>
-<div class="total">Total: ৳<span id="total">0</span></div>
+
+<button class="close" onclick="closeCart()">
+✕
+</button>
+
+<h2>
+Shopping Cart / কার্ট
+</h2>
+
+<div id="cartItems">
+</div>
+
+<div class="total">
+Total: ৳<span id="total">0</span>
+</div>
+
+
 <div class="form">
-<h3>Checkout / অর্ডার করুন</h3>
-<input id="name" placeholder="Name / নাম">
-<input id="phone" placeholder="Phone / মোবাইল নম্বর">
-<textarea id="address" placeholder="Full Address / সম্পূর্ণ ঠিকানা"></textarea>
-<button class="btn" style="width:100%" onclick="placeOrder()">Place Order / অর্ডার করুন</button>
+
+<h3>
+Checkout / অর্ডার করুন
+</h3>
+
+<input
+id="name"
+placeholder="Name / নাম"
+>
+
+<input
+id="phone"
+placeholder="Phone / মোবাইল নম্বর"
+>
+
+<textarea
+id="address"
+placeholder="Full Address / সম্পূর্ণ ঠিকানা"
+></textarea>
+
+<button
+class="btn"
+style="width:100%"
+onclick="placeOrder()"
+>
+Place Order / অর্ডার করুন
+</button>
+
 </div>
+
 </div>
+
 </div>
+
 
 <script>
-const APPS_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+/* =========================================
+   GOOGLE APPS SCRIPT CONNECTION
+   ========================================= */
+
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwPlw1hx1i8aBFiEv6NGUeOlCcw6cqZVAKTa0l9MrMpdH6S7vilBJCLlimreduBNw/exec";
+
+
+/* =========================================
+   PRODUCTS
+   ========================================= */
+
 const products=[
-{id:1,name:"Velvet Matte Lipstick",bn:"ভেলভেট ম্যাট লিপস্টিক",price:450,icon:"💄"},
-{id:2,name:"Hydrating Face Serum",bn:"হাইড্রেটিং ফেস সিরাম",price:650,icon:"🧴"},
-{id:3,name:"Glow Foundation",bn:"গ্লো ফাউন্ডেশন",price:750,icon:"✨"},
-{id:4,name:"Waterproof Mascara",bn:"ওয়াটারপ্রুফ মাসকারা",price:520,icon:"👁️"},
-{id:5,name:"Vitamin C Cream",bn:"ভিটামিন C ক্রিম",price:590,icon:"🍊"},
-{id:6,name:"Beauty Blender",bn:"বিউটি ব্লেন্ডার",price:280,icon:"🩷"},
-{id:7,name:"Compact Powder",bn:"কমপ্যাক্ট পাউডার",price:480,icon:"🌸"},
-{id:8,name:"Lip Gloss",bn:"লিপ গ্লস",price:390,icon:"💋"}
+
+{
+id:1,
+name:"Velvet Matte Lipstick",
+bn:"ভেলভেট ম্যাট লিপস্টিক",
+price:450,
+icon:"💄"
+},
+
+{
+id:2,
+name:"Hydrating Face Serum",
+bn:"হাইড্রেটিং ফেস সিরাম",
+price:650,
+icon:"🧴"
+},
+
+{
+id:3,
+name:"Glow Foundation",
+bn:"গ্লো ফাউন্ডেশন",
+price:750,
+icon:"✨"
+},
+
+{
+id:4,
+name:"Waterproof Mascara",
+bn:"ওয়াটারপ্রুফ মাসকারা",
+price:520,
+icon:"👁️"
+},
+
+{
+id:5,
+name:"Vitamin C Cream",
+bn:"ভিটামিন C ক্রিম",
+price:590,
+icon:"🍊"
+},
+
+{
+id:6,
+name:"Beauty Blender",
+bn:"বিউটি ব্লেন্ডার",
+price:280,
+icon:"🩷"
+},
+
+{
+id:7,
+name:"Compact Powder",
+bn:"কমপ্যাক্ট পাউডার",
+price:480,
+icon:"🌸"
+},
+
+{
+id:8,
+name:"Lip Gloss",
+bn:"লিপ গ্লস",
+price:390,
+icon:"💋"
+}
+
 ];
+
+
 let cart=[];
 
+
+/* =========================================
+   SHOW PRODUCTS
+   ========================================= */
+
 function renderProducts(){
- const q=document.getElementById('search').value.toLowerCase();
- const list=products.filter(p=>(p.name+" "+p.bn).toLowerCase().includes(q));
- document.getElementById('products').innerHTML=list.map(p=>`
- <div class="card"><div class="pic">${p.icon}</div><div class="card-body">
- <h3>${p.name}</h3><small>${p.bn}</small><div class="price">৳${p.price}</div>
- <button onclick="add(${p.id})">Add to Cart / কার্টে যোগ করুন</button></div></div>`).join('');
+
+const q =
+document
+.getElementById('search')
+.value
+.toLowerCase();
+
+const list =
+products.filter(p =>
+(p.name+" "+p.bn)
+.toLowerCase()
+.includes(q)
+);
+
+document.getElementById('products').innerHTML =
+list.map(p=>`
+
+<div class="card">
+
+<div class="pic">
+${p.icon}
+</div>
+
+<div class="card-body">
+
+<h3>
+${p.name}
+</h3>
+
+<small>
+${p.bn}
+</small>
+
+<div class="price">
+৳${p.price}
+</div>
+
+<button onclick="add(${p.id})">
+Add to Cart / কার্টে যোগ করুন
+</button>
+
+</div>
+
+</div>
+
+`).join('');
+
 }
-function add(id){const p=products.find(x=>x.id===id);const x=cart.find(x=>x.id===id);x?x.qty++:cart.push({...p,qty:1});updateCart();openCart()}
+
+
+/* =========================================
+   ADD TO CART
+   ========================================= */
+
+function add(id){
+
+const p =
+products.find(x=>x.id===id);
+
+const x =
+cart.find(x=>x.id===id);
+
+x
+?
+x.qty++
+:
+cart.push({...p,qty:1});
+
+updateCart();
+
+openCart();
+
+}
+
+
+/* =========================================
+   UPDATE CART
+   ========================================= */
+
 function updateCart(){
- document.getElementById('count').textContent=cart.reduce((a,b)=>a+b.qty,0);
- document.getElementById('cartItems').innerHTML=cart.length?cart.map(p=>`
- <div class="cart-item"><div><b>${p.name}</b><br>৳${p.price} × ${p.qty}</div>
- <button onclick="removeItem(${p.id})">Remove</button></div>`).join(''):'<p style="padding:20px 0">Your cart is empty / কার্ট খালি</p>';
- document.getElementById('total').textContent=cart.reduce((a,b)=>a+b.price*b.qty,0);
+
+document.getElementById('count').textContent =
+cart.reduce(
+(a,b)=>a+b.qty,
+0
+);
+
+
+document.getElementById('cartItems').innerHTML =
+
+cart.length
+
+?
+
+cart.map(p=>`
+
+<div class="cart-item">
+
+<div>
+
+<b>
+${p.name}
+</b>
+
+<br>
+
+৳${p.price} × ${p.qty}
+
+</div>
+
+<button onclick="removeItem(${p.id})">
+Remove
+</button>
+
+</div>
+
+`).join('')
+
+:
+
+'<p style="padding:20px 0">Your cart is empty / কার্ট খালি</p>';
+
+
+document.getElementById('total').textContent =
+
+cart.reduce(
+(a,b)=>a+b.price*b.qty,
+0
+);
+
 }
-function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCart()}
-function openCart(){document.getElementById('overlay').style.display='block';updateCart()}
-function closeCart(){document.getElementById('overlay').style.display='none'}
+
+
+/* =========================================
+   REMOVE ITEM
+   ========================================= */
+
+function removeItem(id){
+
+cart =
+cart.filter(x=>x.id!==id);
+
+updateCart();
+
+}
+
+
+/* =========================================
+   OPEN CART
+   ========================================= */
+
+function openCart(){
+
+document.getElementById('overlay')
+.style.display='block';
+
+updateCart();
+
+}
+
+
+/* =========================================
+   CLOSE CART
+   ========================================= */
+
+function closeCart(){
+
+document.getElementById('overlay')
+.style.display='none';
+
+}
+
+
+/* =========================================
+   PLACE ORDER
+   ========================================= */
+
 async function placeOrder(){
- if(!cart.length)return alert('Please add products first / আগে পণ্য যোগ করুন');
 
- const name=document.getElementById('name').value.trim();
- const phone=document.getElementById('phone').value.trim();
- const address=document.getElementById('address').value.trim();
+if(!cart.length)
 
- if(!name||!phone||!address)
-   return alert('Please fill all information / সব তথ্য পূরণ করুন');
+return alert(
+'Please add products first / আগে পণ্য যোগ করুন'
+);
 
- if(APPS_SCRIPT_URL.includes('PASTE_YOUR_'))
-   return alert('Google Sheets connection is not configured yet. / Google Sheets সংযোগ এখনো সেট করা হয়নি।');
 
- const total=cart.reduce((a,b)=>a+b.price*b.qty,0);
- const payload={
-   name:name, phone:phone, address:address,
-   paymentMethod:'Cash on Delivery', total:total,
-   items:cart.map(p=>({id:p.id,name:p.name,price:p.price,qty:p.qty}))
- };
+const name =
+document
+.getElementById('name')
+.value
+.trim();
 
- try{
-   await fetch(APPS_SCRIPT_URL,{
-     method:'POST', mode:'no-cors',
-     headers:{'Content-Type':'text/plain;charset=utf-8'},
-     body:JSON.stringify(payload)
-   });
 
-   alert(`ধন্যবাদ ${name}!\nআপনার অর্ডার গ্রহণ করা হয়েছে।\nমোট: ৳${total}\n\nঅর্ডারটি Google Sheets-এ পাঠানো হয়েছে।`);
-   cart=[];
-   document.getElementById('name').value='';
-   document.getElementById('phone').value='';
-   document.getElementById('address').value='';
-   updateCart();closeCart();
- }catch(error){
-   alert('Order could not be submitted. Please try again. / অর্ডার পাঠানো যায়নি, আবার চেষ্টা করুন।');
- }
+const phone =
+document
+.getElementById('phone')
+.value
+.trim();
+
+
+const address =
+document
+.getElementById('address')
+.value
+.trim();
+
+
+if(!name || !phone || !address)
+
+return alert(
+'Please fill all information / সব তথ্য পূরণ করুন'
+);
+
+
+if(
+APPS_SCRIPT_URL.includes(
+'PASTE_YOUR_'
+)
+)
+
+return alert(
+'Google Sheets connection is not configured yet. / Google Sheets সংযোগ এখনো সেট করা হয়নি।'
+);
+
+
+const total =
+cart.reduce(
+(a,b)=>a+b.price*b.qty,
+0
+);
+
+
+const payload={
+
+name:name,
+
+phone:phone,
+
+address:address,
+
+paymentMethod:'Cash on Delivery',
+
+total:total,
+
+items:
+
+cart.map(p=>({
+
+id:p.id,
+
+name:p.name,
+
+price:p.price,
+
+qty:p.qty
+
+}))
+
+};
+
+
+try{
+
+await fetch(
+
+APPS_SCRIPT_URL,
+
+{
+
+method:'POST',
+
+mode:'no-cors',
+
+headers:{
+'Content-Type':
+'text/plain;charset=utf-8'
+},
+
+body:
+JSON.stringify(payload)
+
 }
-renderProducts();updateCart();
+
+);
+
+
+alert(
+
+`ধন্যবাদ ${name}!
+আপনার অর্ডার গ্রহণ করা হয়েছে।
+মোট: ৳${total}
+
+অর্ডারটি Google Sheets-এ পাঠানো হয়েছে।`
+
+);
+
+
+cart=[];
+
+
+document.getElementById('name').value='';
+
+document.getElementById('phone').value='';
+
+document.getElementById('address').value='';
+
+
+updateCart();
+
+closeCart();
+
+
+}
+
+catch(error){
+
+alert(
+
+'Order could not be submitted. Please try again. / অর্ডার পাঠানো যায়নি, আবার চেষ্টা করুন।'
+
+);
+
+}
+
+}
+
+
+/* =========================================
+   START
+   ========================================= */
+
+renderProducts();
+
+updateCart();
+
 </script>
+
 </body>
 </html>
