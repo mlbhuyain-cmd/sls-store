@@ -807,10 +807,16 @@ Address / ঠিকানা
 
 <textarea
 id="orderAddress"
-oninput="updateDelivery()"
 placeholder="House, Road, Area, City"></textarea>
 
 </div>
+
+
+<!-- =====================================================
+     NEW FIXED DELIVERY AREA
+     CUSTOMER CAN ONLY SELECT AREA
+     DELIVERY CHARGE CANNOT BE EDITED
+     ===================================================== -->
 
 <div class="field">
 
@@ -834,17 +840,25 @@ Outside Dhaka — ৳150
 
 <div
 class="muted"
-id="deliveryHint">
-Delivery area নির্বাচন করুন।
+id="deliveryHint"
+style="margin-top:6px">
+
+Inside Dhaka — Delivery ৳80
+
 </div>
 
 </div>
+
 
 <div class="notice">
+
 Payment:
 <b>Cash on Delivery</b>
+
 <br>
+
 পণ্য হাতে পেয়ে টাকা পরিশোধ করবেন।
+
 </div>
 
 <div id="checkoutSummary"></div>
@@ -904,6 +918,7 @@ Loading...
 
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbzfobB1ZAeWKhq_gZ7NBH0LZ4XaF_C-4tUVviVecdQjPTTlrZ4rwl9lPvqoWuz4aK0/exec";
+
 
 /* =====================================================
    FIREBASE CONFIG
@@ -1317,12 +1332,21 @@ total +
 }
 
 
+/* =====================================================
+   FIXED DELIVERY CHARGE
+   INSIDE DHAKA = 80
+   OUTSIDE DHAKA = 150
+   ===================================================== */
+
 function getDeliveryCharge(){
 
+const deliveryElement =
+document.getElementById("deliveryArea");
+
 const area =
-document
-.getElementById("deliveryArea")
-.value;
+deliveryElement
+? deliveryElement.value
+: "Inside Dhaka";
 
 return area==="Inside Dhaka"
 ?80
@@ -1737,6 +1761,11 @@ document
 .value="";
 
 
+/*
+   ALWAYS START WITH INSIDE DHAKA
+   ৳80
+*/
+
 document
 .getElementById("deliveryArea")
 .value="Inside Dhaka";
@@ -1787,6 +1816,10 @@ openModal("checkoutModal");
 }
 
 
+/* =====================================================
+   DELIVERY DISPLAY + AUTOMATIC GRAND TOTAL
+   ===================================================== */
+
 function updateDelivery(){
 
 const area =
@@ -1794,13 +1827,25 @@ document
 .getElementById("deliveryArea")
 .value;
 
+
+/*
+   FIXED CHARGES:
+   Inside Dhaka = ৳80
+   Outside Dhaka = ৳150
+*/
+
 const charge =
 area==="Inside Dhaka"
 ?80
 :150;
 
+
+const productTotal =
+getProductTotal();
+
+
 const total =
-getProductTotal() +
+productTotal +
 charge;
 
 
@@ -1825,7 +1870,7 @@ Product Total
 </span>
 
 <b>
-${money(getProductTotal())}
+${money(productTotal)}
 </b>
 
 </div>
@@ -1909,17 +1954,20 @@ document
 .value
 .trim();
 
+
 const phone =
 document
 .getElementById("orderPhone")
 .value
 .trim();
 
+
 const address =
 document
 .getElementById("orderAddress")
 .value
 .trim();
+
 
 const deliveryArea =
 document
@@ -1949,6 +1997,10 @@ createClientOrderId();
 const productTotal =
 getProductTotal();
 
+
+/*
+   FIXED DELIVERY CHARGE
+*/
 
 const deliveryCharge =
 deliveryArea==="Inside Dhaka"
@@ -1984,10 +2036,11 @@ email:
 currentUser.email || "",
 
 clientOrderId:
-
 clientOrderId,
 
 name:name,
+
+customerName:name,
 
 phone:phone,
 
@@ -2005,6 +2058,9 @@ deliveryCharge:
 deliveryCharge,
 
 grandTotal:
+grandTotal,
+
+total:
 grandTotal,
 
 paymentMethod:
@@ -2028,7 +2084,9 @@ message.innerHTML =
 try{
 
 
-/* SAVE TO FIRESTORE */
+/* =====================================================
+   SAVE TO FIRESTORE
+   ===================================================== */
 
 await db
 .collection("orders")
@@ -2036,7 +2094,9 @@ await db
 .set(orderData);
 
 
-/* SEND TO GOOGLE SHEET */
+/* =====================================================
+   SEND TO GOOGLE SHEET
+   ===================================================== */
 
 await fetch(
 APPS_SCRIPT_URL,
@@ -2054,19 +2114,32 @@ headers:{
 body:
 JSON.stringify({
 
+uid:
+currentUser.uid,
+
+email:
+currentUser.email || "",
+
 clientOrderId:
 clientOrderId,
 
-name:name,
+name:
+name,
 
-phone:phone,
+customerName:
+name,
 
-address:address,
+phone:
+phone,
+
+address:
+address,
 
 deliveryArea:
 deliveryArea,
 
-items:items,
+items:
+items,
 
 productTotal:
 productTotal,
@@ -2075,7 +2148,16 @@ deliveryCharge:
 deliveryCharge,
 
 grandTotal:
-grandTotal
+grandTotal,
+
+total:
+grandTotal,
+
+paymentMethod:
+"Cash on Delivery",
+
+status:
+"Pending"
 
 })
 
@@ -2083,7 +2165,9 @@ grandTotal
 );
 
 
-/* CLEAR CART */
+/* =====================================================
+   CLEAR CART
+   ===================================================== */
 
 cart=[];
 
@@ -2104,6 +2188,12 @@ clientOrderId+
 
 "\nGrand Total: "+
 money(grandTotal)+
+
+"\nDelivery: "+
+deliveryArea+
+
+"\nDelivery Charge: "+
+money(deliveryCharge)+
 
 "\nPayment: Cash on Delivery"
 
@@ -2750,7 +2840,6 @@ card
 );
 
 });
-
 
 
 }catch(error){
