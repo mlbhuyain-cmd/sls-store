@@ -36,10 +36,15 @@ header{
 }
 
 .logo{
-  color:#e91e63;
-  font-size:25px;
-  font-weight:bold;
   margin-right:auto;
+  display:flex;
+  align-items:center;
+}
+.logo img{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
 }
 
 .nav button{
@@ -481,7 +486,7 @@ footer{
 <div class="nav">
 
 <div class="logo">
-SLS Store 💄
+<img src="assets/sls-logo.png" alt="SLS Store">
 </div>
 
 <button onclick="goHome()">
