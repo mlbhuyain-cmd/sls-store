@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SLS STORE - Cosmetics & Beauty Store</title>
+<title>SLS Store - Cosmetics</title>
 
 <style>
 *{
@@ -15,75 +15,41 @@
 
 body{
     font-family:Arial, Helvetica, sans-serif;
-    background:#fff7fa;
-    color:#171717;
+    background:#f7f7f7;
+    color:#222;
 }
-
-/* =========================
-   HEADER / BRANDING
-========================= */
 
 header{
-    background:linear-gradient(135deg,#fff,#fff0f6);
-    padding:25px 15px 30px;
+    background:linear-gradient(135deg,#111,#333);
+    color:white;
+    padding:25px 15px;
     text-align:center;
-    border-bottom:1px solid #f4c5d8;
 }
 
-.logo-wrapper{
-    max-width:700px;
-    margin:auto;
+header h1{
+    font-size:32px;
+    margin-bottom:8px;
 }
 
-.logo{
-    width:100%;
-    max-width:600px;
-    height:auto;
-    display:block;
-    margin:auto;
+header p{
+    font-size:15px;
+    opacity:.9;
 }
-
-.tagline{
-    margin-top:3px;
-    color:#df2469;
-    font-family:cursive;
-    font-size:19px;
-    font-style:italic;
-}
-
-.header-text{
-    margin-top:8px;
-    color:#555;
-    font-size:14px;
-}
-
-/* =========================
-   MAIN CONTAINER
-========================= */
 
 .container{
     max-width:1200px;
     margin:auto;
-    padding:25px 15px;
+    padding:20px 15px;
 }
 
 .section-title{
     text-align:center;
-    margin:10px 0 25px;
+    margin:15px 0 25px;
 }
 
 .section-title h2{
-    font-size:27px;
-    margin-bottom:7px;
+    font-size:26px;
 }
-
-.section-title p{
-    color:#777;
-}
-
-/* =========================
-   PRODUCTS
-========================= */
 
 .products{
     display:grid;
@@ -93,16 +59,14 @@ header{
 
 .product{
     background:white;
-    border-radius:16px;
+    border-radius:14px;
     overflow:hidden;
-    box-shadow:0 5px 18px rgba(220,30,100,.10);
-    border:1px solid #f4d8e4;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
     transition:.2s;
 }
 
 .product:hover{
-    transform:translateY(-4px);
-    box-shadow:0 8px 25px rgba(220,30,100,.16);
+    transform:translateY(-3px);
 }
 
 .product img{
@@ -113,7 +77,7 @@ header{
 }
 
 .product-info{
-    padding:16px;
+    padding:15px;
 }
 
 .product-info h3{
@@ -128,8 +92,7 @@ header{
 }
 
 .price{
-    color:#df2469;
-    font-size:21px;
+    font-size:20px;
     font-weight:bold;
     margin-bottom:12px;
 }
@@ -137,30 +100,26 @@ header{
 .add-btn{
     width:100%;
     border:none;
-    background:#df2469;
+    background:#111;
     color:white;
     padding:12px;
-    border-radius:9px;
+    border-radius:8px;
     cursor:pointer;
     font-size:15px;
-    font-weight:bold;
 }
 
 .add-btn:hover{
-    background:#c91d5d;
+    background:#333;
 }
 
-/* =========================
-   CART
-========================= */
+/* CART */
 
 .cart-box{
     background:white;
     margin-top:30px;
     padding:20px;
-    border-radius:16px;
-    box-shadow:0 5px 18px rgba(0,0,0,.06);
-    border:1px solid #f2dce5;
+    border-radius:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
 .cart-box h2{
@@ -173,7 +132,7 @@ header{
     align-items:center;
     gap:10px;
     border-bottom:1px solid #eee;
-    padding:13px 0;
+    padding:12px 0;
 }
 
 .cart-item-info{
@@ -197,60 +156,46 @@ header{
 }
 
 .qty-btn{
-    width:31px;
-    height:31px;
+    width:30px;
+    height:30px;
     border:none;
-    border-radius:7px;
-    background:#df2469;
+    border-radius:6px;
+    background:#111;
     color:white;
     cursor:pointer;
-    font-size:18px;
 }
 
 .remove-btn{
     border:none;
     background:#e53935;
     color:white;
-    padding:7px 10px;
-    border-radius:7px;
+    padding:7px 9px;
+    border-radius:6px;
     cursor:pointer;
 }
 
 .empty{
     color:#777;
     text-align:center;
-    padding:18px;
+    padding:15px;
 }
 
-/* =========================
-   ORDER FORM
-========================= */
+/* ORDER FORM */
 
 .order-box{
     background:white;
     margin-top:25px;
-    padding:22px;
-    border-radius:16px;
-    box-shadow:0 5px 18px rgba(0,0,0,.06);
-    border:1px solid #f2dce5;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
 .order-box h2{
     margin-bottom:18px;
-    color:#171717;
-}
-
-.notice{
-    background:#fff1f6;
-    border-left:4px solid #df2469;
-    padding:13px;
-    margin-bottom:18px;
-    border-radius:7px;
-    font-size:14px;
 }
 
 .form-group{
-    margin-bottom:16px;
+    margin-bottom:15px;
 }
 
 .form-group label{
@@ -265,27 +210,15 @@ header{
     width:100%;
     padding:12px;
     border:1px solid #ddd;
-    border-radius:9px;
+    border-radius:8px;
     font-size:15px;
     outline:none;
-    background:white;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus{
-    border-color:#df2469;
-    box-shadow:0 0 0 2px rgba(223,36,105,.08);
 }
 
 .form-group textarea{
     min-height:90px;
     resize:vertical;
 }
-
-/* =========================
-   SUMMARY
-========================= */
 
 .summary{
     margin-top:20px;
@@ -302,9 +235,8 @@ header{
 .total{
     font-size:22px;
     font-weight:bold;
-    border-top:2px solid #df2469;
-    padding-top:13px;
-    color:#df2469;
+    border-top:2px solid #111;
+    padding-top:12px;
 }
 
 .order-btn{
@@ -312,7 +244,7 @@ header{
     margin-top:18px;
     padding:15px;
     border:none;
-    border-radius:10px;
+    border-radius:9px;
     background:#25D366;
     color:white;
     font-size:17px;
@@ -323,6 +255,29 @@ header{
 .order-btn:hover{
     background:#1ebe5d;
 }
+
+.notice{
+    background:#fff8e1;
+    border-left:4px solid #ffb300;
+    padding:12px;
+    margin-bottom:18px;
+    border-radius:6px;
+    font-size:14px;
+}
+
+footer{
+    margin-top:40px;
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+}
+
+footer p{
+    margin:5px 0;
+}
+
+/* SUCCESS */
 
 .success{
     display:none;
@@ -335,51 +290,12 @@ header{
     text-align:center;
 }
 
-/* =========================
-   FOOTER
-========================= */
-
-footer{
-    margin-top:40px;
-    background:#171717;
-    color:white;
-    text-align:center;
-    padding:30px 15px;
-}
-
-.footer-logo{
-    width:170px;
-    margin:0 auto 12px;
-    background:white;
-    border-radius:12px;
-    padding:5px;
-}
-
-footer p{
-    margin:6px 0;
-}
-
-.footer-heart{
-    color:#df2469;
-    font-size:22px;
-}
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:600px){
 
-    header{
-        padding:18px 10px 25px;
-    }
-
-    .logo{
-        max-width:360px;
-    }
-
-    .tagline{
-        font-size:16px;
+    header h1{
+        font-size:27px;
     }
 
     .products{
@@ -388,11 +304,11 @@ footer p{
     }
 
     .product img{
-        height:165px;
+        height:160px;
     }
 
     .product-info{
-        padding:11px;
+        padding:10px;
     }
 
     .product-info h3{
@@ -428,517 +344,151 @@ footer p{
 
 <body>
 
-<!-- =====================================================
-     SLS STORE BRANDING
-     LOGO IS EMBEDDED DIRECTLY IN THIS HTML
-===================================================== -->
-
 <header>
-
-<div class="logo-wrapper">
-
-<svg class="logo"
-     viewBox="0 0 900 360"
-     xmlns="http://www.w3.org/2000/svg">
-
-    <!-- Background -->
-    <rect x="0" y="0" width="900" height="360"
-          rx="25" fill="#fff"/>
-
-    <!-- Decorative leaves -->
-    <g opacity=".8">
-
-        <path d="M810 30
-                 C850 75 850 125 810 155
-                 C795 105 795 70 810 30Z"
-              fill="#f4a5c5"/>
-
-        <path d="M845 90
-                 C875 120 875 160 840 180
-                 C832 145 834 115 845 90Z"
-              fill="#ed76aa"/>
-
-        <path d="M790 105
-                 C760 135 760 170 790 185
-                 C802 155 801 130 790 105Z"
-              fill="#f7bfd6"/>
-
-    </g>
-
-    <!-- Circular Logo -->
-    <circle cx="160" cy="175" r="130"
-            fill="#fff"
-            stroke="#df2469"
-            stroke-width="7"/>
-
-    <circle cx="160" cy="175" r="113"
-            fill="#fff7fa"
-            stroke="#f2a2c2"
-            stroke-width="3"/>
-
-    <!-- Woman silhouette -->
-    <path d="
-        M145 65
-        C170 80 182 105 176 130
-        C172 146 158 155 145 160
-        C160 163 173 171 177 185
-        C180 198 174 210 164 218
-        C145 231 119 224 106 207
-        C97 195 96 179 103 166
-        C109 154 119 148 130 143
-        C112 135 102 119 105 104
-        C110 83 126 70 145 65Z"
-        fill="#df2469"/>
-
-    <!-- Hair -->
-    <path d="
-        M144 66
-        C112 72 85 99 84 132
-        C83 163 98 188 118 204
-        C102 179 100 151 108 128
-        C116 105 131 85 151 73Z"
-        fill="#171717"/>
-
-    <!-- Hair highlight -->
-    <path d="
-        M137 82
-        C115 101 105 124 105 149
-        C105 165 110 181 119 194
-        C108 168 110 140 121 117
-        C130 99 141 88 151 80Z"
-        fill="#fff"/>
-
-    <!-- Small flower -->
-    <g fill="#df2469">
-        <ellipse cx="195" cy="96" rx="9" ry="22"
-                 transform="rotate(35 195 96)"/>
-        <ellipse cx="210" cy="112" rx="9" ry="22"
-                 transform="rotate(75 210 112)"/>
-        <ellipse cx="190" cy="119" rx="9" ry="22"
-                 transform="rotate(-25 190 119)"/>
-        <circle cx="198" cy="108" r="7"/>
-    </g>
-
-    <!-- SLS text inside logo -->
-    <text x="160"
-          y="205"
-          text-anchor="middle"
-          font-family="Georgia, serif"
-          font-size="52"
-          font-weight="bold"
-          fill="#171717">
-        SLS
-    </text>
-
-    <text x="160"
-          y="234"
-          text-anchor="middle"
-          font-family="Arial, sans-serif"
-          font-size="20"
-          font-weight="bold"
-          letter-spacing="5"
-          fill="#171717">
-        STORE
-    </text>
-
-    <!-- Main brand -->
-    <text x="330"
-          y="145"
-          font-family="Georgia, serif"
-          font-size="78"
-          font-weight="bold"
-          fill="#df2469">
-        SLS
-    </text>
-
-    <text x="525"
-          y="145"
-          font-family="Georgia, serif"
-          font-size="78"
-          font-weight="bold"
-          fill="#171717">
-        STORE
-    </text>
-
-    <!-- Subtitle -->
-    <text x="332"
-          y="188"
-          font-family="Arial, sans-serif"
-          font-size="27"
-          font-weight="bold"
-          fill="#171717">
-        Cosmetics &amp; Beauty Store
-    </text>
-
-    <!-- Tagline -->
-    <line x1="330" y1="225"
-          x2="375" y2="225"
-          stroke="#df2469"
-          stroke-width="3"/>
-
-    <text x="390"
-          y="234"
-          font-family="cursive"
-          font-size="29"
-          font-style="italic"
-          fill="#df2469">
-        Beauty Brings Confidence
-    </text>
-
-    <line x1="725" y1="225"
-          x2="770" y2="225"
-          stroke="#df2469"
-          stroke-width="3"/>
-
-    <!-- Heart -->
-    <path d="
-        M805 205
-        C785 185 755 215 805 250
-        C855 215 825 185 805 205Z"
-        fill="none"
-        stroke="#df2469"
-        stroke-width="5"/>
-
-</svg>
-
-<div class="tagline">
-    — Beauty Brings Confidence —
-</div>
-
-<div class="header-text">
-    Premium Cosmetics • Beauty • Care
-</div>
-
-</div>
-
+    <h1>✨ SLS Store</h1>
+    <p>Cosmetics • Beauty • Care</p>
+    <p>আপনার পছন্দের পণ্য, আপনার দোরগোড়ায়</p>
 </header>
-
-
-<!-- =====================================================
-     MAIN WEBSITE
-===================================================== -->
 
 <div class="container">
 
     <div class="section-title">
-
         <h2>🛍️ Our Products</h2>
-
-        <p>
-            আপনার পছন্দের Cosmetics বেছে নিন
-        </p>
-
+        <p>আপনার পছন্দের Cosmetics বেছে নিন</p>
     </div>
 
-
-    <!-- =========================
-         PRODUCTS
-    ========================== -->
+    <!-- PRODUCTS -->
 
     <div class="products">
 
-
-        <!-- PRODUCT 1 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Glow Foundation
-                </h3>
-
-                <p>
-                    Beauty & Care
-                </p>
-
-                <div class="price">
-                    ৳ 750
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Glow Foundation',750)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 1</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 500</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 1',500)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
-
-        <!-- PRODUCT 2 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Beauty Cream
-                </h3>
-
-                <p>
-                    Skin Care
-                </p>
-
-                <div class="price">
-                    ৳ 650
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Beauty Cream',650)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 2</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 650</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 2',650)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
-
-        <!-- PRODUCT 3 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Face Serum
-                </h3>
-
-                <p>
-                    Skin Care
-                </p>
-
-                <div class="price">
-                    ৳ 850
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Face Serum',850)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 3</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 750</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 3',750)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
-
-        <!-- PRODUCT 4 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Lipstick
-                </h3>
-
-                <p>
-                    Makeup
-                </p>
-
-                <div class="price">
-                    ৳ 550
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Lipstick',550)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 4</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 850</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 4',850)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
-
-        <!-- PRODUCT 5 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Skin Care Set
-                </h3>
-
-                <p>
-                    Complete Care
-                </p>
-
-                <div class="price">
-                    ৳ 900
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Skin Care Set',900)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 5</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 900</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 5',900)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
-
-        <!-- PRODUCT 6 -->
-
         <div class="product">
-
-            <img
-            src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=700&q=80"
-            alt="Cosmetics Product">
-
+            <img src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=700&q=80">
             <div class="product-info">
-
-                <h3>
-                    Body Care
-                </h3>
-
-                <p>
-                    Beauty & Care
-                </p>
-
-                <div class="price">
-                    ৳ 1000
-                </div>
-
-                <button
-                class="add-btn"
-                onclick="addToCart('Body Care',1000)">
-
-                    🛒 Add to Cart
-
+                <h3>Cosmetics Product 6</h3>
+                <p>Beauty & Care</p>
+                <div class="price">৳ 1000</div>
+                <button class="add-btn"
+                onclick="addToCart('Cosmetics Product 6',1000)">
+                Add to Cart
                 </button>
-
             </div>
-
         </div>
 
     </div>
 
 
-    <!-- =================================================
-         SHOPPING CART
-    ================================================== -->
+    <!-- CART -->
 
     <div class="cart-box">
 
-        <h2>
-            🛒 Shopping Cart
-        </h2>
+        <h2>🛒 Shopping Cart</h2>
 
         <div id="cartItems">
-
             <div class="empty">
-
                 Your cart is empty.<br>
-
                 আপনার Cart খালি।
-
             </div>
-
         </div>
 
     </div>
 
 
-    <!-- =================================================
-         ORDER FORM
-    ================================================== -->
+    <!-- ORDER -->
 
     <div class="order-box">
 
-        <h2>
-            📦 Place Your Order
-        </h2>
-
+        <h2>📦 Place Your Order</h2>
 
         <div class="notice">
-
-            💗 আপনার তথ্য পূরণ করুন।
-            Delivery Area নির্বাচন করলে
-            Delivery Charge স্বয়ংক্রিয়ভাবে
-            Total-এর সাথে যোগ হবে।
-
+            💡 আপনার তথ্য পূরণ করুন। Delivery Area নির্বাচন করলে
+            Delivery Charge স্বয়ংক্রিয়ভাবে Total-এর সাথে যোগ হবে।
         </div>
 
-
-        <!-- NAME -->
-
         <div class="form-group">
-
-            <label>
-                Customer Name / নাম *
-            </label>
-
+            <label>Customer Name / নাম *</label>
             <input
                 type="text"
                 id="customerName"
                 placeholder="আপনার নাম লিখুন">
-
         </div>
 
-
-        <!-- PHONE -->
-
         <div class="form-group">
-
-            <label>
-                Phone Number / মোবাইল নম্বর *
-            </label>
-
+            <label>Phone Number / মোবাইল নম্বর *</label>
             <input
                 type="tel"
                 id="customerPhone"
                 placeholder="01XXXXXXXXX">
-
         </div>
 
-
-        <!-- DELIVERY -->
-
         <div class="form-group">
+            <label>Delivery Area / ডেলিভারি এলাকা *</label>
 
-            <label>
-                Delivery Area / ডেলিভারি এলাকা *
-            </label>
-
-            <select
-                id="deliveryArea"
-                onchange="updateTotal()">
+            <select id="deliveryArea" onchange="updateTotal()">
 
                 <option value="0">
                     -- Select Delivery Area --
@@ -948,27 +498,19 @@ footer p{
                     Inside Dhaka — ৳60
                 </option>
 
-                <option value="150">
-                    Outside Dhaka — ৳150
+                <option value="100">
+                    Outside Dhaka — ৳100
                 </option>
 
             </select>
-
         </div>
 
-
-        <!-- ADDRESS -->
-
         <div class="form-group">
-
-            <label>
-                Delivery Address / সম্পূর্ণ ঠিকানা *
-            </label>
+            <label>Delivery Address / সম্পূর্ণ ঠিকানা *</label>
 
             <textarea
                 id="customerAddress"
                 placeholder="বাসা, রোড, এলাকা লিখুন"></textarea>
-
         </div>
 
 
@@ -977,63 +519,37 @@ footer p{
         <div class="summary">
 
             <div class="summary-row">
-
-                <span>
-                    Subtotal / পণ্যের মূল্য
-                </span>
-
+                <span>Subtotal / পণ্যের মূল্য</span>
                 <strong>
                     ৳ <span id="subtotal">0</span>
                 </strong>
-
             </div>
 
-
             <div class="summary-row">
-
-                <span>
-                    Delivery Charge
-                </span>
-
+                <span>Delivery Charge</span>
                 <strong>
                     ৳ <span id="deliveryCharge">0</span>
                 </strong>
-
             </div>
 
-
             <div class="summary-row total">
-
-                <span>
-                    Grand Total
-                </span>
-
+                <span>Total</span>
                 <strong>
                     ৳ <span id="grandTotal">0</span>
                 </strong>
-
             </div>
 
         </div>
 
 
-        <!-- ORDER BUTTON -->
-
         <button
             class="order-btn"
             onclick="placeOrder()">
-
             📲 PLACE ORDER
-
         </button>
 
-
-        <div
-            id="successMessage"
-            class="success">
-
-            ❤️ আপনার Order সফলভাবে পাঠানো হয়েছে।
-
+        <div id="successMessage" class="success">
+            আপনার Order সফলভাবে পাঠানো হয়েছে।
         </div>
 
     </div>
@@ -1041,89 +557,23 @@ footer p{
 </div>
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
 <footer>
 
-    <div class="footer-logo">
+    <h3>SLS Store</h3>
 
-        <!-- Small embedded logo -->
+    <p>Cosmetics • Beauty • Care</p>
 
-        <svg
-        viewBox="0 0 500 120"
-        xmlns="http://www.w3.org/2000/svg">
+    <p>📱 WhatsApp: 01954272389</p>
 
-            <rect
-            width="500"
-            height="120"
-            rx="15"
-            fill="#fff"/>
-
-            <text
-            x="40"
-            y="78"
-            font-family="Georgia,serif"
-            font-size="55"
-            font-weight="bold"
-            fill="#df2469">
-
-                SLS
-
-            </text>
-
-            <text
-            x="170"
-            y="78"
-            font-family="Georgia,serif"
-            font-size="55"
-            font-weight="bold"
-            fill="#171717">
-
-                STORE
-
-            </text>
-
-        </svg>
-
-    </div>
-
-
-    <h3>
-        SLS STORE
-    </h3>
-
-    <p>
-        Cosmetics • Beauty • Care
-    </p>
-
-    <p>
-        📱 WhatsApp: 01954272389
-    </p>
-
-    <p class="footer-heart">
-        ♥
-    </p>
-
-    <p>
-        Thank you for shopping with SLS Store!
-    </p>
-
-    <p>
-        © 2026 SLS Store. All Rights Reserved.
-    </p>
+    <p>© 2026 SLS Store. All Rights Reserved.</p>
 
 </footer>
 
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script>
 
 /* =====================================================
+   SLS STORE
    SHOPPING CART
 ===================================================== */
 
@@ -1134,9 +584,7 @@ let cart = [];
 
 function addToCart(name, price){
 
-    let existing =
-        cart.find(item => item.name === name);
-
+    let existing = cart.find(item => item.name === name);
 
     if(existing){
 
@@ -1145,29 +593,24 @@ function addToCart(name, price){
     }else{
 
         cart.push({
-
             name:name,
             price:price,
             qty:1
-
         });
 
     }
 
-
     renderCart();
-
 }
 
 
-/* REMOVE */
+/* REMOVE PRODUCT */
 
 function removeFromCart(index){
 
     cart.splice(index,1);
 
     renderCart();
-
 }
 
 
@@ -1177,36 +620,29 @@ function changeQty(index,change){
 
     cart[index].qty += change;
 
-
     if(cart[index].qty <= 0){
 
         cart.splice(index,1);
 
     }
 
-
     renderCart();
-
 }
 
 
-/* SUBTOTAL */
+/* CALCULATE SUBTOTAL */
 
 function getSubtotal(){
 
     let subtotal = 0;
 
-
     cart.forEach(item => {
 
-        subtotal +=
-            item.price * item.qty;
+        subtotal += item.price * item.qty;
 
     });
 
-
     return subtotal;
-
 }
 
 
@@ -1214,28 +650,21 @@ function getSubtotal(){
 
 function renderCart(){
 
-    let container =
+    let cartContainer =
         document.getElementById("cartItems");
-
 
     if(cart.length === 0){
 
-        container.innerHTML = `
-
+        cartContainer.innerHTML = `
             <div class="empty">
-
                 Your cart is empty.<br>
-
                 আপনার Cart খালি।
-
             </div>
-
         `;
 
         updateTotal();
 
         return;
-
     }
 
 
@@ -1255,17 +684,12 @@ function renderCart(){
             <div class="cart-item-info">
 
                 <div class="cart-item-name">
-
                     ${item.name}
-
                 </div>
 
                 <div class="cart-item-price">
-
-                    ৳${item.price}
-                    × ${item.qty}
+                    ৳${item.price} × ${item.qty}
                     = ৳${itemTotal}
-
                 </div>
 
             </div>
@@ -1274,38 +698,28 @@ function renderCart(){
             <div class="qty-controls">
 
                 <button
-                class="qty-btn"
-                onclick="changeQty(${index},-1)">
-
+                    class="qty-btn"
+                    onclick="changeQty(${index},-1)">
                     −
-
                 </button>
 
-
                 <strong>
-
                     ${item.qty}
-
                 </strong>
 
-
                 <button
-                class="qty-btn"
-                onclick="changeQty(${index},1)">
-
+                    class="qty-btn"
+                    onclick="changeQty(${index},1)">
                     +
-
                 </button>
 
             </div>
 
 
             <button
-            class="remove-btn"
-            onclick="removeFromCart(${index})">
-
+                class="remove-btn"
+                onclick="removeFromCart(${index})">
                 Remove
-
             </button>
 
         </div>
@@ -1315,21 +729,17 @@ function renderCart(){
     });
 
 
-    container.innerHTML = html;
+    cartContainer.innerHTML = html;
 
     updateTotal();
-
 }
 
 
-/* =====================================================
-   TOTAL
-===================================================== */
+/* UPDATE TOTAL */
 
 function updateTotal(){
 
-    let subtotal =
-        getSubtotal();
+    let subtotal = getSubtotal();
 
 
     let deliverySelect =
@@ -1354,7 +764,6 @@ function updateTotal(){
 
     document.getElementById("grandTotal")
         .innerText = total;
-
 }
 
 
@@ -1371,31 +780,23 @@ function placeOrder(){
         );
 
         return;
-
     }
 
 
     let name =
-        document
-        .getElementById("customerName")
-        .value.trim();
+        document.getElementById("customerName").value.trim();
 
 
     let phone =
-        document
-        .getElementById("customerPhone")
-        .value.trim();
+        document.getElementById("customerPhone").value.trim();
 
 
     let area =
-        document
-        .getElementById("deliveryArea");
+        document.getElementById("deliveryArea");
 
 
     let areaText =
-        area.options[
-            area.selectedIndex
-        ].text;
+        area.options[area.selectedIndex].text;
 
 
     let deliveryCharge =
@@ -1403,52 +804,39 @@ function placeOrder(){
 
 
     let address =
-        document
-        .getElementById("customerAddress")
+        document.getElementById("customerAddress")
         .value.trim();
 
 
     if(name === ""){
 
-        alert(
-            "Please enter your name."
-        );
+        alert("Please enter your name.");
 
         return;
-
     }
 
 
     if(phone === ""){
 
-        alert(
-            "Please enter your phone number."
-        );
+        alert("Please enter your phone number.");
 
         return;
-
     }
 
 
     if(area.value === "0"){
 
-        alert(
-            "Please select delivery area."
-        );
+        alert("Please select delivery area.");
 
         return;
-
     }
 
 
     if(address === ""){
 
-        alert(
-            "Please enter delivery address."
-        );
+        alert("Please enter delivery address.");
 
         return;
-
     }
 
 
@@ -1460,13 +848,14 @@ function placeOrder(){
         subtotal + deliveryCharge;
 
 
+    /* PRODUCT TEXT */
+
     let productText = "";
 
 
     cart.forEach(item => {
 
         productText +=
-
             item.name +
             " × " +
             item.qty +
@@ -1476,6 +865,8 @@ function placeOrder(){
 
     });
 
+
+    /* ORDER DATA */
 
     let orderData = {
 
@@ -1495,44 +886,37 @@ function placeOrder(){
 
         total:grandTotal,
 
-        paymentMethod:"Cash on Delivery",
-
-        status:"Pending",
-
         orderDate:
             new Date().toLocaleString("en-BD")
 
     };
 
 
-    /* =================================================
-       GOOGLE APPS SCRIPT
-    ================================================= */
+    /*
+       GOOGLE APPS SCRIPT WEB APP
+       আপনার বর্তমান Web App URL
+    */
 
     const SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbxF5abLva0NYBvYyh2hQFsBxJsCiIXe_8xF5IR_SiauS5A_xZXafV-CKG6uoCgDPNHr/exec";
 
 
-    fetch(
-        SCRIPT_URL,
-        {
+    /* SEND TO GOOGLE SHEET */
 
-            method:"POST",
+    fetch(SCRIPT_URL,{
 
-            mode:"no-cors",
+        method:"POST",
 
-            headers:{
-                "Content-Type":
-                "application/json"
-            },
+        mode:"no-cors",
 
-            body:
-                JSON.stringify(orderData)
+        headers:{
+            "Content-Type":
+            "application/json"
+        },
 
-        }
+        body:JSON.stringify(orderData)
 
-    )
-
+    })
     .then(() => {
 
         sendWhatsAppOrder(
@@ -1541,7 +925,6 @@ function placeOrder(){
         );
 
     })
-
     .catch(() => {
 
         sendWhatsAppOrder(
@@ -1555,7 +938,7 @@ function placeOrder(){
 
 
 /* =====================================================
-   WHATSAPP
+   WHATSAPP ORDER
 ===================================================== */
 
 function sendWhatsAppOrder(
@@ -1565,7 +948,7 @@ function sendWhatsAppOrder(
 
     let message =
 
-`💗 SLS STORE - NEW ORDER
+`🛍️ SLS STORE - NEW ORDER
 
 👤 Customer:
 ${orderData.customerName}
@@ -1582,20 +965,14 @@ ${orderData.address}
 🛒 Products:
 ${productText}
 
-💰 Product Total:
+💰 Subtotal:
 ৳${orderData.subtotal}
 
 🚚 Delivery Charge:
 ৳${orderData.deliveryCharge}
 
-💵 GRAND TOTAL:
+💵 TOTAL:
 ৳${orderData.total}
-
-💳 Payment:
-Cash on Delivery
-
-📌 Status:
-Pending
 
 Thank you for shopping with SLS Store ❤️`;
 
