@@ -1,73 +1,2540 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SLS Store | Cosmetics</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:Arial,"Noto Sans Bengali",sans-serif;
-  background:#fff7fa;
-  color:#2b2025
+margin:0;
+font-family:Arial,"Noto Sans Bengali",sans-serif;
+background:#fff7fa;
+color:#291f24
 }
-button,input,textarea{font:inherit}
-button{cursor:pointer}
+
+button,input,textarea{
+font:inherit
+}
+
+button{
+cursor:pointer
+}
 
 header{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:#fff;
-  box-shadow:0 2px 12px #0001
+position:sticky;
+top:0;
+z-index:20;
+background:#fff;
+box-shadow:0 2px 12px #0001
 }
 
-.top{
-  max-width:1150px;
-  margin:auto;
-  padding:13px 16px;
-  display:flex;
-  align-items:center;
-  gap:10px
+.bar{
+max-width:1150px;
+margin:auto;
+padding:12px 15px;
+display:flex;
+gap:9px;
+align-items:center;
+flex-wrap:wrap
 }
 
 .logo{
-  font-size:25px;
-  font-weight:800;
-  color:#c0266d;
-  white-space:nowrap
+font-size:25px;
+font-weight:800;
+color:#c0266d
+}
+
+.grow{
+flex:1
 }
 
 .search{
-  width:240px;
-  padding:11px 14px;
-  border:1px solid #ead8df;
-  border-radius:25px;
-  outline:none
+width:260px;
+max-width:100%;
+padding:11px 14px;
+border:1px solid #ead8df;
+border-radius:25px;
+outline:none
 }
 
-.spacer{flex:1}
-
-.btn,.cart{
-  border:0;
-  background:#c0266d;
-  color:#fff;
-  padding:11px 16px;
-  border-radius:24px;
-  font-weight:700
+.btn{
+border:0;
+border-radius:12px;
+padding:10px 15px;
+background:#c0266d;
+color:#fff;
+font-weight:700
 }
 
-.outline{
-  background:#fff;
-  color:#c0266d;
-  border:1px solid #c0266d
+.btn.alt{
+background:#fff;
+color:#c0266d;
+border:1px solid #c0266d
 }
 
-.hide{display:none!important}
+.btn:disabled{
+opacity:.55;
+cursor:not-allowed
+}
+
+.hide{
+display:none!important
+}
 
 .hero{
-  max-width:1150px;
-  margin:24px auto;
-  padding:45
+max-width:1150px;
+margin:22px auto;
+padding:38px 28px;
+border-radius:24px;
+background:linear-gradient(120deg,#f8d8e6,#fff1f7);
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
+.hero h1{
+font-size:40px;
+margin:0 0 10px;
+color:#7d1749
+}
+
+.hero p{
+font-size:18px;
+line-height:1.6
+}
+
+.heroicon{
+font-size:105px
+}
+
+.section{
+max-width:1150px;
+margin:32px auto;
+padding:0 15px
+}
+
+.cats,
+.products{
+display:grid;
+gap:16px
+}
+
+.cats{
+grid-template-columns:repeat(4,1fr)
+}
+
+.products{
+grid-template-columns:repeat(4,1fr)
+}
+
+.cat,
+.card{
+background:#fff;
+border:1px solid #f0dce5;
+border-radius:17px
+}
+
+.cat{
+text-align:center;
+padding:20px;
+font-size:17px
+}
+
+.card{
+overflow:hidden;
+box-shadow:0 5px 18px #0000000c
+}
+
+.pic{
+height:175px;
+background:linear-gradient(135deg,#f7dce8,#fff);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:70px
+}
+
+.body{
+padding:14px
+}
+
+.body h3{
+margin:0 0 5px
+}
+
+.bn{
+font-size:14px;
+color:#666
+}
+
+.price{
+font-weight:800;
+color:#c0266d;
+margin:9px 0
+}
+
+.card .btn{
+width:100%
+}
+
+footer{
+margin-top:50px;
+background:#2b2025;
+color:#fff;
+text-align:center;
+padding:28px
+}
+
+.overlay{
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+z-index:100
+}
+
+.modal{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:min(520px,94%);
+max-height:92vh;
+overflow:auto;
+background:#fff;
+border-radius:20px;
+padding:22px
+}
+
+.drawer{
+position:absolute;
+right:0;
+top:0;
+width:min(520px,100%);
+height:100%;
+overflow:auto;
+background:#fff;
+padding:22px
+}
+
+.close{
+float:right;
+border:0;
+border-radius:50%;
+width:32px;
+height:32px;
+background:#eee
+}
+
+.form input,
+.form textarea{
+display:block;
+width:100%;
+margin:7px 0;
+padding:11px;
+border:1px solid #ddd;
+border-radius:10px
+}
+
+.form textarea{
+min-height:90px;
+resize:vertical
+}
+
+.tabs{
+display:flex;
+gap:8px;
+margin:15px 0
+}
+
+.tabs button{
+flex:1;
+border:1px solid #ead8df;
+background:#fff;
+padding:10px;
+border-radius:10px
+}
+
+.tabs .on{
+background:#c0266d;
+color:#fff
+}
+
+.cartrow{
+display:flex;
+justify-content:space-between;
+gap:10px;
+border-bottom:1px solid #eee;
+padding:12px 0
+}
+
+.box{
+padding:12px;
+border:1px solid #f0dce5;
+border-radius:12px;
+background:#fff8fb;
+line-height:1.8
+}
+
+.grand{
+font-size:21px;
+font-weight:800;
+color:#c0266d;
+border-top:1px solid #eee;
+padding-top:8px;
+margin-top:7px
+}
+
+.order{
+border:1px solid #ead8df;
+border-radius:14px;
+padding:14px;
+margin:10px 0
+}
+
+.status{
+display:inline-block;
+padding:5px 10px;
+border-radius:20px;
+background:#fff0f5;
+color:#c0266d;
+font-weight:700
+}
+
+.notice{
+padding:10px 12px;
+background:#fff6dc;
+border:1px solid #f0dca8;
+border-radius:10px;
+margin:10px 0
+}
+
+.success{
+padding:10px 12px;
+background:#e9f9ef;
+border:1px solid #bde6c9;
+border-radius:10px
+}
+
+.error{
+padding:10px 12px;
+background:#fff0f0;
+border:1px solid #efc0c0;
+border-radius:10px;
+color:#9a1c1c
+}
+
+.small{
+font-size:13px;
+color:#666
+}
+
+@media(max-width:850px){
+
+.products{
+grid-template-columns:1fr 1fr
+}
+
+.cats{
+grid-template-columns:1fr 1fr
+}
+
+.hero{
+margin:15px 12px
+}
+
+.hero h1{
+font-size:31px
+}
+
+}
+
+@media(max-width:520px){
+
+.products{
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.pic{
+height:140px;
+font-size:55px
+}
+
+.search{
+flex:1;
+min-width:150px
+}
+
+.heroicon{
+font-size:70px
+}
+
+.hero{
+padding:28px 18px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="bar">
+
+<div class="logo">
+SLS Store
+</div>
+
+<input
+id="search"
+class="search"
+placeholder="Search product / পণ্য খুঁজুন"
+oninput="renderProducts()"
+>
+
+<div class="grow"></div>
+
+<button
+id="accountBtn"
+class="btn alt"
+onclick="openAuth()">
+Login / Register
+</button>
+
+<button
+id="ordersBtn"
+class="btn alt hide"
+onclick="openOrders()">
+My Orders
+</button>
+
+<button
+id="logoutBtn"
+class="btn alt hide"
+onclick="logoutUser()">
+Logout
+</button>
+
+<button
+class="btn"
+onclick="openCart()">
+🛒 <span id="cartCount">0</span>
+</button>
+
+</div>
+
+</header>
+
+
+<section class="hero">
+
+<div>
+
+<h1>
+Beauty that feels like you ✨
+</h1>
+
+<p>
+Premium cosmetics for your everyday beauty.
+<br>
+আপনার সৌন্দর্যের যত্নে SLS Store.
+</p>
+
+<button
+class="btn"
+onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">
+
+Shop Now / কিনুন
+
+</button>
+
+</div>
+
+<div class="heroicon">
+💄
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2>
+Categories / ক্যাটাগরি
+</h2>
+
+<div class="cats">
+
+<div class="cat">
+💋
+<br>
+<b>Lipstick</b>
+<br>
+লিপস্টিক
+</div>
+
+<div class="cat">
+🧴
+<br>
+<b>Skincare</b>
+<br>
+স্কিন কেয়ার
+</div>
+
+<div class="cat">
+👁️
+<br>
+<b>Eye Makeup</b>
+<br>
+আই মেকআপ
+</div>
+
+<div class="cat">
+✨
+<br>
+<b>Beauty Tools</b>
+<br>
+বিউটি টুলস
+</div>
+
+</div>
+
+</section>
+
+
+<section
+class="section"
+id="shop">
+
+<h2>
+All Products / সকল পণ্য
+</h2>
+
+<div
+id="products"
+class="products">
+</div>
+
+</section>
+
+
+<footer>
+
+SLS Store
+
+<br>
+
+Cosmetics • Bangla + English
+
+<br>
+
+© 2026 SLS Store
+
+</footer>
+
+
+<!-- CART -->
+
+<div
+id="cartOverlay"
+class="overlay">
+
+<div class="drawer">
+
+<button
+class="close"
+onclick="closeCart()">
+✕
+</button>
+
+<h2>
+Shopping Cart / কার্ট
+</h2>
+
+<div id="cartItems">
+</div>
+
+<div id="cartTotal">
+</div>
+
+<div class="form">
+
+<h3>
+Checkout / অর্ডার
+</h3>
+
+<div
+id="loginNotice"
+class="notice">
+
+অর্ডার করতে Login/Register করুন।
+
+</div>
+
+<input
+id="customerName"
+placeholder="Name / নাম"
+>
+
+<input
+id="customerPhone"
+placeholder="Phone / মোবাইল নম্বর"
+>
+
+<textarea
+id="customerAddress"
+placeholder="সম্পূর্ণ ঠিকানা / Full Address"
+oninput="updateCart()">
+</textarea>
+
+
+<div class="box">
+
+<b>
+Delivery Charge / ডেলিভারি চার্জ
+</b>
+
+<br>
+
+📍 ঢাকার ভিতরে:
+<b>৳80</b>
+
+<br>
+
+🚚 ঢাকার বাইরে:
+<b>৳150</b>
+
+<div
+id="deliveryInfo"
+class="small">
+
+ঠিকানা লিখলে চার্জ অটোমেটিক যোগ হবে।
+
+</div>
+
+</div>
+
+
+<button
+id="placeBtn"
+class="btn"
+style="width:100%;margin-top:10px"
+onclick="placeOrder()">
+
+Place Order / অর্ডার করুন
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- AUTH -->
+
+<div
+id="authOverlay"
+class="overlay">
+
+<div class="modal">
+
+<button
+class="close"
+onclick="closeAuth()">
+✕
+</button>
+
+<h2>
+Customer Account / কাস্টমার অ্যাকাউন্ট
+</h2>
+
+<p>
+Product দেখতে Login লাগবে না।
+শুধু Order করার সময় Login/Register লাগবে।
+</p>
+
+<div class="tabs">
+
+<button
+id="loginTab"
+class="on"
+onclick="setAuthMode('login')">
+Login
+</button>
+
+<button
+id="registerTab"
+onclick="setAuthMode('register')">
+Register
+</button>
+
+</div>
+
+<div id="firebaseMsg">
+</div>
+
+<div class="form">
+
+<input
+id="authName"
+placeholder="Full Name / পূর্ণ নাম"
+>
+
+<input
+id="authEmail"
+type="email"
+placeholder="Email"
+>
+
+<input
+id="authPassword"
+type="password"
+placeholder="Password (কমপক্ষে 6 অক্ষর)"
+>
+
+<button
+id="authSubmit"
+class="btn"
+style="width:100%"
+onclick="submitAuth()">
+
+Login / লগইন
+
+</button>
+
+<button
+class="btn alt"
+style="width:100%;margin-top:8px"
+onclick="resetPassword()">
+
+Forgot Password
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div
+id="ordersOverlay"
+class="overlay">
+
+<div class="modal">
+
+<button
+class="close"
+onclick="closeOrders()">
+✕
+</button>
+
+<h2>
+My Orders / আমার অর্ডার
+</h2>
+
+<p id="ordersEmail">
+</p>
+
+<div id="ordersList">
+Loading...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SUCCESS -->
+
+<div
+id="successOverlay"
+class="overlay">
+
+<div class="modal">
+
+<button
+class="close"
+onclick="closeSuccess()">
+✕
+</button>
+
+<h2>
+Order Submitted 🎉
+</h2>
+
+<div id="successDetails">
+</div>
+
+<button
+class="btn"
+style="width:100%;margin-top:12px"
+onclick="closeSuccess();openOrders()">
+
+My Orders
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+PRODUCTS
+========================= */
+
+const PRODUCTS=[
+
+{
+id:1,
+name:"Glow Foundation",
+bn:"গ্লো ফাউন্ডেশন",
+price:750,
+emoji:"💄",
+cat:"Makeup"
+},
+
+{
+id:2,
+name:"Compact Powder",
+bn:"কমপ্যাক্ট পাউডার",
+price:480,
+emoji:"🧴",
+cat:"Makeup"
+},
+
+{
+id:3,
+name:"Matte Lipstick",
+bn:"ম্যাট লিপস্টিক",
+price:350,
+emoji:"💋",
+cat:"Lipstick"
+},
+
+{
+id:4,
+name:"Lip Gloss",
+bn:"লিপ গ্লস",
+price:320,
+emoji:"💄",
+cat:"Lipstick"
+},
+
+{
+id:5,
+name:"Eye Liner",
+bn:"আই লাইনার",
+price:280,
+emoji:"👁️",
+cat:"Eye Makeup"
+},
+
+{
+id:6,
+name:"Mascara",
+bn:"মাসকারা",
+price:420,
+emoji:"👁️",
+cat:"Eye Makeup"
+},
+
+{
+id:7,
+name:"Makeup Brush Set",
+bn:"মেকআপ ব্রাশ সেট",
+price:650,
+emoji:"✨",
+cat:"Beauty Tools"
+},
+
+{
+id:8,
+name:"Face Serum",
+bn:"ফেস সিরাম",
+price:580,
+emoji:"🧴",
+cat:"Skincare"
+}
+
+];
+
+
+/* =========================
+APPS SCRIPT
+========================= */
+
+const APPS_SCRIPT_URL=
+"https://script.google.com/macros/s/AKfycbzM7SovJLfIllxSk6GMn_fMMq-EKqCdUH_IylHH-tXNCD7hJemy5A2YUiT3c7eGdHeY/exec";
+
+
+/* =========================
+FIREBASE CONFIG
+========================= */
+
+const FIREBASE_CONFIG={
+
+apiKey:
+"AIzaSyAwyC-viaOzMV1_JxY_kYLHlv5pcxEZgqc",
+
+authDomain:
+"sls-store-5c3c6.firebaseapp.com",
+
+projectId:
+"sls-store-5c3c6",
+
+storageBucket:
+"sls-store-5c3c6.firebasestorage.app",
+
+messagingSenderId:
+"970257728069",
+
+appId:
+"1:970257728069:web:e5502ee5442e2980d4992c",
+
+measurementId:
+"G-NWJS4FZ0GX"
+
+};
+
+
+let cart=[];
+
+let currentUser=null;
+
+let authMode="login";
+
+let db=null;
+
+let firebaseReady=false;
+
+let firebaseLoading=false;
+
+
+/* =========================
+ESCAPE TEXT
+========================= */
+
+function esc(v){
+
+return String(v??"").replace(
+/[&<>"']/g,
+
+m=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[m])
+
+);
+
+}
+
+
+/* =========================
+PRODUCT RENDER
+========================= */
+
+function renderProducts(){
+
+const q=
+(document.getElementById("search").value||"")
+.toLowerCase()
+.trim();
+
+const list=
+PRODUCTS.filter(p=>
+(p.name+" "+p.bn+" "+p.cat)
+.toLowerCase()
+.includes(q)
+);
+
+
+document.getElementById("products").innerHTML=
+
+list.length?
+
+list.map(p=>`
+
+<div class="card">
+
+<div class="pic">
+${p.emoji}
+</div>
+
+<div class="body">
+
+<h3>
+${esc(p.name)}
+</h3>
+
+<div class="bn">
+${esc(p.bn)}
+</div>
+
+<div class="price">
+৳${p.price.toLocaleString("en-BD")}
+</div>
+
+<button
+class="btn"
+onclick="addToCart(${p.id})">
+
+Add to Cart / কার্টে যোগ করুন
+
+</button>
+
+</div>
+
+</div>
+
+`).join("")
+
+:
+
+"<p>কোনো পণ্য পাওয়া যায়নি।</p>";
+
+}
+
+
+/* =========================
+CART
+========================= */
+
+function addToCart(id){
+
+const p=
+PRODUCTS.find(x=>x.id===id);
+
+const old=
+cart.find(x=>x.id===id);
+
+if(old){
+
+old.qty++;
+
+}else{
+
+cart.push({
+...p,
+qty:1
+});
+
+}
+
+updateCart();
+
+openCart();
+
+}
+
+
+function removeFromCart(id){
+
+cart=
+cart.filter(x=>x.id!==id);
+
+updateCart();
+
+}
+
+
+/* =========================
+DELIVERY
+========================= */
+
+function getDelivery(){
+
+const a=
+(document.getElementById(
+"customerAddress"
+).value||"").toLowerCase();
+
+if(!a){
+
+return{
+area:"",
+charge:0
+};
+
+}
+
+
+const insideWords=[
+
+"dhaka",
+"ঢাকা",
+
+"dhanmondi",
+"ধানমন্ডি",
+
+"gulshan",
+"গুলশান",
+
+"banani",
+"বনানী",
+
+"uttara",
+"উত্তরা",
+
+"mirpur",
+"মিরপুর",
+
+"mohammadpur",
+"মোহাম্মদপুর",
+
+"tejgaon",
+"তেজগাঁও",
+
+"badda",
+"বাড্ডা",
+
+"khilgaon",
+"খিলগাঁও",
+
+"malibagh",
+"মালিবাগ",
+
+"motijheel",
+"মতিঝিল",
+
+"farmgate",
+"ফার্মগেট",
+
+"wari",
+"ওয়ারী",
+
+"old dhaka",
+"পুরান ঢাকা",
+
+"jatrabari",
+"যাত্রাবাড়ী",
+"যাত্রাবাড়ী",
+
+"demra",
+"ডেমরা",
+
+"cantonment",
+"ক্যান্টনমেন্ট",
+
+"bashundhara",
+"বসুন্ধরা",
+
+"baridhara",
+"বারিধারা",
+
+"niketan",
+"নিকেতন",
+
+"khilkhet",
+"খিলক্ষেত",
+
+"kafrul",
+"কাফরুল",
+
+"pallabi",
+"পল্লবী",
+
+"adabor",
+"আদাবর",
+
+"rampura",
+"রামপুরা",
+
+"hatirjheel",
+"হাতিরঝিল",
+
+"shyamoli",
+"শ্যামলী",
+
+"kalabagan",
+"কলাবাগান",
+
+"lalmatia",
+"লালমাটিয়া",
+
+"new market",
+"নিউ মার্কেট",
+
+"azimpur",
+"আজিমপুর",
+
+"elephant road",
+"এলিফ্যান্ট রোড",
+
+"panthapath",
+"পান্থপথ",
+
+"shantinagar",
+"শান্তিনগর",
+
+"kakrail",
+"কাকরাইল",
+
+"paltan",
+"পল্টন",
+
+"sadarghat",
+"সদরঘাট",
+
+"lalbagh",
+"লালবাগ",
+
+"hazaribagh",
+"হাজারীবাগ",
+
+"shahbagh",
+"শাহবাগ",
+
+"banglamotor",
+"বাংলামোটর",
+
+"karwan bazar",
+"কারওয়ান বাজার",
+
+"moghbazar",
+"মগবাজার",
+
+"nikunja",
+"নিকুঞ্জ"
+
+];
+
+
+const inside=
+insideWords.some(
+w=>a.includes(w)
+);
+
+
+return{
+
+area:
+inside?
+"Inside Dhaka":
+"Outside Dhaka",
+
+charge:
+inside?
+80:
+150
+
+};
+
+}
+
+
+/* =========================
+UPDATE CART
+========================= */
+
+function updateCart(){
+
+document.getElementById(
+"cartCount"
+).textContent=
+cart.reduce(
+(n,x)=>n+x.qty,
+0
+);
+
+
+document.getElementById(
+"cartItems"
+).innerHTML=
+
+cart.length?
+
+cart.map(x=>`
+
+<div class="cartrow">
+
+<div>
+
+<b>
+${esc(x.name)}
+</b>
+
+<br>
+
+৳${x.price} × ${x.qty}
+
+</div>
+
+<button
+class="btn alt"
+onclick="removeFromCart(${x.id})">
+
+Remove
+
+</button>
+
+</div>
+
+`).join("")
+
+:
+
+"<p>কার্ট খালি।</p>";
+
+
+const productTotal=
+cart.reduce(
+(n,x)=>n+x.price*x.qty,
+0
+);
+
+
+const d=
+getDelivery();
+
+const grandTotal=
+productTotal+d.charge;
+
+
+document.getElementById(
+"cartTotal"
+).innerHTML=`
+
+<div style="line-height:1.9;margin:15px 0">
+
+Product Total:
+৳${productTotal}
+
+<br>
+
+Delivery Charge:
+
+${
+d.area
+
+?
+
+"৳"+d.charge+
+" ("+
+(
+d.area==="Inside Dhaka"
+?
+"ঢাকার ভিতরে"
+:
+"ঢাকার বাইরে"
+)+
+")"
+
+:
+
+"ঠিকানা দিন"
+}
+
+<div class="grand">
+
+Grand Total:
+৳${grandTotal}
+
+</div>
+
+</div>
+
+`;
+
+
+document.getElementById(
+"deliveryInfo"
+).innerHTML=
+
+d.area
+
+?
+
+(
+d.area==="Inside Dhaka"
+
+?
+
+"📍 ঢাকার ভিতরে — ৳80 যোগ হয়েছে।"
+
+:
+
+"🚚 ঢাকার বাইরে — ৳150 যোগ হয়েছে।"
+
+)
+
+:
+
+"সম্পূর্ণ ঠিকানা লিখলে চার্জ অটোমেটিক যোগ হবে।";
+
+}
+
+
+/* =========================
+OPEN CART
+========================= */
+
+function openCart(){
+
+document.getElementById(
+"cartOverlay"
+).style.display="block";
+
+
+if(currentUser){
+
+document.getElementById(
+"customerName"
+).value=
+currentUser.displayName||"";
+
+document.getElementById(
+"loginNotice"
+).className="success";
+
+document.getElementById(
+"loginNotice"
+).textContent=
+"আপনি Login করা আছেন। Order করতে পারবেন।";
+
+}else{
+
+document.getElementById(
+"loginNotice"
+).className="notice";
+
+document.getElementById(
+"loginNotice"
+).textContent=
+"Order করতে Login/Register করুন।";
+
+}
+
+updateCart();
+
+}
+
+
+function closeCart(){
+
+document.getElementById(
+"cartOverlay"
+).style.display="none";
+
+}
+
+
+/* =========================
+AUTH
+========================= */
+
+function openAuth(){
+
+document.getElementById(
+"authOverlay"
+).style.display="block";
+
+setAuthMode(authMode);
+
+if(!firebaseReady){
+
+loadFirebase();
+
+}
+
+}
+
+
+function closeAuth(){
+
+document.getElementById(
+"authOverlay"
+).style.display="none";
+
+}
+
+
+function setAuthMode(m){
+
+authMode=m;
+
+document.getElementById(
+"loginTab"
+).classList.toggle(
+"on",
+m==="login"
+);
+
+document.getElementById(
+"registerTab"
+).classList.toggle(
+"on",
+m==="register"
+);
+
+
+document.getElementById(
+"authName"
+).style.display=
+m==="register"
+?
+"block"
+:
+"none";
+
+
+document.getElementById(
+"authSubmit"
+).textContent=
+m==="login"
+?
+"Login / লগইন"
+:
+"Register / রেজিস্টার";
+
+}
+
+
+function msg(
+text,
+type="notice"
+){
+
+document.getElementById(
+"firebaseMsg"
+).innerHTML=
+
+text
+
+?
+
+`<div class="${type}">
+${esc(text)}
+</div>`
+
+:
+
+"";
+
+}
+
+
+/* =========================
+LOAD FIREBASE
+========================= */
+
+function loadScript(src){
+
+return new Promise(
+(resolve,reject)=>{
+
+const s=
+document.createElement("script");
+
+s.src=src;
+
+s.onload=resolve;
+
+s.onerror=
+()=>{
+reject(
+new Error(
+"Firebase SDK load failed"
+)
+);
+};
+
+document.head.appendChild(s);
+
+});
+
+}
+
+
+async function loadFirebase(){
+
+if(
+firebaseReady||
+firebaseLoading
+)
+
+return;
+
+
+firebaseLoading=true;
+
+msg(
+"Firebase লোড হচ্ছে..."
+);
+
+
+try{
+
+await loadScript(
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"
+);
+
+await loadScript(
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"
+);
+
+await loadScript(
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"
+);
+
+
+firebase.initializeApp(
+FIREBASE_CONFIG
+);
+
+
+db=
+firebase.firestore();
+
+
+firebaseReady=true;
+
+
+firebase.auth()
+.onAuthStateChanged(
+u=>{
+
+currentUser=u;
+
+document.getElementById(
+"accountBtn"
+).classList.toggle(
+"hide",
+!!u
+);
+
+document.getElementById(
+"ordersBtn"
+).classList.toggle(
+"hide",
+!u
+);
+
+document.getElementById(
+"logoutBtn"
+).classList.toggle(
+"hide",
+!u
+);
+
+
+if(u){
+
+document.getElementById(
+"customerName"
+).value=
+u.displayName||"";
+
+document.getElementById(
+"loginNotice"
+).textContent=
+"আপনি Login করা আছেন। Order করতে পারবেন।";
+
+}
+
+});
+
+
+msg(
+"Firebase ready.",
+"success"
+);
+
+
+}catch(e){
+
+msg(
+"Firebase লোড হচ্ছে না। Website-এর Product/Cart চলবে, কিন্তু Login/Order-এর জন্য Internet ও Firebase access দরকার।",
+"error"
+);
+
+console.error(e);
+
+}
+
+finally{
+
+firebaseLoading=false;
+
+}
+
+}
+
+
+/* =========================
+LOGIN / REGISTER
+========================= */
+
+async function submitAuth(){
+
+if(!firebaseReady){
+
+await loadFirebase();
+
+}
+
+if(!firebaseReady)
+return;
+
+
+const email=
+document.getElementById(
+"authEmail"
+).value.trim();
+
+const pass=
+document.getElementById(
+"authPassword"
+).value;
+
+const name=
+document.getElementById(
+"authName"
+).value.trim();
+
+
+try{
+
+if(!email||!pass)
+
+throw new Error(
+"Email এবং Password দিন।"
+);
+
+
+if(authMode==="register"){
+
+if(!name)
+
+throw new Error(
+"নাম দিন।"
+);
+
+
+if(pass.length<6)
+
+throw new Error(
+"Password কমপক্ষে 6 অক্ষরের হতে হবে।"
+);
+
+
+const r=
+await firebase.auth()
+.createUserWithEmailAndPassword(
+email,
+pass
+);
+
+
+await r.user.updateProfile({
+displayName:name
+});
+
+
+msg(
+"Registration successful.",
+"success"
+);
+
+
+}else{
+
+await firebase.auth()
+.signInWithEmailAndPassword(
+email,
+pass
+);
+
+
+msg(
+"Login successful.",
+"success"
+);
+
+}
+
+
+setTimeout(
+closeAuth,
+500
+);
+
+
+}catch(e){
+
+msg(
+friendly(e),
+"error"
+);
+
+}
+
+}
+
+
+function friendly(e){
+
+const c=e.code||"";
+
+
+if(
+c.includes(
+"email-already-in-use"
+)
+)
+
+return "এই Email আগে থেকেই ব্যবহার করা হয়েছে। Login করুন।";
+
+
+if(
+c.includes(
+"invalid-credential"
+)||
+c.includes(
+"wrong-password"
+)
+)
+
+return "Email বা Password ভুল।";
+
+
+if(
+c.includes(
+"weak-password"
+)
+)
+
+return "Password কমপক্ষে 6 অক্ষরের দিন।";
+
+
+if(
+c.includes(
+"invalid-email"
+)
+)
+
+return "সঠিক Email দিন।";
+
+
+if(
+c.includes(
+"network-request-failed"
+)
+)
+
+return "Internet connection পরীক্ষা করুন।";
+
+
+return e.message||
+"সমস্যা হয়েছে।";
+
+}
+
+
+async function resetPassword(){
+
+if(!firebaseReady)
+
+await loadFirebase();
+
+
+if(!firebaseReady)
+return;
+
+
+const email=
+document.getElementById(
+"authEmail"
+).value.trim();
+
+
+if(!email)
+
+return alert(
+"আগে Email লিখুন।"
+);
+
+
+try{
+
+await firebase.auth()
+.sendPasswordResetEmail(email);
+
+alert(
+"Password reset email পাঠানো হয়েছে।"
+);
+
+}catch(e){
+
+alert(
+friendly(e)
+);
+
+}
+
+}
+
+
+async function logoutUser(){
+
+if(firebaseReady)
+
+await firebase.auth().signOut();
+
+}
+
+
+/* =========================
+PLACE ORDER
+========================= */
+
+async function placeOrder(){
+
+if(!currentUser){
+
+closeCart();
+
+openAuth();
+
+return;
+
+}
+
+
+if(!cart.length)
+
+return alert(
+"আগে পণ্য Cart-এ যোগ করুন।"
+);
+
+
+const name=
+document.getElementById(
+"customerName"
+).value.trim();
+
+const phone=
+document.getElementById(
+"customerPhone"
+).value.trim();
+
+const address=
+document.getElementById(
+"customerAddress"
+).value.trim();
+
+
+if(
+!name||
+!phone||
+!address
+)
+
+return alert(
+"Name, Phone এবং সম্পূর্ণ Address দিন।"
+);
+
+
+const d=
+getDelivery();
+
+
+const productTotal=
+cart.reduce(
+(n,x)=>n+x.price*x.qty,
+0
+);
+
+
+const grandTotal=
+productTotal+d.charge;
+
+
+const clientOrderId=
+"SLSWEB-"+
+Date.now()+
+"-"+
+Math.random()
+.toString(36)
+.slice(2,7)
+.toUpperCase();
+
+
+const data={
+
+clientOrderId,
+
+name,
+
+phone,
+
+address,
+
+deliveryArea:d.area,
+
+deliveryCharge:d.charge,
+
+productTotal,
+
+total:grandTotal,
+
+grandTotal,
+
+paymentMethod:
+"Cash on Delivery",
+
+items:
+cart.map(
+x=>({
+id:x.id,
+name:x.name,
+price:x.price,
+qty:x.qty
+})
+)
+
+};
+
+
+const btn=
+document.getElementById(
+"placeBtn"
+);
+
+btn.disabled=true;
+
+btn.textContent=
+"Submitting...";
+
+
+try{
+
+if(!firebaseReady)
+
+await loadFirebase();
+
+
+if(!db)
+
+throw new Error(
+"Firebase connection not ready."
+);
+
+
+await db
+.collection("orders")
+.add({
+
+uid:
+currentUser.uid,
+
+email:
+currentUser.email||"",
+
+...data,
+
+status:
+"Pending",
+
+orderId:
+"",
+
+pdfUrl:
+"",
+
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+});
+
+
+await fetch(
+APPS_SCRIPT_URL,
+{
+
+method:"POST",
+
+mode:"no-cors",
+
+headers:{
+"Content-Type":
+"text/plain;charset=utf-8"
+},
+
+body:
+JSON.stringify(data)
+
+});
+
+
+document.getElementById(
+"successDetails"
+).innerHTML=`
+
+<div class="success">
+
+অর্ডার সফলভাবে পাঠানো হয়েছে।
+
+<br><br>
+
+<b>Order ID:</b>
+${esc(clientOrderId)}
+
+<br>
+
+<b>Product Total:</b>
+৳${productTotal}
+
+<br>
+
+<b>Delivery:</b>
+৳${d.charge}
+
+<br>
+
+<b>Grand Total:</b>
+৳${grandTotal}
+
+<br>
+
+<b>Payment:</b>
+Cash on Delivery
+
+<br><br>
+
+Google Sheet-এ PDF invoice তৈরি হবে।
+
+</div>
+
+`;
+
+
+cart=[];
+
+
+document.getElementById(
+"customerPhone"
+).value="";
+
+
+document.getElementById(
+"customerAddress"
+).value="";
+
+
+updateCart();
+
+closeCart();
+
+
+document.getElementById(
+"successOverlay"
+).style.display="block";
+
+
+}catch(e){
+
+alert(
+"Order submit failed: "+
+friendly(e)
+);
+
+}finally{
+
+btn.disabled=false;
+
+btn.textContent=
+"Place Order / অর্ডার করুন";
+
+}
+
+}
+
+
+/* =========================
+GOOGLE SHEET STATUS
+========================= */
+
+function jsonpStatus(
+clientOrderId,
+phone
+){
+
+return new Promise(
+(resolve,reject)=>{
+
+const cb=
+"sls_cb_"+
+Date.now()+
+"_"+Math.floor(
+Math.random()*10000
+);
+
+const script=
+document.createElement(
+"script"
+);
+
+const timer=
+setTimeout(
+()=>{
+
+cleanup();
+
+reject(
+new Error(
+"status timeout"
+)
+);
+
+},
+9000
+);
+
+
+function cleanup(){
+
+clearTimeout(timer);
+
+delete window[cb];
+
+script.remove();
+
+}
+
+
+window[cb]=
+data=>{
+
+cleanup();
+
+resolve(data);
+
+};
+
+
+script.src=
+APPS_SCRIPT_URL+
+"?action=status"+
+"&clientOrderId="+
+encodeURIComponent(
+clientOrderId
+)+
+"&phone="+
+encodeURIComponent(
+phone
+)+
+"&prefix="+
+encodeURIComponent(cb);
+
+
+script.onerror=
+()=>{
+
+cleanup();
+
+reject(
+new Error(
+"status error"
+)
+);
+
+};
+
+
+document.body.appendChild(
+script
+);
+
+});
+
+}
+
+
+/* =========================
+MY ORDERS
+========================= */
+
+function openOrders(){
+
+if(!currentUser){
+
+openAuth();
+
+return;
+
+}
+
+
+document.getElementById(
+"ordersOverlay"
+).style.display="block";
+
+
+document.getElementById(
+"ordersEmail"
+).textContent=
+currentUser.email||"";
+
+
+loadOrders();
+
+}
+
+
+function closeOrders(){
+
+document.getElementById(
+"ordersOverlay"
+).style.display="none";
+
+}
+
+
+function closeSuccess(){
+
+document.getElementById(
+"successOverlay"
+).style.display="none";
+
+}
+
+
+async function loadOrders(){
+
+const box=
+document.getElementById(
+"ordersList"
+);
+
+
+if(!db){
+
+box.innerHTML=
+'<div class="error">Firebase connection ready নয়।</div>';
+
+return;
+
+}
+
+
+box.innerHTML=
+"Loading...";
+
+
+try{
+
+const snap=
+await db
+.collection("orders")
+.where(
+"uid",
+"==",
+currentUser.uid
+)
+.get();
+
+
+const arr=
+snap.docs
+.map(
+d=>({
+id:d.id,
+...d.data()
+})
+)
+.sort(
+(a,b)=>
+(b.createdAt?.seconds||0)-
+(a.createdAt?.seconds||0)
+);
+
+
+if(!arr.length){
+
+box.innerHTML=
+"<p>এখনও কোনো অর্ডার নেই।</p>";
+
+return;
+
+}
+
+
+box.innerHTML=
+
+arr.map(o=>`
+
+<div
+class="order"
+id="order-${esc(o.id)}">
+
+<b>
+${esc(
+o.orderId||
+o.clientOrderId||
+"Order"
+)}
+</b>
+
+<br>
+
+<span
+class="status"
+id="status-${esc(o.id)}">
+
+${esc(
+o.status||
+"Pending"
+)}
+
+</span>
+
+<br><br>
+
+${(o.items||[])
+.map(
+i=>
+esc(i.name)+
+" × "+
+i.qty
+)
+.join("<br>")}
+
+<br><br>
+
+<b>
+Grand Total:
+৳${Number(
+o.grandTotal||
+o.total||
+0
+).toLocaleString("en-BD")}
+</b>
+
+<div
+id="pdf-${esc(o.id)}">
+</div>
+
+</div>
+
+`).join("");
+
+
+for(
+const o of arr
+){
+
+if(
+o.clientOrderId&&
+o.phone
+){
+
+try{
+
+const r=
+await jsonpStatus(
+o.clientOrderId,
+o.phone
+);
+
+
+if(
+r&&
+r.found
+){
+
+const s=
+document.getElementById(
+"status-"+o.id
+);
+
+
+if(s)
+
+s.textContent=
+r.status||
+"Pending";
+
+
+const pdf=
+document.getElementById(
+"pdf-"+o.id
+);
+
+
+if(
+r.pdfUrl&&
+pdf
+){
+
+pdf.innerHTML=`
+
+<br>
+
+<a
+href="${esc(r.pdfUrl)}"
+target="_blank"
+rel="noopener">
+
+📄 Open PDF Invoice
+
+</a>
+
+`;
+
+}
+
+}
+
+}catch(e){}
+
+}
+
+}
+
+}catch(e){
+
+box.innerHTML=
+'<div class="error">'+
+"Orders load failed: "+
+esc(e.message||e)+
+"</div>";
+
+}
+
+}
+
+
+/* =========================
+START WEBSITE
+========================= */
+
+renderProducts();
+
+updateCart();
+
+</script>
+
+</body>
+</html>
