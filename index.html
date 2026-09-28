@@ -605,10 +605,13 @@ All Products / সব পণ্য
 
 <input
 id="searchInput"
-autocomplete="off"
-name="product-search"
+type="search"
+autocomplete="new-password"
+name="productSearchBox"
 class="search"
 placeholder="Search products / পণ্য খুঁজুন..."
+readonly
+onfocus="this.removeAttribute('readonly')"
 oninput="renderProducts()"
 >
 
