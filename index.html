@@ -585,6 +585,7 @@ Cash on Delivery
 <p class="muted">
 <b>Delivery Charge</b><br>
 Inside Dhaka ৳80<br>
+Sub Dhaka ৳130<br>
 Outside Dhaka ৳150
 </p>
 
@@ -630,6 +631,7 @@ class="products">
 <br>
 <span class="muted">
 ঢাকার ভিতরে ৳80<br>
+Sub Dhaka ৳130<br>
 ঢাকার বাইরে ৳150
 </span>
 </div>
@@ -870,13 +872,9 @@ Delivery Area / ডেলিভারি এলাকা
 id="deliveryArea"
 onchange="updateDelivery()">
 
-<option value="Inside Dhaka">
-Inside Dhaka — ৳80
-</option>
-
-<option value="Outside Dhaka">
-Outside Dhaka — ৳150
-</option>
+<option value="Inside Dhaka">Inside Dhaka — ৳80</option>
+<option value="Sub Dhaka">Sub Dhaka — ৳130</option>
+<option value="Outside Dhaka">Outside Dhaka — ৳150</option>
 
 </select>
 
@@ -1392,6 +1390,8 @@ deliveryElement
 
 return area==="Inside Dhaka"
 ?80
+:area==="Sub Dhaka"
+?130
 :150;
 
 }
@@ -1879,12 +1879,15 @@ document
 /*
    FIXED CHARGES:
    Inside Dhaka = ৳80
+   Sub Dhaka = ৳130
    Outside Dhaka = ৳150
 */
 
 const charge =
 area==="Inside Dhaka"
 ?80
+:area==="Sub Dhaka"
+?130
 :150;
 
 
@@ -1902,6 +1905,8 @@ document
 .textContent =
 area==="Inside Dhaka"
 ?"Inside Dhaka — Delivery ৳80"
+:area==="Sub Dhaka"
+?"Sub Dhaka — Delivery ৳130"
 :"Outside Dhaka — Delivery ৳150";
 
 
@@ -2048,11 +2053,15 @@ getProductTotal();
 
 /*
    FIXED DELIVERY CHARGE
+   Inside Dhaka = ৳80
+   Sub Dhaka = ৳130
+   Outside Dhaka = ৳150
 */
-
 const deliveryCharge =
 deliveryArea==="Inside Dhaka"
 ?80
+:deliveryArea==="Sub Dhaka"
+?130
 :150;
 
 
