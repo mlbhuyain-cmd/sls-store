@@ -857,35 +857,46 @@ placeholder="House, Road, Area, City"></textarea>
 
 
 <!-- =====================================================
-     NEW FIXED DELIVERY AREA
-     CUSTOMER CAN ONLY SELECT AREA
-     DELIVERY CHARGE CANNOT BE EDITED
+     AUTOMATIC DELIVERY AREA
+     CUSTOMER LOCATION -> AUTOMATIC DELIVERY CHARGE
+     Inside Dhaka = ৳80 | Sub Dhaka = ৳130 | Outside Dhaka = ৳150
      ===================================================== -->
 
 <div class="field">
 
 <label>
-Delivery Area / ডেলিভারি এলাকা
+Delivery Location / ডেলিভারি লোকেশন
 </label>
 
-<select
-id="deliveryArea"
-onchange="updateDelivery()">
+<div style="display:flex;gap:8px;align-items:stretch">
 
-<option value="Inside Dhaka">Inside Dhaka — ৳80</option>
-<option value="Sub Dhaka">Sub Dhaka — ৳130</option>
-<option value="Outside Dhaka">Outside Dhaka — ৳150</option>
+<input
+id="deliveryLocation"
+type="text"
+placeholder="Area / Thana / City লিখুন"
+oninput="detectDeliveryArea()"
+style="flex:1">
 
-</select>
+<button
+type="button"
+class="secondary"
+style="width:auto;margin-top:0;white-space:nowrap"
+onclick="copyAddressToLocation()">
+Use Address
+</button>
+
+</div>
 
 <div
 class="muted"
 id="deliveryHint"
-style="margin-top:6px">
+style="margin-top:8px">
 
-Inside Dhaka — Delivery ৳80
+লোকেশন দিলে Delivery Charge অটোমেটিক যোগ হবে।
 
 </div>
+
+<input id="deliveryArea" type="hidden" value="">
 
 </div>
 
@@ -1380,19 +1391,14 @@ total +
 
 function getDeliveryCharge(){
 
-const deliveryElement =
-document.getElementById("deliveryArea");
-
 const area =
-deliveryElement
-? deliveryElement.value
-: "Inside Dhaka";
+document.getElementById("deliveryArea").value;
 
-return area==="Inside Dhaka"
-?80
-:area==="Sub Dhaka"
-?130
-:150;
+if(area==="Inside Dhaka") return 80;
+if(area==="Sub Dhaka") return 130;
+if(area==="Outside Dhaka") return 150;
+
+return 0;
 
 }
 
@@ -1865,97 +1871,127 @@ openModal("checkoutModal");
 
 
 /* =====================================================
+   AUTOMATIC DELIVERY AREA DETECTION
+   ===================================================== */
+
+const INSIDE_DHAKA_KEYWORDS = [
+  "dhaka","ঢাকা","khilgaon","খিলগাঁও","tilpapara","তিলপাপাড়া",
+  "malibagh","মালিবাগ","rampura","রামপুরা","badda","বাড্ডা",
+  "gulshan","গুলশান","banani","বনানী","mohakhali","মহাখালী",
+  "uttara","উত্তরা","mirpur","মিরপুর","kazipara","কাজীপাড়া",
+  "shewrapara","শেওড়াপাড়া","agargaon","আগারগাঁও","farmgate","ফার্মগেট",
+  "tejgaon","তেজগাঁও","dhanmondi","ধানমন্ডি","mohammadpur","মোহাম্মদপুর",
+  "shyamoli","শ্যামলী","kallyanpur","কল্যাণপুর","adabor","আদাবর",
+  "motijheel","মতিঝিল","paltan","পল্টন","gulistan","গুলিস্তান",
+  "jatrabari","যাত্রাবাড়ী","wari","ওয়ারী","sutrapur","সূত্রাপুর",
+  "lalbagh","লালবাগ","old dhaka","পুরান ঢাকা","demra","ডেমরা",
+  "basabo","বাসাবো","mugda","মুগদা","niketon","নিকেতন","baridhara","বারিধারা"
+];
+
+const SUB_DHAKA_KEYWORDS = [
+  "savar","সাভার","ashulia","আশুলিয়া","keraniganj","কেরানীগঞ্জ",
+  "tongi","টঙ্গী","gazipur","গাজীপুর","narayanganj","নারায়ণগঞ্জ",
+  "rupganj","রূপগঞ্জ","kaliganj","কালীগঞ্জ","dohar","দোহার",
+  "nawabganj","নবাবগঞ্জ","sonargaon","সোনারগাঁও","joydebpur","জয়দেবপুর"
+];
+
+function containsLocationKeyword(text,list){
+  const value=String(text||"").toLowerCase();
+  return list.some(function(keyword){
+    return value.includes(keyword.toLowerCase());
+  });
+}
+
+function detectDeliveryArea(){
+
+  const location =
+    document.getElementById("deliveryLocation").value.trim();
+
+  const areaInput =
+    document.getElementById("deliveryArea");
+
+  const hint =
+    document.getElementById("deliveryHint");
+
+  if(!location){
+    areaInput.value="";
+    hint.textContent =
+      "লোকেশন দিলে Delivery Charge অটোমেটিক যোগ হবে।";
+    updateDelivery();
+    return;
+  }
+
+  let area="";
+
+  if(containsLocationKeyword(location,INSIDE_DHAKA_KEYWORDS)){
+    area="Inside Dhaka";
+  }else if(containsLocationKeyword(location,SUB_DHAKA_KEYWORDS)){
+    area="Sub Dhaka";
+  }else{
+    area="Outside Dhaka";
+  }
+
+  areaInput.value=area;
+
+  if(area==="Inside Dhaka"){
+    hint.textContent="✓ Inside Dhaka — Delivery Charge ৳80";
+  }else if(area==="Sub Dhaka"){
+    hint.textContent="✓ Sub Dhaka — Delivery Charge ৳130";
+  }else{
+    hint.textContent="✓ Outside Dhaka — Delivery Charge ৳150";
+  }
+
+  updateDelivery();
+}
+
+function copyAddressToLocation(){
+
+  const address =
+    document.getElementById("orderAddress").value.trim();
+
+  document.getElementById("deliveryLocation").value=address;
+
+  detectDeliveryArea();
+}
+
+/* =====================================================
    DELIVERY DISPLAY + AUTOMATIC GRAND TOTAL
    ===================================================== */
 
 function updateDelivery(){
 
-const area =
-document
-.getElementById("deliveryArea")
-.value;
+  const area =
+    document.getElementById("deliveryArea").value;
 
+  const charge =
+    getDeliveryCharge();
 
-/*
-   FIXED CHARGES:
-   Inside Dhaka = ৳80
-   Sub Dhaka = ৳130
-   Outside Dhaka = ৳150
-*/
+  const productTotal =
+    getProductTotal();
 
-const charge =
-area==="Inside Dhaka"
-?80
-:area==="Sub Dhaka"
-?130
-:150;
+  const total =
+    productTotal + charge;
 
+  document.getElementById("checkoutSummary").innerHTML = `
+    <div class="totals">
 
-const productTotal =
-getProductTotal();
+      <div class="total-line">
+        <span>Product Total</span>
+        <b>${money(productTotal)}</b>
+      </div>
 
+      <div class="total-line">
+        <span>Delivery Charge</span>
+        <b>${area ? money(charge) : "লোকেশন দিন"}</b>
+      </div>
 
-const total =
-productTotal +
-charge;
+      <div class="total-line grand">
+        <span>Grand Total</span>
+        <span>${money(total)}</span>
+      </div>
 
-
-document
-.getElementById("deliveryHint")
-.textContent =
-area==="Inside Dhaka"
-?"Inside Dhaka — Delivery ৳80"
-:area==="Sub Dhaka"
-?"Sub Dhaka — Delivery ৳130"
-:"Outside Dhaka — Delivery ৳150";
-
-
-document
-.getElementById("checkoutSummary")
-.innerHTML = `
-
-<div class="totals">
-
-<div class="total-line">
-
-<span>
-Product Total
-</span>
-
-<b>
-${money(productTotal)}
-</b>
-
-</div>
-
-<div class="total-line">
-
-<span>
-Delivery Charge
-</span>
-
-<b>
-${money(charge)}
-</b>
-
-</div>
-
-<div class="total-line grand">
-
-<span>
-Grand Total
-</span>
-
-<span>
-${money(total)}
-</span>
-
-</div>
-
-</div>
-
-`;
-
+    </div>
+  `;
 }
 
 
@@ -2027,6 +2063,12 @@ document
 .getElementById("deliveryArea")
 .value;
 
+const deliveryLocation =
+document
+.getElementById("deliveryLocation")
+.value
+.trim();
+
 
 const message =
 document
@@ -2043,6 +2085,20 @@ return;
 }
 
 
+detectDeliveryArea();
+
+const detectedArea =
+document.getElementById("deliveryArea").value;
+
+if(!deliveryLocation || !detectedArea){
+
+message.innerHTML =
+'<div class="notice error">ডেলিভারি লোকেশন দিন। লোকেশন অনুযায়ী Delivery Charge অটোমেটিক হিসাব হবে।</div>';
+
+return;
+
+}
+
 const clientOrderId =
 createClientOrderId();
 
@@ -2057,12 +2113,11 @@ getProductTotal();
    Sub Dhaka = ৳130
    Outside Dhaka = ৳150
 */
+const finalDeliveryArea =
+document.getElementById("deliveryArea").value;
+
 const deliveryCharge =
-deliveryArea==="Inside Dhaka"
-?80
-:deliveryArea==="Sub Dhaka"
-?130
-:150;
+getDeliveryCharge();
 
 
 const grandTotal =
@@ -2104,7 +2159,10 @@ phone:phone,
 address:address,
 
 deliveryArea:
-deliveryArea,
+finalDeliveryArea,
+
+deliveryLocation:
+deliveryLocation,
 
 items:items,
 
