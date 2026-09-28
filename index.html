@@ -1795,14 +1795,20 @@ document
 .value="";
 
 
-/*
-   ALWAYS START WITH INSIDE DHAKA
-   ৳80
+/* Start with no delivery area.
+   The customer's Address will determine:
+   Inside Dhaka = ৳80
+   Sub Dhaka = ৳130
+   Outside Dhaka = ৳150
 */
-
 document
 .getElementById("deliveryArea")
-.value="Inside Dhaka";
+.value="";
+
+document
+.getElementById("deliveryHint")
+.textContent =
+"Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
 
 
 try{
