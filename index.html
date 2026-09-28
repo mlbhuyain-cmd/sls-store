@@ -107,6 +107,17 @@ header{
   box-shadow:0 8px 30px rgba(0,0,0,.08);
 }
 
+.hero-video{
+  width:100%;
+  max-width:260px;
+  height:180px;
+  object-fit:cover;
+  display:block;
+  margin:0 auto 18px;
+  border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+}
+
 .hero-emoji{
   font-size:75px;
 }
@@ -553,9 +564,15 @@ Shop Now / কিনুন
 
 <div class="hero-box">
 
-<div class="hero-emoji">
-💄✨🧴
-</div>
+<video
+  class="hero-video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="auto"
+  src="./SLS_Store_hero_lipstick_video.mp4">
+</video>
 
 <h2>
 SLS Store
@@ -566,6 +583,7 @@ Cash on Delivery
 </p>
 
 <p class="muted">
+<b>Delivery Charge</b><br>
 Inside Dhaka ৳80<br>
 Outside Dhaka ৳150
 </p>
