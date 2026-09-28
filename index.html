@@ -3059,5 +3059,83 @@ updateCartCount();
 
 </script>
 
+<script>
+/* FINAL AUTOMATIC DELIVERY LISTENER */
+document.addEventListener("input", function(event) {
+  if (event.target && event.target.id === "orderAddress") {
+    const address = event.target.value || "";
+    const areaEl = document.getElementById("deliveryArea");
+    const hintEl = document.getElementById("deliveryHint");
+    const summaryEl = document.getElementById("checkoutSummary");
+
+    let area = "";
+    const textValue = address.toLowerCase();
+
+    const subWords = [
+      "gazipur","গাজীপুর","konabari","কোনাবাড়ী","savar","সাভার",
+      "ashulia","আশুলিয়া","tongi","টঙ্গী","narayanganj","নারায়ণগঞ্জ",
+      "rupganj","রূপগঞ্জ","keraniganj","কেরানীগঞ্জ","kaliganj","কালীগঞ্জ",
+      "dohar","দোহার","nawabganj","নবাবগঞ্জ","sonargaon","সোনারগাঁও",
+      "joydebpur","জয়দেবপুর"
+    ];
+
+    const insideWords = [
+      "dhaka","ঢাকা","khilgaon","খিলগাঁও","tilpapara","তিলপাপাড়া",
+      "malibagh","মালিবাগ","rampura","রামপুরা","badda","বাড্ডা",
+      "gulshan","গুলশান","banani","বনানী","mohakhali","মহাখালী",
+      "uttara","উত্তরা","mirpur","মিরপুর","kazipara","কাজীপাড়া",
+      "shewrapara","শেওড়াপাড়া","agargaon","আগারগাঁও","farmgate","ফার্মগেট",
+      "tejgaon","তেজগাঁও","dhanmondi","ধানমন্ডি","mohammadpur","মোহাম্মদপুর",
+      "shyamoli","শ্যামলী","kallyanpur","কল্যাণপুর","adabor","আদাবর",
+      "motijheel","মতিঝিল","paltan","পল্টন","gulistan","গুলিস্তান",
+      "jatrabari","যাত্রাবাড়ী","wari","ওয়ারী","sutrapur","সূত্রাপুর",
+      "lalbagh","লালবাগ","demra","ডেমরা","basabo","বাসাবো","mugda","মুগদা"
+    ];
+
+    if (subWords.some(w => textValue.includes(w))) {
+      area = "Sub Dhaka";
+    } else if (insideWords.some(w => textValue.includes(w))) {
+      area = "Inside Dhaka";
+    } else if (address.trim()) {
+      area = "Outside Dhaka";
+    }
+
+    if (areaEl) areaEl.value = area;
+
+    const charge =
+      area === "Inside Dhaka" ? 80 :
+      area === "Sub Dhaka" ? 130 :
+      area === "Outside Dhaka" ? 150 : 0;
+
+    if (hintEl) {
+      hintEl.textContent =
+        area === "Inside Dhaka" ? "✓ Inside Dhaka — Delivery Charge ৳80" :
+        area === "Sub Dhaka" ? "✓ Sub Dhaka — Delivery Charge ৳130" :
+        area === "Outside Dhaka" ? "✓ Outside Dhaka — Delivery Charge ৳150" :
+        "Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
+    }
+
+    if (summaryEl && typeof getProductTotal === "function" && typeof money === "function") {
+      const productTotal = getProductTotal();
+      summaryEl.innerHTML = `
+        <div class="totals">
+          <div class="total-line">
+            <span>Product Total</span>
+            <b>${money(productTotal)}</b>
+          </div>
+          <div class="total-line">
+            <span>Delivery Charge</span>
+            <b>${area ? money(charge) : "লোকেশন দিন"}</b>
+          </div>
+          <div class="total-line grand">
+            <span>Grand Total</span>
+            <span>${money(productTotal + charge)}</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+});
+</script>
 </body>
 </html>
