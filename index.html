@@ -852,7 +852,7 @@ Address / ঠিকানা
 <textarea
 id="orderAddress"
 placeholder="House, Road, Area, City"
-oninput="detectDeliveryAreaFromAddress()"></textarea>
+oninput="applyAutomaticDelivery()" onkeyup="applyAutomaticDelivery()"></textarea>
 
 </div>
 
@@ -1936,23 +1936,91 @@ function detectDeliveryArea(){
   detectDeliveryAreaFromAddress();
 }
 
+function getAreaFromAddress(address){
+
+  const value = String(address || "").toLowerCase().trim();
+
+  if(!value) return "";
+
+  if(containsLocationKeyword(value,SUB_DHAKA_KEYWORDS)){
+    return "Sub Dhaka";
+  }
+
+  if(containsLocationKeyword(value,INSIDE_DHAKA_KEYWORDS)){
+    return "Inside Dhaka";
+  }
+
+  return "Outside Dhaka";
+}
+
+function applyAutomaticDelivery(){
+
+  const addressEl = document.getElementById("orderAddress");
+  const areaEl = document.getElementById("deliveryArea");
+  const hintEl = document.getElementById("deliveryHint");
+
+  if(!addressEl || !areaEl || !hintEl) return;
+
+  const area = getAreaFromAddress(addressEl.value);
+
+  areaEl.value = area;
+
+  if(!area){
+    hintEl.textContent =
+      "Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
+  }else if(area === "Inside Dhaka"){
+    hintEl.textContent =
+      "✓ Inside Dhaka — Delivery Charge ৳80";
+  }else if(area === "Sub Dhaka"){
+    hintEl.textContent =
+      "✓ Sub Dhaka — Delivery Charge ৳130";
+  }else{
+    hintEl.textContent =
+      "✓ Outside Dhaka — Delivery Charge ৳150";
+  }
+
+  updateDelivery();
+}
+
 /* =====================================================
    DELIVERY DISPLAY + AUTOMATIC GRAND TOTAL
    ===================================================== */
 
 function updateDelivery(){
 
-  const area =
-    document.getElementById("deliveryArea").value;
+  const addressEl =
+    document.getElementById("orderAddress");
+
+  const areaEl =
+    document.getElementById("deliveryArea");
+
+  const hintEl =
+    document.getElementById("deliveryHint");
+
+  let area = areaEl ? areaEl.value : "";
+
+  if(addressEl && addressEl.value.trim()){
+    area = getAreaFromAddress(addressEl.value);
+    if(areaEl) areaEl.value = area;
+
+    if(hintEl){
+      if(area === "Inside Dhaka"){
+        hintEl.textContent = "✓ Inside Dhaka — Delivery Charge ৳80";
+      }else if(area === "Sub Dhaka"){
+        hintEl.textContent = "✓ Sub Dhaka — Delivery Charge ৳130";
+      }else{
+        hintEl.textContent = "✓ Outside Dhaka — Delivery Charge ৳150";
+      }
+    }
+  }
 
   const charge =
-    getDeliveryCharge();
+    area==="Inside Dhaka" ? 80 :
+    area==="Sub Dhaka" ? 130 :
+    area==="Outside Dhaka" ? 150 : 0;
 
-  const productTotal =
-    getProductTotal();
-
-  const total =
-    productTotal + charge;
+  const productTotal = getProductTotal();
+  const total = productTotal + charge;
 
   document.getElementById("checkoutSummary").innerHTML = `
     <div class="totals">
@@ -2976,6 +3044,18 @@ event.target
 renderProducts();
 
 updateCartCount();
+
+(function setupAutomaticDelivery(){
+
+  const address = document.getElementById("orderAddress");
+
+  if(address){
+    address.addEventListener("input", applyAutomaticDelivery);
+    address.addEventListener("change", applyAutomaticDelivery);
+    address.addEventListener("keyup", applyAutomaticDelivery);
+  }
+
+})();
 
 </script>
 
