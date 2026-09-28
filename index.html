@@ -605,6 +605,8 @@ All Products / সব পণ্য
 
 <input
 id="searchInput"
+autocomplete="off"
+name="product-search"
 class="search"
 placeholder="Search products / পণ্য খুঁজুন..."
 oninput="renderProducts()"
@@ -1526,6 +1528,12 @@ function(user){
 
 currentUser =
 user || null;
+
+/* Never show login email in the product search box */
+const searchBox = document.getElementById("searchInput");
+if(searchBox){
+  searchBox.value = "";
+}
 
 const button =
 document.getElementById("authButton");
