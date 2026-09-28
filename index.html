@@ -1883,10 +1883,17 @@ function containsLocationKeyword(text,list){
   });
 }
 
-function detectDeliveryArea(){
+/* =====================================================
+   AUTOMATIC DELIVERY FROM ADDRESS
+   Address is the only input the customer needs.
+   Inside Dhaka = 80
+   Sub Dhaka = 130
+   Outside Dhaka = 150
+   ===================================================== */
+function detectDeliveryAreaFromAddress(){
 
-  const location =
-    document.getElementById("deliveryLocation").value.trim();
+  const address =
+    document.getElementById("orderAddress").value.trim();
 
   const areaInput =
     document.getElementById("deliveryArea");
@@ -1894,22 +1901,21 @@ function detectDeliveryArea(){
   const hint =
     document.getElementById("deliveryHint");
 
-  if(!location){
+  if(!address){
     areaInput.value="";
     hint.textContent =
-      "লোকেশন দিলে Delivery Charge অটোমেটিক যোগ হবে।";
+      "Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
     updateDelivery();
     return;
   }
 
-  let area="";
+  let area="Outside Dhaka";
 
-  if(containsLocationKeyword(location,INSIDE_DHAKA_KEYWORDS)){
-    area="Inside Dhaka";
-  }else if(containsLocationKeyword(location,SUB_DHAKA_KEYWORDS)){
+  /* Sub-Dhaka must be checked BEFORE Inside-Dhaka. */
+  if(containsLocationKeyword(address,SUB_DHAKA_KEYWORDS)){
     area="Sub Dhaka";
-  }else{
-    area="Outside Dhaka";
+  }else if(containsLocationKeyword(address,INSIDE_DHAKA_KEYWORDS)){
+    area="Inside Dhaka";
   }
 
   areaInput.value=area;
@@ -1925,14 +1931,9 @@ function detectDeliveryArea(){
   updateDelivery();
 }
 
-function copyAddressToLocation(){
-
-  const address =
-    document.getElementById("orderAddress").value.trim();
-
-  document.getElementById("deliveryLocation").value=address;
-
-  detectDeliveryArea();
+/* Keep old function name compatible. */
+function detectDeliveryArea(){
+  detectDeliveryAreaFromAddress();
 }
 
 /* =====================================================
