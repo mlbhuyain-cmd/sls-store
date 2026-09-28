@@ -851,48 +851,1972 @@ Address / ঠিকানা
 
 <textarea
 id="orderAddress"
-placeholder="House, Road, Area, City"></textarea>
+placeholder="House, Road, Area, City"
+oninput="detectDeliveryAreaFromAddress()"></textarea>
 
 </div>
 
 
 <!-- =====================================================
-     AUTOMATIC DELIVERY AREA
-     CUSTOMER LOCATION -> AUTOMATIC DELIVERY CHARGE
-     Inside Dhaka = ৳80 | Sub Dhaka = ৳130 | Outside Dhaka = ৳150
+     AUTOMATIC DELIVERY CHARGE
+     CUSTOMER ENTERS ADDRESS ONLY
      ===================================================== -->
 
 <div class="field">
 
 <label>
-Delivery Location / ডেলিভারি লোকেশন
+Delivery Area / ডেলিভারি এলাকা
 </label>
-
-<div style="display:flex;gap:8px;align-items:stretch">
-
-<input
-id="deliveryLocation"
-type="text"
-placeholder="Area / Thana / City লিখুন"
-oninput="detectDeliveryArea()"
-style="flex:1">
-
-<button
-type="button"
-class="secondary"
-style="width:auto;margin-top:0;white-space:nowrap"
-onclick="copyAddressToLocation()">
-Use Address
-</button>
-
-</div>
 
 <div
 class="muted"
 id="deliveryHint"
 style="margin-top:8px">
 
-লোকেশন দিলে Delivery Charge অটোমেটিক যোগ হবে।
+Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।
+
+</div>
+
+<input id="deliveryArea" type="hidden" value="">
+
+</div>
+
+
+<div class="notice">
+
+Payment:
+<b>Cash on Delivery</b>
+
+<br>
+
+পণ্য হাতে পেয়ে টাকা পরিশোধ করবেন।
+
+</div>
+
+<div id="checkoutSummary"></div>
+
+<button
+class="primary"
+onclick="submitOrder()">
+
+Confirm Order / অর্ডার নিশ্চিত করুন
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ORDERS MODAL -->
+
+<div class="modal" id="ordersModal">
+
+<div class="modal-box wide">
+
+<button class="close" onclick="closeModal('ordersModal')">
+×
+</button>
+
+<h2>
+My Orders / আমার অর্ডার
+</h2>
+
+<div id="ordersMessage"></div>
+
+<div id="ordersList">
+Loading...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+/* =====================================================
+   GOOGLE APPS SCRIPT URL
+   ===================================================== */
+
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzfobB1ZAeWKhq_gZ7NBH0LZ4XaF_C-4tUVviVecdQjPTTlrZ4rwl9lPvqoWuz4aK0/exec";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+   ===================================================== */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyAwyC-viaOzMV1_JxY_kYLHlv5pcxEZgqc",
+
+authDomain:
+"sls-store-5c3c6.firebaseapp.com",
+
+projectId:
+"sls-store-5c3c6",
+
+storageBucket:
+"sls-store-5c3c6.firebasestorage.app",
+
+messagingSenderId:
+"970257728069",
+
+appId:
+"1:970257728069:web:e5502ee5442e2980d4992c",
+
+measurementId:
+"G-NWJS4FZ0GX"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const db = firebase.firestore();
+
+
+/* =====================================================
+   PRODUCTS
+   ===================================================== */
+
+const products = [
+
+{
+id:1,
+name:"Glow Foundation",
+bn:"গ্লো ফাউন্ডেশন",
+price:750,
+emoji:"💄",
+category:"Makeup"
+},
+
+{
+id:2,
+name:"Compact Powder",
+bn:"কমপ্যাক্ট পাউডার",
+price:480,
+emoji:"🧴",
+category:"Makeup"
+},
+
+{
+id:3,
+name:"Matte Lipstick",
+bn:"ম্যাট লিপস্টিক",
+price:350,
+emoji:"💋",
+category:"Lips"
+},
+
+{
+id:4,
+name:"Lip Gloss",
+bn:"লিপ গ্লস",
+price:320,
+emoji:"💄",
+category:"Lips"
+},
+
+{
+id:5,
+name:"Eye Liner",
+bn:"আই লাইনার",
+price:280,
+emoji:"👁️",
+category:"Eyes"
+},
+
+{
+id:6,
+name:"Mascara",
+bn:"মাসকারা",
+price:420,
+emoji:"🖤",
+category:"Eyes"
+},
+
+{
+id:7,
+name:"Makeup Brush Set",
+bn:"মেকআপ ব্রাশ সেট",
+price:650,
+emoji:"🖌️",
+category:"Tools"
+},
+
+{
+id:8,
+name:"Face Serum",
+bn:"ফেস সিরাম",
+price:580,
+emoji:"🧴",
+category:"Skincare"
+}
+
+];
+
+
+let cart =
+JSON.parse(
+localStorage.getItem("sls_cart") || "[]"
+);
+
+let authMode = "login";
+
+let currentUser = null;
+
+let statusTimers = {};
+
+
+/* =====================================================
+   HELPER FUNCTIONS
+   ===================================================== */
+
+function money(number){
+
+return "৳" +
+Number(number || 0)
+.toLocaleString("en-BD");
+
+}
+
+
+function escapeHTML(text){
+
+return String(text ?? "")
+.replace(/[&<>"']/g,function(char){
+
+return {
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[char];
+
+});
+
+}
+
+
+function saveCart(){
+
+localStorage.setItem(
+"sls_cart",
+JSON.stringify(cart)
+);
+
+updateCartCount();
+
+}
+
+
+function updateCartCount(){
+
+document.getElementById("cartCount")
+.textContent =
+cart.reduce(
+(total,item)=>total + item.qty,
+0
+);
+
+}
+
+
+function closeModal(id){
+
+document
+.getElementById(id)
+.classList
+.remove("show");
+
+}
+
+
+function openModal(id){
+
+document
+.getElementById(id)
+.classList
+.add("show");
+
+}
+
+
+function goHome(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/* =====================================================
+   PRODUCT DISPLAY
+   ===================================================== */
+
+function renderProducts(){
+
+const search =
+(
+document
+.getElementById("searchInput")
+.value || ""
+)
+.toLowerCase()
+.trim();
+
+const list =
+products.filter(function(product){
+
+return !search ||
+
+product.name
+.toLowerCase()
+.includes(search) ||
+
+product.bn
+.toLowerCase()
+.includes(search) ||
+
+product.category
+.toLowerCase()
+.includes(search);
+
+});
+
+
+const grid =
+document.getElementById("productGrid");
+
+
+if(!list.length){
+
+grid.innerHTML =
+'<div class="empty" style="grid-column:1/-1">কোনো পণ্য পাওয়া যায়নি।</div>';
+
+return;
+
+}
+
+
+grid.innerHTML =
+list.map(function(product){
+
+return `
+
+<div class="product">
+
+<div class="product-image">
+${product.emoji}
+</div>
+
+<div class="product-content">
+
+<h3>
+${escapeHTML(product.name)}
+</h3>
+
+<div class="product-bn">
+${escapeHTML(product.bn)}
+</div>
+
+<div class="muted">
+${escapeHTML(product.category)}
+</div>
+
+<div class="price">
+${money(product.price)}
+</div>
+
+<button
+class="primary"
+onclick="addToCart(${product.id})">
+
+Add to Cart / কার্টে যোগ করুন
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+/* =====================================================
+   CART
+   ===================================================== */
+
+function addToCart(id){
+
+const product =
+products.find(
+p=>p.id===id
+);
+
+if(!product)return;
+
+const existing =
+cart.find(
+item=>item.id===id
+);
+
+if(existing){
+
+existing.qty++;
+
+}else{
+
+cart.push({
+
+id:product.id,
+name:product.name,
+price:product.price,
+qty:1
+
+});
+
+}
+
+saveCart();
+
+openCart();
+
+}
+
+
+function changeQty(id,change){
+
+const item =
+cart.find(
+x=>x.id===id
+);
+
+if(!item)return;
+
+item.qty += change;
+
+if(item.qty<=0){
+
+cart =
+cart.filter(
+x=>x.id!==id
+);
+
+}
+
+saveCart();
+
+renderCart();
+
+}
+
+
+function removeFromCart(id){
+
+cart =
+cart.filter(
+x=>x.id!==id
+);
+
+saveCart();
+
+renderCart();
+
+}
+
+
+function getProductTotal(){
+
+return cart.reduce(
+
+(total,item)=>
+total +
+(item.price * item.qty),
+
+0
+
+);
+
+}
+
+
+/* =====================================================
+   FIXED DELIVERY CHARGE
+   INSIDE DHAKA = 80
+   OUTSIDE DHAKA = 150
+   ===================================================== */
+
+function getDeliveryCharge(){
+
+const area =
+document.getElementById("deliveryArea").value;
+
+if(area==="Inside Dhaka") return 80;
+if(area==="Sub Dhaka") return 130;
+if(area==="Outside Dhaka") return 150;
+
+return 0;
+
+}
+
+
+function openCart(){
+
+renderCart();
+
+openModal("cartModal");
+
+}
+
+
+function renderCart(){
+
+const box =
+document
+.getElementById("cartItems");
+
+
+if(!cart.length){
+
+box.innerHTML =
+'<div class="empty">Your cart is empty / আপনার কার্ট খালি।</div>';
+
+document
+.getElementById("cartTotals")
+.innerHTML="";
+
+return;
+
+}
+
+
+box.innerHTML =
+cart.map(function(item){
+
+return `
+
+<div class="cart-row">
+
+<div>
+
+<b>
+${escapeHTML(item.name)}
+</b>
+
+<br>
+
+<span class="muted">
+${money(item.price)} each
+</span>
+
+</div>
+
+<div class="qty">
+
+<button
+onclick="changeQty(${item.id},-1)">
+−
+</button>
+
+<b>
+${item.qty}
+</b>
+
+<button
+onclick="changeQty(${item.id},1)">
++
+</button>
+
+</div>
+
+<b>
+${money(item.price * item.qty)}
+</b>
+
+<button
+class="remove"
+onclick="removeFromCart(${item.id})">
+
+Remove
+
+</button>
+
+</div>
+
+`;
+
+}).join("");
+
+
+document
+.getElementById("cartTotals")
+.innerHTML = `
+
+<div class="totals">
+
+<div class="total-line">
+
+<span>
+Product Total
+</span>
+
+<b>
+${money(getProductTotal())}
+</b>
+
+</div>
+
+<div class="total-line">
+
+<span>
+Delivery
+</span>
+
+<b>
+Checkout-এ হিসাব হবে
+</b>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =====================================================
+   AUTH
+   ===================================================== */
+
+auth.onAuthStateChanged(
+function(user){
+
+currentUser =
+user || null;
+
+/* Never show login email in the product search box */
+const searchBox = document.getElementById("searchInput");
+if(searchBox){
+  searchBox.value = "";
+}
+
+const button =
+document.getElementById("authButton");
+
+if(user){
+
+button.textContent =
+"Logout / লগআউট";
+
+}else{
+
+button.textContent =
+"Login / লগইন";
+
+}
+
+}
+);
+
+
+function authButtonClick(){
+
+if(currentUser){
+
+auth.signOut();
+
+return;
+
+}
+
+openAuth();
+
+}
+
+
+function openAuth(){
+
+document
+.getElementById("authMessage")
+.innerHTML="";
+
+openModal("authModal");
+
+}
+
+
+function toggleAuthMode(){
+
+authMode =
+authMode==="login"
+?"register"
+:"login";
+
+
+document
+.getElementById("authTitle")
+.textContent =
+authMode==="login"
+?"Login / লগইন"
+:"Register / রেজিস্টার";
+
+
+document
+.getElementById("authSubmit")
+.textContent =
+authMode==="login"
+?"Login / লগইন"
+:"Create Account / অ্যাকাউন্ট তৈরি করুন";
+
+
+document
+.getElementById("authToggle")
+.textContent =
+authMode==="login"
+?"Create Account / নতুন অ্যাকাউন্ট"
+:"Back to Login / লগইনে ফিরে যান";
+
+
+document
+.getElementById("nameField")
+.style.display =
+authMode==="register"
+?"block"
+:"none";
+
+
+document
+.getElementById("authMessage")
+.innerHTML="";
+
+}
+
+
+async function submitAuth(){
+
+const email =
+document
+.getElementById("authEmail")
+.value
+.trim();
+
+const password =
+document
+.getElementById("authPassword")
+.value;
+
+const name =
+document
+.getElementById("authName")
+.value
+.trim();
+
+const message =
+document
+.getElementById("authMessage");
+
+
+message.innerHTML =
+'<div class="notice">Please wait...</div>';
+
+
+try{
+
+if(authMode==="register"){
+
+if(!name){
+
+throw new Error(
+"Name is required."
+);
+
+}
+
+
+const credential =
+await auth
+.createUserWithEmailAndPassword(
+email,
+password
+);
+
+
+await db
+.collection("users")
+.doc(credential.user.uid)
+.set({
+
+name:name,
+email:email,
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+},{merge:true});
+
+
+}else{
+
+await auth
+.signInWithEmailAndPassword(
+email,
+password
+);
+
+}
+
+
+closeModal("authModal");
+
+
+}catch(error){
+
+message.innerHTML =
+'<div class="notice error">'+
+escapeHTML(error.message)+
+'</div>';
+
+}
+
+}
+
+
+async function resetPassword(){
+
+const email =
+document
+.getElementById("authEmail")
+.value
+.trim();
+
+const message =
+document
+.getElementById("authMessage");
+
+
+if(!email){
+
+message.innerHTML =
+'<div class="notice error">আগে Email লিখুন।</div>';
+
+return;
+
+}
+
+
+try{
+
+await auth
+.sendPasswordResetEmail(email);
+
+message.innerHTML =
+'<div class="notice success">Password reset email পাঠানো হয়েছে।</div>';
+
+}catch(error){
+
+message.innerHTML =
+'<div class="notice error">'+
+escapeHTML(error.message)+
+'</div>';
+
+}
+
+}
+
+
+/* =====================================================
+   CHECKOUT
+   ===================================================== */
+
+async function checkout(){
+
+if(!cart.length){
+
+alert(
+"Cart is empty / কার্ট খালি।"
+);
+
+return;
+
+}
+
+
+if(!currentUser){
+
+closeModal("cartModal");
+
+openAuth();
+
+return;
+
+}
+
+
+closeModal("cartModal");
+
+
+document
+.getElementById("checkoutMessage")
+.innerHTML="";
+
+
+document
+.getElementById("orderPhone")
+.value="";
+
+
+document
+.getElementById("orderAddress")
+.value="";
+
+
+/*
+   ALWAYS START WITH INSIDE DHAKA
+   ৳80
+*/
+
+document
+.getElementById("deliveryArea")
+.value="Inside Dhaka";
+
+
+try{
+
+const userDoc =
+await db
+.collection("users")
+.doc(currentUser.uid)
+.get();
+
+
+if(userDoc.exists){
+
+const data =
+userDoc.data();
+
+document
+.getElementById("orderName")
+.value =
+data.name || "";
+
+}else{
+
+document
+.getElementById("orderName")
+.value =
+currentUser.displayName || "";
+
+}
+
+}catch(error){
+
+document
+.getElementById("orderName")
+.value =
+currentUser.displayName || "";
+
+}
+
+
+updateDelivery();
+
+openModal("checkoutModal");
+
+}
+
+
+/* =====================================================
+   AUTOMATIC DELIVERY AREA DETECTION
+   ===================================================== */
+
+const INSIDE_DHAKA_KEYWORDS = [
+  "dhaka","ঢাকা","khilgaon","খিলগাঁও","tilpapara","তিলপাপাড়া",
+  "malibagh","মালিবাগ","rampura","রামপুরা","badda","বাড্ডা",
+  "gulshan","গুলশান","banani","বনানী","mohakhali","মহাখালী",
+  "uttara","উত্তরা","mirpur","মিরপুর","kazipara","কাজীপাড়া",
+  "shewrapara","শেওড়াপাড়া","agargaon","আগারগাঁও","farmgate","ফার্মগেট",
+  "tejgaon","তেজগাঁও","dhanmondi","ধানমন্ডি","mohammadpur","মোহাম্মদপুর",
+  "shyamoli","শ্যামলী","kallyanpur","কল্যাণপুর","adabor","আদাবর",
+  "motijheel","মতিঝিল","paltan","পল্টন","gulistan","গুলিস্তান",
+  "jatrabari","যাত্রাবাড়ী","wari","ওয়ারী","sutrapur","সূত্রাপুর",
+  "lalbagh","লালবাগ","old dhaka","পুরান ঢাকা","demra","ডেমরা",
+  "basabo","বাসাবো","mugda","মুগদা","niketon","নিকেতন","baridhara","বারিধারা"
+];
+
+const SUB_DHAKA_KEYWORDS = [
+  "savar","সাভার","ashulia","আশুলিয়া","keraniganj","কেরানীগঞ্জ",
+  "tongi","টঙ্গী","gazipur","গাজীপুর","narayanganj","নারায়ণগঞ্জ",
+  "rupganj","রূপগঞ্জ","kaliganj","কালীগঞ্জ","dohar","দোহার",
+  "nawabganj","নবাবগঞ্জ","sonargaon","সোনারগাঁও","joydebpur","জয়দেবপুর"
+];
+
+function containsLocationKeyword(text,list){
+  const value=String(text||"").toLowerCase();
+  return list.some(function(keyword){
+    return value.includes(keyword.toLowerCase());
+  });
+}
+
+function detectDeliveryAreaFromAddress(){
+
+  const address =
+    document.getElementById("orderAddress").value.trim();
+
+  const areaInput =
+    document.getElementById("deliveryArea");
+
+  const hint =
+    document.getElementById("deliveryHint");
+
+  if(!address){
+    areaInput.value="";
+    hint.textContent =
+      "Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
+    updateDelivery();
+    return;
+  }
+
+  let area="";
+
+  /*
+    IMPORTANT:
+    Check Sub Dhaka first so words such as Gazipur,
+    Savar and Narayanganj are not treated as Inside Dhaka.
+  */
+
+  if(containsLocationKeyword(address,SUB_DHAKA_KEYWORDS)){
+    area="Sub Dhaka";
+  }else if(containsLocationKeyword(address,INSIDE_DHAKA_KEYWORDS)){
+    area="Inside Dhaka";
+  }else{
+    area="Outside Dhaka";
+  }
+
+  areaInput.value=area;
+
+  if(area==="Inside Dhaka"){
+    hint.textContent =
+      "✓ Inside Dhaka — Delivery Charge ৳80";
+  }else if(area==="Sub Dhaka"){
+    hint.textContent =
+      "✓ Sub Dhaka — Delivery Charge ৳130";
+  }else{
+    hint.textContent =
+      "✓ Outside Dhaka — Delivery Charge ৳150";
+  }
+
+  updateDelivery();
+}
+
+/* Backward-compatible function */
+function detectDeliveryArea(){
+  detectDeliveryAreaFromAddress();
+}
+
+/* =====================================================
+   DELIVERY DISPLAY + AUTOMATIC GRAND TOTAL
+   ===================================================== */<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SLS Store - Cosmetics</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#fff7fa;
+  color:#222;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:white;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+
+.nav{
+  max-width:1200px;
+  margin:auto;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo{
+  margin-right:auto;
+  display:flex;
+  align-items:center;
+}
+.logo img{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+}
+
+.nav button{
+  border:0;
+  background:white;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.nav button:hover{
+  background:#fff0f5;
+}
+
+.cart-button{
+  background:#e91e63!important;
+  color:white!important;
+  font-weight:bold;
+}
+
+.hero{
+  background:linear-gradient(135deg,#ffe0eb,#fff);
+  padding:55px 18px;
+}
+
+.hero-inner{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.3fr .7fr;
+  gap:30px;
+  align-items:center;
+}
+
+.hero-logo{
+  width:120px;
+  height:120px;
+  object-fit:contain;
+  display:block;
+  margin:0 0 18px;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,.10));
+}
+
+.hero h1{
+  font-size:55px;
+  margin:0 0 15px;
+}
+
+.hero p{
+  font-size:18px;
+  line-height:1.7;
+  color:#555;
+}
+
+.hero-box{
+  background:white;
+  border-radius:25px;
+  padding:30px;
+  text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+.hero-video{
+  width:100%;
+  max-width:260px;
+  height:180px;
+  object-fit:cover;
+  display:block;
+  margin:0 auto 18px;
+  border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,.10);
+}
+
+.hero-emoji{
+  font-size:75px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 18px;
+}
+
+.search{
+  width:100%;
+  padding:14px;
+  border:1px solid #ead5dd;
+  border-radius:12px;
+  font-size:16px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-top:20px;
+}
+
+.product{
+  background:white;
+  border:1px solid #efdce4;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.product-image{
+  height:190px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#fff0f5,#ffe1eb);
+  font-size:70px;
+}
+
+.product-content{
+  padding:16px;
+}
+
+.product h3{
+  margin:0 0 6px;
+}
+
+.product-bn{
+  color:#777;
+  font-size:14px;
+}
+
+.price{
+  color:#e91e63;
+  font-size:20px;
+  font-weight:bold;
+  margin:12px 0;
+}
+
+.primary{
+  width:100%;
+  border:0;
+  background:#e91e63;
+  color:white;
+  padding:12px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.primary:hover{
+  background:#c2185b;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:35px;
+}
+
+.feature{
+  background:white;
+  border:1px solid #efdce4;
+  padding:20px;
+  border-radius:14px;
+  text-align:center;
+}
+
+footer{
+  background:#222;
+  color:white;
+  text-align:center;
+  padding:35px 15px;
+  margin-top:30px;
+}
+
+/* MODAL */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:500;
+  padding:20px;
+  overflow:auto;
+}
+
+.modal.show{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-box{
+  width:min(650px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:white;
+  border-radius:18px;
+  padding:22px;
+  position:relative;
+}
+
+.modal-box.wide{
+  width:min(900px,100%);
+}
+
+.close{
+  position:absolute;
+  right:12px;
+  top:10px;
+  border:0;
+  background:#f3f3f3;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.field{
+  margin:14px 0;
+}
+
+.field label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.field input,
+.field textarea,
+.field select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+
+.field textarea{
+  min-height:90px;
+}
+
+.secondary{
+  width:100%;
+  border:1px solid #e91e63;
+  background:white;
+  color:#e91e63;
+  padding:12px;
+  border-radius:10px;
+  font-weight:bold;
+  margin-top:9px;
+  cursor:pointer;
+}
+
+.notice{
+  padding:12px;
+  border-radius:10px;
+  background:#fff4f7;
+  color:#9c1748;
+  margin:10px 0;
+}
+
+.success{
+  background:#eafff1;
+  color:#17743c;
+}
+
+.error{
+  background:#fff0f0;
+  color:#b00020;
+}
+
+.cart-row{
+  display:grid;
+  grid-template-columns:1fr auto auto auto;
+  gap:10px;
+  align-items:center;
+  padding:13px 0;
+  border-bottom:1px solid #eee;
+}
+
+.qty{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.qty button{
+  border:1px solid #ddd;
+  background:white;
+  width:30px;
+  height:30px;
+  border-radius:7px;
+}
+
+.remove{
+  border:0;
+  background:#ffe8ee;
+  color:#b0003a;
+  padding:7px 10px;
+  border-radius:7px;
+}
+
+.totals{
+  background:#fff7fa;
+  padding:15px;
+  border-radius:12px;
+  margin:15px 0;
+}
+
+.total-line{
+  display:flex;
+  justify-content:space-between;
+  margin:7px 0;
+}
+
+.grand{
+  border-top:1px solid #ead5dd;
+  padding-top:10px;
+  font-size:21px;
+  font-weight:bold;
+  color:#e91e63;
+}
+
+.order-card{
+  background:white;
+  border:1px solid #efdce4;
+  border-radius:14px;
+  padding:16px;
+  margin:12px 0;
+}
+
+.order-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 11px;
+  border-radius:50px;
+  background:#fff0d8;
+  color:#9a6200;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.badge.confirmed{
+  background:#e8f1ff;
+  color:#1854a6;
+}
+
+.badge.processing{
+  background:#f0e9ff;
+  color:#6937a6;
+}
+
+.badge.delivery{
+  background:#e5fff0;
+  color:#16713c;
+}
+
+.status-track{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin:15px 0;
+}
+
+.status-step{
+  text-align:center;
+  padding:8px 3px;
+  border-radius:8px;
+  background:#eee;
+  font-size:11px;
+}
+
+.status-step.active{
+  background:#e91e63;
+  color:white;
+}
+
+.order-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.refresh{
+  border:0;
+  background:#f3f3f3;
+  padding:9px 12px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+.invoice{
+  background:#16803c;
+  color:white;
+  padding:9px 12px;
+  border-radius:9px;
+  text-decoration:none;
+}
+
+.empty{
+  text-align:center;
+  padding:30px;
+  color:#777;
+}
+
+.muted{
+  color:#777;
+  font-size:14px;
+}
+
+@media(max-width:900px){
+  .products{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .hero-inner{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:650px){
+  .products{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .features{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .cart-row{
+    grid-template-columns:1fr auto;
+  }
+}
+
+@media(max-width:430px){
+  .products{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+<div class="nav">
+
+<div class="logo">
+<img src="./assets/sls-logo-real.webp?v=20260928-12" alt="SLS Store Logo" width="58" height="58">
+</div>
+
+<button onclick="goHome()">
+Home / হোম
+</button>
+
+<button onclick="openOrders()">
+My Orders / আমার অর্ডার
+</button>
+
+<button id="authButton" onclick="authButtonClick()">
+Login / লগইন
+</button>
+
+<button class="cart-button" onclick="openCart()">
+Cart 🛒 (<span id="cartCount">0</span>)
+</button>
+
+</div>
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-inner">
+
+<div>
+
+<img
+class="hero-logo"
+src="./assets/sls-logo-real.webp?v=20260928-12"
+alt="SLS Store Logo">
+
+<h1>
+Beauty You’ll Love 💕
+</h1>
+
+<p>
+আপনার পছন্দের কসমেটিকস এখন সহজেই অর্ডার করুন।<br>
+Fresh Products • Great Value • Friendly Service
+</p>
+
+<button
+class="primary"
+style="width:auto;padding:13px 22px"
+onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+
+Shop Now / কিনুন
+
+</button>
+
+</div>
+
+<div class="hero-box">
+
+<video
+  class="hero-video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="auto"
+  src="./SLS_Store_hero_lipstick_video.mp4">
+</video>
+
+<h2>
+SLS Store
+</h2>
+
+<p>
+Cash on Delivery
+</p>
+
+<p class="muted">
+<b>Delivery Charge</b><br>
+Inside Dhaka ৳80<br>
+Sub Dhaka ৳130<br>
+Outside Dhaka ৳150
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<main class="container" id="products">
+
+<h2>
+All Products / সব পণ্য
+</h2>
+
+<input
+id="searchInput"
+type="search"
+autocomplete="new-password"
+name="productSearchBox"
+class="search"
+placeholder="Search products / পণ্য খুঁজুন..."
+readonly
+onfocus="this.removeAttribute('readonly')"
+oninput="renderProducts()"
+>
+
+<div
+id="productGrid"
+class="products">
+</div>
+
+
+<div class="features">
+
+<div class="feature">
+🚚
+<br>
+<b>Home Delivery</b>
+<br>
+<span class="muted">
+ঢাকার ভিতরে ৳80<br>
+Sub Dhaka ৳130<br>
+ঢাকার বাইরে ৳150
+</span>
+</div>
+
+<div class="feature">
+💵
+<br>
+<b>Cash on Delivery</b>
+<br>
+<span class="muted">
+পণ্য হাতে পেয়ে টাকা পরিশোধ
+</span>
+</div>
+
+<div class="feature">
+📦
+<br>
+<b>Order Tracking</b>
+<br>
+<span class="muted">
+My Orders থেকে Status দেখুন
+</span>
+</div>
+
+</div>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<h3>
+SLS Store
+</h3>
+
+<p>
+Cosmetics • Cash on Delivery
+</p>
+
+<p>
+317-A Khilgaon, Dhaka, Bangladesh
+</p>
+
+<p>
+Call / WhatsApp: 01954272389
+</p>
+
+</footer>
+
+
+<!-- CART MODAL -->
+
+<div class="modal" id="cartModal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('cartModal')">
+×
+</button>
+
+<h2>
+Cart / কার্ট
+</h2>
+
+<div id="cartItems"></div>
+
+<div id="cartTotals"></div>
+
+<button
+class="primary"
+onclick="checkout()">
+
+Place Order / অর্ডার করুন
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- AUTH MODAL -->
+
+<div class="modal" id="authModal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('authModal')">
+×
+</button>
+
+<h2 id="authTitle">
+Login / লগইন
+</h2>
+
+<div id="authMessage"></div>
+
+<div
+class="field"
+id="nameField"
+style="display:none">
+
+<label>
+Name / নাম
+</label>
+
+<input
+id="authName"
+type="text"
+placeholder="Your name">
+
+</div>
+
+<div class="field">
+
+<label>
+Email / ইমেইল
+</label>
+
+<input
+id="authEmail"
+type="email"
+placeholder="you@example.com">
+
+</div>
+
+<div class="field">
+
+<label>
+Password / পাসওয়ার্ড
+</label>
+
+<input
+id="authPassword"
+type="password"
+placeholder="Minimum 6 characters">
+
+</div>
+
+<button
+class="primary"
+onclick="submitAuth()"
+id="authSubmit">
+
+Login / লগইন
+
+</button>
+
+<button
+class="secondary"
+onclick="toggleAuthMode()"
+id="authToggle">
+
+Create Account / নতুন অ্যাকাউন্ট
+
+</button>
+
+<button
+class="secondary"
+onclick="resetPassword()">
+
+Forgot Password / পাসওয়ার্ড ভুলে গেছেন?
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CHECKOUT MODAL -->
+
+<div class="modal" id="checkoutModal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('checkoutModal')">
+×
+</button>
+
+<h2>
+Checkout / অর্ডার নিশ্চিত করুন
+</h2>
+
+<div id="checkoutMessage"></div>
+
+<div class="field">
+
+<label>
+Name / নাম
+</label>
+
+<input id="orderName" type="text">
+
+</div>
+
+<div class="field">
+
+<label>
+Phone / মোবাইল
+</label>
+
+<input
+id="orderPhone"
+type="tel"
+placeholder="019xxxxxxxx">
+
+</div>
+
+<div class="field">
+
+<label>
+Address / ঠিকানা
+</label>
+
+<textarea
+id="orderAddress"
+placeholder="House, Road, Area, City"
+oninput="detectDeliveryAreaFromAddress()"></textarea>
+
+</div>
+
+
+<!-- =====================================================
+     AUTOMATIC DELIVERY CHARGE
+     CUSTOMER ENTERS ADDRESS ONLY
+     ===================================================== -->
+
+<div class="field">
+
+<label>
+Delivery Area / ডেলিভারি এলাকা
+</label>
+
+<div
+class="muted"
+id="deliveryHint"
+style="margin-top:8px">
+
+Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।
 
 </div>
 
@@ -2063,11 +3987,7 @@ document
 .getElementById("deliveryArea")
 .value;
 
-const deliveryLocation =
-document
-.getElementById("deliveryLocation")
-.value
-.trim();
+const deliveryLocation = address;
 
 
 const message =
@@ -2085,15 +4005,15 @@ return;
 }
 
 
-detectDeliveryArea();
+detectDeliveryAreaFromAddress();
 
 const detectedArea =
 document.getElementById("deliveryArea").value;
 
-if(!deliveryLocation || !detectedArea){
+if(!detectedArea){
 
 message.innerHTML =
-'<div class="notice error">ডেলিভারি লোকেশন দিন। লোকেশন অনুযায়ী Delivery Charge অটোমেটিক হিসাব হবে।</div>';
+'<div class="notice error">Address দিন। Address-এর Area অনুযায়ী Delivery Charge অটোমেটিক যোগ হবে।</div>';
 
 return;
 
