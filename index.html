@@ -1397,9 +1397,14 @@ grid.innerHTML = list.map(function(product){
 
 const image = getProductImage(product);
 const detail = getProductDetails(product);
-const stockKnown = Number.isFinite(Number(product.stock));
-const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
-const outOfStock = stockKnown && stock <= 0;
+const stockValue = Number(product.stock);
+const stockKnown = Number.isFinite(stockValue);
+const stock = stockKnown ? Math.max(0, stockValue) : null;
+const statusText = String(product.status || "").trim().toUpperCase();
+const outOfStock =
+  (stockKnown && stock <= 0) ||
+  statusText === "OUT OF STOCK" ||
+  statusText === "OUT_OF_STOCK";
 
 if(!image)return "";
 
@@ -1469,8 +1474,10 @@ category: product.category || "",
 price: (Number(product.price) > 0)
   ? Number(product.price)
   : (FALLBACK_PRICES[String(product.id)] || 0),
-stock: Number(product.stock) || 0,
-status: product.status || "",
+stock: Number.isFinite(Number(product.stock))
+  ? Math.max(0, Number(product.stock))
+  : null,
+status: String(product.status || "").trim(),
 image: product.image || "",
 details: product.details || "",
 emoji: "🛍️"
@@ -3574,6 +3581,16 @@ loadProductsFromSheet();
 setInterval(function(){
   loadProductsFromSheet();
 }, 30000);
+
+/*
+ * Re-check stock whenever the customer returns to the website.
+ * This does not change any other website functionality.
+ */
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden){
+    loadProductsFromSheet();
+  }
+});
 
 updateCartCount();
 
