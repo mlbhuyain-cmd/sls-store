@@ -1376,6 +1376,9 @@ String(product.bn || "").toLowerCase().includes(search) ||
 String(product.category || "").toLowerCase().includes(search);
 });
 
+const grid = document.getElementById("productGrid");
+if(!grid)return;
+
 /* Keep the newly added products from the latest product batch at the top.
    Everything else keeps its existing order. */
 const NEW_PRODUCT_IDS = {
