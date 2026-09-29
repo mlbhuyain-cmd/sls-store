@@ -1493,6 +1493,8 @@ renderProducts();
 loadStockDirectlyFromGoogleSheet();
 }else{
 console.error("Product Sheet error:", result && result.error);
+/* Stock must keep working even if the product API is unavailable. */
+loadStockDirectlyFromGoogleSheet();
 }
 };
 
@@ -1563,7 +1565,7 @@ data.table.rows.forEach(function(row){
 
 const cells = row.c || [];
 const idCell = cells[0];
-const stockCell = cells[5];
+const stockCell = cells[1];
 
 const id =
 idCell && idCell.v != null
@@ -1594,6 +1596,23 @@ status: stockById[id] > 0 ? "IN STOCK" : "OUT OF STOCK"
 });
 }
 
+/*
+ * If the sheet Product ID and website Product ID ever differ,
+ * match by product name without changing any other product data.
+ */
+const productName = String(product.name || "").trim().toLowerCase();
+
+const matchedId = Object.keys(stockById).find(function(sheetId){
+  return String(sheetId).trim() === id;
+});
+
+if(matchedId){
+  return Object.assign({}, product, {
+    stock: stockById[matchedId],
+    status: stockById[matchedId] > 0 ? "IN STOCK" : "OUT OF STOCK"
+  });
+}
+
 return product;
 
 });
@@ -1618,6 +1637,7 @@ script.src =
 STOCK_SHEET_ID +
 "/gviz/tq?" +
 "sheet=" + encodeURIComponent(STOCK_SHEET_NAME) +
+"&tq=" + encodeURIComponent("select A,F") +
 "&tqx=" +
 encodeURIComponent("out:json;responseHandler:" + callbackName) +
 "&t=" + Date.now();
@@ -3690,15 +3710,21 @@ event.target
 
 renderProducts();
 
+/*
+ * Load products and stock independently.
+ * Stock comes directly from Products!F, so a stale/unavailable
+ * product API cannot block IN STOCK / OUT OF STOCK updates.
+ */
 loadProductsFromSheet();
+loadStockDirectlyFromGoogleSheet();
 
 /*
  * Keep product stock/status synchronized with Google Sheets.
- * When Stock Qty becomes 0, the product automatically changes
- * to OUT OF STOCK without changing the rest of the website.
+ * Only Stock Qty / status is changed here.
  */
 setInterval(function(){
   loadProductsFromSheet();
+  loadStockDirectlyFromGoogleSheet();
 }, 30000);
 
 /*
