@@ -1078,46 +1078,25 @@ firebase.firestore();
  ************************************************************/
 
 let products = [
-/* Live product data loads from Google Sheets after page load. */
-{id:1,name:"Garnier Skin Active Micellar Cleansing Water",bn:"গার্নিয়ার মাইসেলার ক্লিনজিং ওয়াটার",price:649,emoji:"💧",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:2,name:"Missha All Around Safe Block Soft Finish Sun Milk SPF50+",bn:"মিশা সান মিল্ক SPF50+",price:1199,emoji:"☀️",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:3,name:"Simple Kind to Skin Hydrating Light Moisturiser",bn:"সিম্পল হাইড্রেটিং ময়েশ্চারাইজার",price:749,emoji:"🧴",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:4,name:"Simple Kind To Skin Refreshing Facial Wash Gel",bn:"সিম্পল ফেসিয়াল ওয়াশ জেল",price:749,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:5,name:"Rajkonna All Purpose Toner",bn:"রাজকন্যা অল পারপাস টোনার",price:120,emoji:"💦",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:7,name:"Skin Cafe Sunscreen SPF 50 PA+++ Lightweight & Non-Greasy",bn:"স্কিন ক্যাফে সানস্ক্রিন SPF 50",price:549,emoji:"☀️",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:8,name:"Rajkonna Acne Fighting Facial Wash With Jojoba Beads",bn:"রাজকন্যা অ্যাকনে ফাইটিং ফেসওয়াশ",price:157,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:9,name:"Skin Cafe 100% Natural Rose Water Face And Body Mist",bn:"স্কিন ক্যাফে রোজ ওয়াটার মিস্ট",price:256,emoji:"🌹",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:10,name:"Rajkonna Multani Mati",bn:"রাজকন্যা মুলতানি মাটি",price:110,emoji:"🌿",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:11,name:"Lilac 3X Spot Lightener",bn:"লাইলাক স্পট লাইটেনার",price:299,emoji:"✨",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:12,name:"Simple Water Boost Micellar Facial Gel Wash",bn:"সিম্পল ওয়াটার বুস্ট ফেস ওয়াশ",price:745,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:13,name:"Skin Cafe Pure & Natural Aloe Vera Gel 98%",bn:"স্কিন ক্যাফে অ্যালোভেরা জেল ৯৮%",price:399,emoji:"🌿",stock:10,status:"IN STOCK",category:"Skincare"},
-{id:16,name:"Technic Invite Only Pressed Pigment Palette",bn:"টেকনিক আইশ্যাডো প্যালেট",price:699,emoji:"🎨",stock:10,status:"IN STOCK",category:"Makeup"},
-{id:17,name:"Nirvana Color Liquid Matte Lipstick - Timeless L02",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💄",stock:0,status:"OUT OF STOCK",category:"Lips"},
-{id:18,name:"Pure Ground Good Bye All Dark Spot Glow Serum",bn:"পিওর গ্রাউন্ড ডার্ক স্পট সিরাম",price:925,emoji:"✨",stock:0,status:"OUT OF STOCK",category:"Skincare"},
-{id:19,name:"Nirvana Color Liquid Matte Lipstick - Sweet Sin L06",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💋",stock:0,status:"OUT OF STOCK",category:"Lips"},
-{id:21,name:"Beauty Formulas Activated Charcoal Nose Pore Strips",bn:"বিউটি ফর্মুলাস চারকোল নোজ পোর স্ট্রিপ",price:45,emoji:"🖤",stock:0,status:"OUT OF STOCK",category:"Skincare"},
-{id:24,name:"Groome Charcoal Purifying & Deep Cleansing Nose Strip",bn:"গ্রুম চারকোল নোজ স্ট্রিপ",price:35,emoji:"🖤",stock:0,status:"OUT OF STOCK",category:"Skincare"},
-{id:29,name:"3W Clinic Honey Eye Cream",bn:"থ্রি ডব্লিউ ক্লিনিক হানি আই ক্রিম",price:399,emoji:"👁️",category:"Skincare"},
-{id:30,name:"LAFZ Halal Caffeine Foaming Face Wash",bn:"লাফজ ক্যাফেইন ফোমিং ফেসওয়াশ",price:299,emoji:"🫧",category:"Skincare"},
-{id:31,name:"Cosrx Acne Pimple Master Patch",bn:"কসআরএক্স অ্যাকনে পিম্পল প্যাচ",price:339,emoji:"✨",category:"Skincare"},
-{id:33,name:"Skinpro Acne Clearing Gel Cleanser",bn:"স্কিনপ্রো অ্যাকনে ক্লিয়ারিং জেল ক্লিনজার",price:185,emoji:"🫧",category:"Skincare"},
-{id:34,name:"Tresemme Shampoo Keratin Smooth 185ml",bn:"ট্রেসেমে কেরাটিন স্মুথ শ্যাম্পু",price:330,emoji:"🧴",category:"Hair"},
-{id:43,name:"Rimmel Scandaleyes Waterproof Kohl Kajal - 001 Black",bn:"রিমেল স্ক্যান্ডালআইজ কাজল",price:535,emoji:"👁️",category:"Makeup"},
-{id:44,name:"W7 Banana Dreams Loose Powder",bn:"W7 বানানা ড্রিমস লুজ পাউডার",price:590,emoji:"💄",category:"Makeup"},
-{id:45,name:"Himalaya Neem & Turmeric Soap",bn:"হিমালয়া নিম ও হলুদ সাবান",price:255,emoji:"🧼",category:"Personal Care"},
-{id:46,name:"Himalaya Purifying Neem Face Wash",bn:"হিমালয়া নিম ফেসওয়াশ",price:199,emoji:"🫧",category:"Skincare"},
-{id:51,name:"Nirvana Color Nail Enamel - I Am Jealous-05",bn:"নির্ভানা কালার নেইল এনামেল",price:220,emoji:"💅",category:"Nails"},
-{id:55,name:"Groome Make Up Brush Set Bamboo",bn:"গ্রুম মেকআপ ব্রাশ সেট",price:480,emoji:"🖌️",category:"Tools"},,
-{id:61,name:"Himalaya Gentle Baby Bath 100ml",bn:"হিমালয়া জেন্টল বেবি বাথ ১০০মিলি",price:160,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:62,name:"Just For Baby Milky Glow Baby Wash 200ml",bn:"জাস্ট ফর বেবি মিল্কি গ্লো বেবি ওয়াশ ২০০মিলি",price:250,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:63,name:"Kodomo Baby Bath & Gentle Soft 200ml",bn:"কোডোমো বেবি বাথ জেন্টল সফট ২০০মিলি",price:560,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:64,name:"Johnson's Baby Top to Toe Bath 200ml",bn:"জনসনস বেবি টপ টু টো বাথ ২০০মিলি",price:550,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:65,name:"Clariss Mild & Gentle Baby Bath 200ml",bn:"ক্ল্যারিস মাইল্ড অ্যান্ড জেন্টল বেবি বাথ ২০০মিলি",price:390,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:66,name:"Meril Baby Top to Toe Wash 200ml",bn:"মেরিল বেবি টপ টু টো ওয়াশ ২০০মিলি",price:300,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:67,name:"Kodomo Organic Baby Shampoo Original 200ml",bn:"কোডোমো অর্গানিক বেবি শ্যাম্পু ২০০মিলি",price:550,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:68,name:"Himalaya Baby Lotion 100ml",bn:"হিমালয়া বেবি লোশন ১০০মিলি",price:550,emoji:"🧴",category:"Baby Bath & Skincare"},
-{id:69,name:"Mothercare Baby Bubble Bath 300ml",bn:"মাদারকেয়ার বেবি বাবল বাথ ৩০০মিলি",price:700,emoji:"🛁",category:"Baby Bath & Skincare"},
-{id:70,name:"Clariss Baby Daily Lotion 200ml",bn:"ক্ল্যারিস বেবি ডেইলি লোশন ২০০মিলি",price:625,emoji:"🧴",category:"Baby Bath & Skincare"}
+{id:"sw001",name:"Himalaya Intense Oil Clear Lemon Face Wash 100ml",bn:"হিমালয়া ইনটেন্স অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Lemon face wash. Shwapno regular price ৳299."},
+{id:"sw002",name:"Himalaya Oil Control Lemon Face Wash 100ml",bn:"হিমালয়া অয়েল কন্ট্রোল লেমন ফেস ওয়াশ",price:200,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Oil-control lemon face wash. Shwapno regular price ৳200."},
+{id:"sw003",name:"Himalaya Purifying Neem Face Wash 100ml",bn:"হিমালয়া পিউরিফাইং নিম ফেস ওয়াশ",price:230,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Neem face wash. Shwapno regular price ৳230."},
+{id:"sw004",name:"Himalaya Brightening Vitamin-C Blueberry Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি ব্লুবেরি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C blueberry face wash. Shwapno regular price ৳220."},
+{id:"sw005",name:"Himalaya Natural Glow Saffron Face Cream 50gm",bn:"হিমালয়া ন্যাচারাল গ্লো স্যাফরন ফেস ক্রিম",price:160,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Saffron face cream. Shwapno regular price ৳160."},
+{id:"sw006",name:"Himalaya Moisturizing Aloe Vera Face Wash 100ml",bn:"হিমালয়া ময়েশ্চারাইজিং অ্যালোভেরা ফেস ওয়াশ",price:225,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Aloe vera face wash. Shwapno regular price ৳225."},
+{id:"sw007",name:"Himalaya Men Acne Clear Neem Face Wash 100ml",bn:"হিমালয়া মেন অ্যাকনে ক্লিয়ার নিম ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's neem face wash. Shwapno regular price ৳299."},
+{id:"sw008",name:"Himalaya Oil Clear Lemon Face Wash 50ml",bn:"হিমালয়া অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:140,stock:10,status:"IN STOCK",category:"Skincare",details:"50ml • Lemon face wash. Shwapno regular price ৳140."},
+{id:"sw009",name:"POND'S Bright Beauty Cream 50gm (Imported)",bn:"পন্ডস ব্রাইট বিউটি ক্রিম ৫০গ্রাম",price:485,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Imported bright beauty cream. Shwapno regular price ৳485."},
+{id:"sw010",name:"POND'S Bright Beauty Face Wash 100gm",bn:"পন্ডস ব্রাইট বিউটি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100gm • Daily facial cleanser. Shwapno regular price ৳220."},
+{id:"sw011",name:"TRESemmé HD Hair Fall Defense Shampoo 580ml",bn:"ট্রেসেমে এইচডি হেয়ার ফল ডিফেন্স শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Hair-fall defense shampoo. Shwapno regular price ৳850."},
+{id:"sw012",name:"TRESemmé Keratin Smooth Shampoo 580ml",bn:"ট্রেসেমে কেরাটিন স্মুথ শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Keratin Smooth shampoo. Shwapno regular price ৳850."},
+{id:"sw013",name:"TRESemmé Keratin Smooth Conditioner 215(±)25ml",bn:"ট্রেসেমে কেরাটিন স্মুথ কন্ডিশনার",price:320,stock:10,status:"IN STOCK",category:"Hair Care",details:"215(±)25ml • Frizz-control conditioner. Shwapno regular price ৳320."},
+{id:"sw014",name:"Dove Intense Repair Shampoo 650ml",bn:"ডাভ ইনটেন্স রিপেয়ার শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Repair-care shampoo. Shwapno regular price ৳740."},
+{id:"sw015",name:"Dove Hair Fall Rescue Shampoo 650ml",bn:"ডাভ হেয়ার ফল রেসকিউ শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Hair-fall rescue shampoo. Shwapno regular price ৳740."},
+{id:"sw016",name:"Dove Intense Repair Conditioner 180(±)10ml",bn:"ডাভ ইনটেন্স রিপেয়ার কন্ডিশনার",price:300,stock:10,status:"IN STOCK",category:"Hair Care",details:"180(±)10ml • Repair conditioner. Shwapno regular price ৳300."},
+{id:"sw017",name:"Clear Anti Dandruff Anti Hair fall Shampoo 350(±)20ml",bn:"ক্লিয়ার অ্যান্টি ড্যানড্রাফ অ্যান্টি হেয়ার ফল শ্যাম্পু",price:400,stock:10,status:"IN STOCK",category:"Hair Care",details:"350(±)20ml • Anti-dandruff shampoo. Shwapno regular price ৳400."},
+{id:"sw018",name:"Clear Men Cool Sport Menthol Shampoo 450ml",bn:"ক্লিয়ার মেন কুল স্পোর্ট মেন্থল শ্যাম্পু",price:600,stock:10,status:"IN STOCK",category:"Hair Care",details:"450ml • Cooling menthol men's shampoo. Shwapno regular price ৳600."},
+{id:"sw019",name:"LUX Body Wash Black Orchid Scent & Juniper Oil 245ml",bn:"লাক্স বডি ওয়াশ ব্ল্যাক অর্কিড ও জুনিপার অয়েল",price:200,stock:10,status:"IN STOCK",category:"Body Care",details:"245ml • Black Orchid & Juniper Oil body wash. Shwapno regular price ৳200."}
 ];
 
 
@@ -1504,26 +1483,8 @@ finished = true;
 cleanup();
 
 if(result && result.success && Array.isArray(result.products)){
-products = result.products.map(function(product){
-return {
-id: product.id,
-name: product.name || "",
-bn: product.bn || "",
-category: product.category || "",
-price: (Number(product.price) > 0)
-  ? Number(product.price)
-  : (FALLBACK_PRICES[String(product.id)] || 0),
-stock: Number.isFinite(Number(product.stock))
-  ? Math.max(0, Number(product.stock))
-  : null,
-status: Number.isFinite(Number(product.stock))
-  ? (Number(product.stock) > 0 ? "IN STOCK" : "OUT OF STOCK")
-  : String(product.status || "").trim(),
-image: product.image || "",
-details: product.details || "",
-emoji: "🛍️"
-};
-});
+products = products.slice();
+
 renderProducts();
 loadStockDirectlyFromGoogleSheet();
 }else{
