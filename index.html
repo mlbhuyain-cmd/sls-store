@@ -1078,25 +1078,36 @@ firebase.firestore();
  ************************************************************/
 
 let products = [
-{id:"sw001",name:"Himalaya Intense Oil Clear Lemon Face Wash 100ml",bn:"হিমালয়া ইনটেন্স অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Lemon face wash. Shwapno regular price ৳299."},
-{id:"sw002",name:"Himalaya Oil Control Lemon Face Wash 100ml",bn:"হিমালয়া অয়েল কন্ট্রোল লেমন ফেস ওয়াশ",price:200,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Oil-control lemon face wash. Shwapno regular price ৳200."},
-{id:"sw003",name:"Himalaya Purifying Neem Face Wash 100ml",bn:"হিমালয়া পিউরিফাইং নিম ফেস ওয়াশ",price:230,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Neem face wash. Shwapno regular price ৳230."},
-{id:"sw004",name:"Himalaya Brightening Vitamin-C Blueberry Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি ব্লুবেরি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C blueberry face wash. Shwapno regular price ৳220."},
-{id:"sw005",name:"Himalaya Natural Glow Saffron Face Cream 50gm",bn:"হিমালয়া ন্যাচারাল গ্লো স্যাফরন ফেস ক্রিম",price:160,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Saffron face cream. Shwapno regular price ৳160."},
-{id:"sw006",name:"Himalaya Moisturizing Aloe Vera Face Wash 100ml",bn:"হিমালয়া ময়েশ্চারাইজিং অ্যালোভেরা ফেস ওয়াশ",price:225,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Aloe vera face wash. Shwapno regular price ৳225."},
-{id:"sw007",name:"Himalaya Men Acne Clear Neem Face Wash 100ml",bn:"হিমালয়া মেন অ্যাকনে ক্লিয়ার নিম ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's neem face wash. Shwapno regular price ৳299."},
-{id:"sw008",name:"Himalaya Oil Clear Lemon Face Wash 50ml",bn:"হিমালয়া অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:140,stock:10,status:"IN STOCK",category:"Skincare",details:"50ml • Lemon face wash. Shwapno regular price ৳140."},
-{id:"sw009",name:"POND'S Bright Beauty Cream 50gm (Imported)",bn:"পন্ডস ব্রাইট বিউটি ক্রিম ৫০গ্রাম",price:485,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Imported bright beauty cream. Shwapno regular price ৳485."},
-{id:"sw010",name:"POND'S Bright Beauty Face Wash 100gm",bn:"পন্ডস ব্রাইট বিউটি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100gm • Daily facial cleanser. Shwapno regular price ৳220."},
-{id:"sw011",name:"TRESemmé HD Hair Fall Defense Shampoo 580ml",bn:"ট্রেসেমে এইচডি হেয়ার ফল ডিফেন্স শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Hair-fall defense shampoo. Shwapno regular price ৳850."},
-{id:"sw012",name:"TRESemmé Keratin Smooth Shampoo 580ml",bn:"ট্রেসেমে কেরাটিন স্মুথ শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Keratin Smooth shampoo. Shwapno regular price ৳850."},
-{id:"sw013",name:"TRESemmé Keratin Smooth Conditioner 215(±)25ml",bn:"ট্রেসেমে কেরাটিন স্মুথ কন্ডিশনার",price:320,stock:10,status:"IN STOCK",category:"Hair Care",details:"215(±)25ml • Frizz-control conditioner. Shwapno regular price ৳320."},
-{id:"sw014",name:"Dove Intense Repair Shampoo 650ml",bn:"ডাভ ইনটেন্স রিপেয়ার শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Repair-care shampoo. Shwapno regular price ৳740."},
-{id:"sw015",name:"Dove Hair Fall Rescue Shampoo 650ml",bn:"ডাভ হেয়ার ফল রেসকিউ শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Hair-fall rescue shampoo. Shwapno regular price ৳740."},
-{id:"sw016",name:"Dove Intense Repair Conditioner 180(±)10ml",bn:"ডাভ ইনটেন্স রিপেয়ার কন্ডিশনার",price:300,stock:10,status:"IN STOCK",category:"Hair Care",details:"180(±)10ml • Repair conditioner. Shwapno regular price ৳300."},
-{id:"sw017",name:"Clear Anti Dandruff Anti Hair fall Shampoo 350(±)20ml",bn:"ক্লিয়ার অ্যান্টি ড্যানড্রাফ অ্যান্টি হেয়ার ফল শ্যাম্পু",price:400,stock:10,status:"IN STOCK",category:"Hair Care",details:"350(±)20ml • Anti-dandruff shampoo. Shwapno regular price ৳400."},
-{id:"sw018",name:"Clear Men Cool Sport Menthol Shampoo 450ml",bn:"ক্লিয়ার মেন কুল স্পোর্ট মেন্থল শ্যাম্পু",price:600,stock:10,status:"IN STOCK",category:"Hair Care",details:"450ml • Cooling menthol men's shampoo. Shwapno regular price ৳600."},
-{id:"sw019",name:"LUX Body Wash Black Orchid Scent & Juniper Oil 245ml",bn:"লাক্স বডি ওয়াশ ব্ল্যাক অর্কিড ও জুনিপার অয়েল",price:200,stock:10,status:"IN STOCK",category:"Body Care",details:"245ml • Black Orchid & Juniper Oil body wash. Shwapno regular price ৳200."}
+{id:"sw001",name:"Himalaya Brightening Vitamin-C Orange Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি অরেঞ্জ ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C orange face wash for daily cleansing. Shwapno regular price ৳220."},
+{id:"sw002",name:"Himalaya Intense Oil Clear Lemon Face Wash 100ml",bn:"হিমালয়া ইনটেন্স অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Lemon face wash for oil-control cleansing. Shwapno regular price ৳299."},
+{id:"sw003",name:"Himalaya Oil Control Lemon Face Wash 100ml",bn:"হিমালয়া অয়েল কন্ট্রোল লেমন ফেস ওয়াশ",price:200,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Oil-control lemon face wash. Shwapno regular price ৳200."},
+{id:"sw004",name:"Himalaya Purifying Neem Face Wash 100ml",bn:"হিমালয়া পিউরিফাইং নিম ফেস ওয়াশ",price:230,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Neem face wash for everyday cleansing. Shwapno regular price ৳230."},
+{id:"sw005",name:"Himalaya Brightening Vitamin-C Blueberry Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি ব্লুবেরি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C blueberry face wash. Shwapno regular price ৳220."},
+{id:"sw006",name:"Himalaya Natural Glow Saffron Face Cream 50gm",bn:"হিমালয়া ন্যাচারাল গ্লো স্যাফরন ফেস ক্রিম",price:160,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Saffron face cream. Shwapno regular price ৳160."},
+{id:"sw007",name:"Himalaya Moisturizing Aloe Vera Face Wash 100ml",bn:"হিমালয়া ময়েশ্চারাইজিং অ্যালোভেরা ফেস ওয়াশ",price:225,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Aloe vera face wash. Shwapno regular price ৳225."},
+{id:"sw008",name:"Himalaya Men Acne Clear Neem Face Wash 100ml",bn:"হিমালয়া মেন অ্যাকনে ক্লিয়ার নিম ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's neem face wash for acne-prone skin. Shwapno regular price ৳299."},
+{id:"sw009",name:"Himalaya Oil Clear Lemon Face Wash 50ml",bn:"হিমালয়া অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:140,stock:10,status:"IN STOCK",category:"Skincare",details:"50ml • Lemon face wash. Shwapno regular price ৳140."},
+{id:"sw010",name:"Himalaya Baby Cream 100gm",bn:"হিমালয়া বেবি ক্রিম ১০০গ্রাম",price:225,stock:10,status:"IN STOCK",category:"Baby Care",details:"100gm • Baby moisturizing cream. Shwapno regular price ৳225."},
+{id:"sw011",name:"Himalaya Men Power Bright Face Wash 100ml",bn:"হিমালয়া মেন পাওয়ার ব্রাইট ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's brightening face wash. Shwapno regular price ৳299."},
+{id:"sw012",name:"POND'S Bright Beauty Face Wash 100gm",bn:"পন্ডস ব্রাইট বিউটি ফেস ওয়াশ ১০০গ্রাম",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100gm • Bright beauty face wash. Shwapno regular price ৳220."},
+{id:"sw013",name:"POND'S Bright Beauty Cream 50gm (Imported)",bn:"পন্ডস ব্রাইট বিউটি ক্রিম ৫০গ্রাম",price:485,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Imported bright beauty cream. Shwapno regular price ৳485."},
+{id:"sw014",name:"Dove Intense Repair Conditioner 180(±)10ml",bn:"ডাভ ইনটেন্স রিপেয়ার কন্ডিশনার",price:300,stock:10,status:"IN STOCK",category:"Hair Care",details:"180(±)10ml • Intense Repair conditioner. Shwapno regular price ৳300."},
+{id:"sw015",name:"TRESemmé HD Hair Fall Defense Shampoo 580ml",bn:"ট্রেসেমে এইচডি হেয়ার ফল ডিফেন্স শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Hair-fall defense shampoo. Shwapno regular price ৳850."},
+{id:"sw016",name:"TRESemmé Keratin Smooth Shampoo 580ml",bn:"ট্রেসেমে কেরাটিন স্মুথ শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Keratin Smooth shampoo. Shwapno regular price ৳850."},
+{id:"sw017",name:"TRESemmé Keratin Smooth Conditioner 215(±)25ml",bn:"ট্রেসেমে কেরাটিন স্মুথ কন্ডিশনার",price:320,stock:10,status:"IN STOCK",category:"Hair Care",details:"215(±)25ml • Keratin Smooth conditioner. Shwapno regular price ৳320."},
+{id:"sw018",name:"Dove Intense Repair Shampoo 650ml",bn:"ডাভ ইনটেন্স রিপেয়ার শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Repair-care shampoo. Shwapno regular price ৳740."},
+{id:"sw019",name:"Dove Hair Fall Rescue Shampoo 650ml",bn:"ডাভ হেয়ার ফল রেসকিউ শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Hair-fall rescue shampoo. Shwapno regular price ৳740."},
+{id:"sw020",name:"Clear Anti Dandruff Anti Hair fall Shampoo 350(±)20ml",bn:"ক্লিয়ার অ্যান্টি ড্যানড্রাফ অ্যান্টি হেয়ার ফল শ্যাম্পু",price:400,stock:10,status:"IN STOCK",category:"Hair Care",details:"350(±)20ml • Anti-dandruff and anti-hair-fall shampoo. Shwapno regular price ৳400."},
+{id:"sw021",name:"Clear Men Cool Sport Menthol Shampoo 450ml",bn:"ক্লিয়ার মেন কুল স্পোর্ট মেন্থল শ্যাম্পু",price:600,stock:10,status:"IN STOCK",category:"Hair Care",details:"450ml • Cooling menthol men's shampoo. Shwapno regular price ৳600."},
+{id:"sw022",name:"LUX Body Wash Black Orchid Scent & Juniper Oil 245ml",bn:"লাক্স বডি ওয়াশ ব্ল্যাক অর্কিড ও জুনিপার অয়েল",price:200,stock:10,status:"IN STOCK",category:"Body Care",details:"245ml • Black Orchid scent and Juniper Oil body wash. Shwapno regular price ৳200."},
+{id:"sw023",name:"Sunsilk Coconut & Aloe Vera Shampoo 375ml",bn:"সানসিল্ক কোকোনাট অ্যান্ড অ্যালোভেরা শ্যাম্পু",price:420,stock:10,status:"IN STOCK",category:"Hair Care",details:"375ml • Coconut & Aloe Vera shampoo. Shwapno regular price ৳420."},
+{id:"sw024",name:"Sunsilk Stunning Black Shine Shampoo 340(±)10ml",bn:"সানসিল্ক স্টানিং ব্ল্যাক শাইন শ্যাম্পু",price:350,stock:10,status:"IN STOCK",category:"Hair Care",details:"340(±)10ml • Black Shine shampoo. Shwapno regular price ৳350."},
+{id:"sw025",name:"Enchanteur Stunning Body Spray 150ml",bn:"এনচ্যানটিয়র স্টানিং বডি স্প্রে",price:450,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Fragranced body spray. Shwapno regular price ৳450."},
+{id:"sw026",name:"Enchanteur Alluring Body Mist 150ml",bn:"এনচ্যানটিয়র অ্যালিউরিং বডি মিস্ট",price:450,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Fragranced body mist. Shwapno regular price ৳450."},
+{id:"sw027",name:"Enchanteur Charming Perfume 18ml",bn:"এনচ্যানটিয়র চার্মিং পারফিউম",price:250,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"18ml • Charming fragrance. Shwapno regular price ৳250."},
+{id:"sw028",name:"Enchanteur Chic EDS Dreamy Twinkle 100ml",bn:"এনচ্যানটিয়র চিক EDS ড্রিমি টুইঙ্কল",price:1200,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"100ml • Dreamy Twinkle fragrance. Shwapno regular price ৳1,200."},
+{id:"sw029",name:"AXE Musk Body Spray 150ml AR",bn:"অ্যাক্স মস্ক বডি স্প্রে",price:425,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Musk body spray. Shwapno regular price ৳425."},
+{id:"sw030",name:"Golden Rose Longstay Liquid Matte Lipstick 5.5ml",bn:"গোল্ডেন রোজ লংস্টে লিকুইড ম্যাট লিপস্টিক",price:0,stock:10,status:"IN STOCK",category:"Makeup",details:"5.5ml • Longstay liquid matte lipstick. Shwapno listing found, but current crawl did not expose a regular price."}
 ];
 
 
@@ -1424,7 +1435,7 @@ const outOfStock = stockKnown
   ? stock <= 0
   : statusText === "OUT OF STOCK";
 
-if(!image)return "";
+/* Show the product even when a remote product image is unavailable. */
 
 return `
 <div class="product">
