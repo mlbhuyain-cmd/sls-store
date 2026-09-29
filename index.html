@@ -629,8 +629,16 @@ All Products / সব পণ্য
 <input
 id="searchInput"
 type="search"
+name="product-search"
 class="search"
+autocomplete="off"
+autocorrect="off"
+autocapitalize="off"
+spellcheck="false"
+inputmode="search"
+readonly
 placeholder="Search products / পণ্য খুঁজুন..."
+onfocus="if(this.readOnly){this.readOnly=false;this.value='';}"
 oninput="renderProducts()">
 
 <div
@@ -986,6 +994,27 @@ Loading...
 
 </div>
 
+
+<script>
+/* Prevent customer email/contact autofill from appearing in the product search box. */
+document.addEventListener("DOMContentLoaded", function () {
+  const searchBox = document.getElementById("searchInput");
+  if (!searchBox) return;
+
+  searchBox.value = "";
+  searchBox.setAttribute("autocomplete", "off");
+  searchBox.setAttribute("data-lpignore", "true");
+  searchBox.setAttribute("data-form-type", "other");
+  searchBox.setAttribute("readonly", "readonly");
+
+  searchBox.addEventListener("focus", function () {
+    if (this.readOnly) {
+      this.readOnly = false;
+      this.value = "";
+    }
+  });
+});
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
 
