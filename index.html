@@ -449,6 +449,38 @@ text-decoration:none;
 display:inline-block;
 }
 
+.image-invoice{
+background:#e91e63;
+color:white;
+padding:9px 12px;
+border-radius:9px;
+border:0;
+cursor:pointer;
+}
+
+.order-product{
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px;
+background:#fff7fa;
+border-radius:10px;
+margin-bottom:8px;
+}
+
+.order-product img{
+width:58px;
+height:58px;
+object-fit:contain;
+background:white;
+border-radius:8px;
+flex:none;
+}
+
+.order-product-name{
+flex:1;
+}
+
 .empty{
 text-align:center;
 padding:30px;
@@ -1125,6 +1157,9 @@ let currentUser =
 null;
 
 let statusTimers =
+{};
+
+let orderHistoryCache =
 {};
 
 
@@ -2642,6 +2677,11 @@ const items =
 cart.map(
 function(item){
 
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
 return {
 
 id:
@@ -2654,7 +2694,10 @@ price:
 item.price,
 
 qty:
-item.qty
+item.qty,
+
+image:
+product ? getProductImage(product) : ""
 
 };
 
@@ -3351,6 +3394,12 @@ return;
 }
 
 
+orders.forEach(function(order){
+const cacheId = String(order.clientOrderId || order.id)
+.replace(/[^a-zA-Z0-9_-]/g, "_");
+orderHistoryCache[cacheId] = order;
+});
+
 list.innerHTML =
 orders.map(
 function(order){
@@ -3378,17 +3427,29 @@ const items =
 .map(
 function(item){
 
-return (
-escapeHTML(
-item.name
-) +
-" × " +
-item.qty
-);
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
+const image =
+item.image ||
+(product ? getProductImage(product) : "");
+
+return `
+<div class="order-product">
+${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(item.name)}" loading="lazy">` : ""}
+<div class="order-product-name">
+<b>${escapeHTML(item.name)}</b>
+<br>
+<span class="muted">Qty: ${item.qty} × ${money(item.price)}</span>
+</div>
+</div>
+`;
 
 }
 )
-.join(", ");
+.join("");
 
 
 const safeId =
@@ -3508,6 +3569,14 @@ onclick="refreshSingleOrder('${escapeHTML(orderId)}')">
 
 <span class="invoice-box"></span>
 
+<button
+class="image-invoice"
+onclick="openImageInvoice('${safeId}')">
+
+🧾 ছবিসহ Invoice
+
+</button>
+
 </div>
 
 </div>
@@ -3587,6 +3656,101 @@ error.message
 
 }
 
+
+/************************************************************
+ * IMAGE INVOICE
+ ************************************************************/
+
+function openImageInvoice(cacheId){
+
+const order =
+orderHistoryCache[cacheId];
+
+if(!order){
+alert("Order data পাওয়া যায়নি। আবার My Orders খুলুন।");
+return;
+}
+
+const date =
+order.createdAt &&
+order.createdAt.toDate
+? order.createdAt.toDate().toLocaleString("en-BD")
+: "Recent";
+
+const rows =
+(order.items || [])
+.map(function(item){
+
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
+const image =
+item.image ||
+(product ? getProductImage(product) : "");
+
+return `
+<div style="display:flex;gap:14px;align-items:center;border-bottom:1px solid #eee;padding:12px 0">
+${image ? `<img src="${escapeHTML(image)}" style="width:85px;height:85px;object-fit:contain;border:1px solid #eee;border-radius:10px;background:#fff">` : ""}
+<div style="flex:1">
+<div style="font-weight:700">${escapeHTML(item.name)}</div>
+<div style="color:#777;margin-top:5px">Qty: ${item.qty} × ${money(item.price)}</div>
+</div>
+<div style="font-weight:700">${money(item.price * item.qty)}</div>
+</div>
+`;
+
+}).join("");
+
+const html = `
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SLS Store Invoice - ${escapeHTML(order.clientOrderId || order.id)}</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f8f3f5;margin:0;padding:20px;color:#222}
+.invoice-page{max-width:760px;margin:auto;background:#fff;padding:24px;border-radius:16px}
+h1{color:#e91e63;margin:0 0 5px}
+.meta{color:#666;margin-bottom:20px}
+.total{display:flex;justify-content:space-between;padding:7px 0}
+.grand{font-size:21px;font-weight:700;color:#e91e63;border-top:1px solid #eee;margin-top:8px;padding-top:12px}
+.print{background:#e91e63;color:white;border:0;border-radius:9px;padding:11px 18px;font-size:16px;margin-bottom:18px}
+@media print{.print{display:none}body{background:#fff;padding:0}.invoice-page{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="invoice-page">
+<button class="print" onclick="window.print()">🖨️ Print / Save PDF</button>
+<h1>SLS STORE</h1>
+<div class="meta">
+Order: <b>${escapeHTML(order.clientOrderId || order.id)}</b><br>
+Date: ${escapeHTML(date)}
+</div>
+<div>${rows}</div>
+<div style="margin-top:18px">
+<div class="total"><span>Product Total</span><b>${money(order.productTotal)}</b></div>
+<div class="total"><span>Delivery</span><b>${money(order.deliveryCharge)}</b></div>
+<div class="total grand"><span>Grand Total</span><span>${money(order.grandTotal)}</span></div>
+</div>
+</div>
+</body>
+</html>
+`;
+
+const win = window.open("", "_blank");
+if(!win){
+alert("Invoice খুলতে browser popup অনুমতি দিন।");
+return;
+}
+
+win.document.open();
+win.document.write(html);
+win.document.close();
+
+}
 
 /************************************************************
  * REFRESH ONE ORDER
