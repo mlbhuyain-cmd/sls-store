@@ -1079,24 +1079,24 @@ firebase.firestore();
 
 let products = [
 /* Live product data loads from Google Sheets after page load. */
-{id:1,name:"Garnier Skin Active Micellar Cleansing Water",bn:"গার্নিয়ার মাইসেলার ক্লিনজিং ওয়াটার",price:649,emoji:"💧",stock:10,status:IN STOCK,category:"Skincare"},
-{id:2,name:"Missha All Around Safe Block Soft Finish Sun Milk SPF50+",bn:"মিশা সান মিল্ক SPF50+",price:1199,emoji:"☀️",stock:10,status:IN STOCK,category:"Skincare"},
-{id:3,name:"Simple Kind to Skin Hydrating Light Moisturiser",bn:"সিম্পল হাইড্রেটিং ময়েশ্চারাইজার",price:749,emoji:"🧴",stock:10,status:IN STOCK,category:"Skincare"},
-{id:4,name:"Simple Kind To Skin Refreshing Facial Wash Gel",bn:"সিম্পল ফেসিয়াল ওয়াশ জেল",price:749,emoji:"🫧",stock:10,status:IN STOCK,category:"Skincare"},
-{id:5,name:"Rajkonna All Purpose Toner",bn:"রাজকন্যা অল পারপাস টোনার",price:120,emoji:"💦",stock:10,status:IN STOCK,category:"Skincare"},
-{id:7,name:"Skin Cafe Sunscreen SPF 50 PA+++ Lightweight & Non-Greasy",bn:"স্কিন ক্যাফে সানস্ক্রিন SPF 50",price:549,emoji:"☀️",stock:10,status:IN STOCK,category:"Skincare"},
-{id:8,name:"Rajkonna Acne Fighting Facial Wash With Jojoba Beads",bn:"রাজকন্যা অ্যাকনে ফাইটিং ফেসওয়াশ",price:157,emoji:"🫧",stock:10,status:IN STOCK,category:"Skincare"},
-{id:9,name:"Skin Cafe 100% Natural Rose Water Face And Body Mist",bn:"স্কিন ক্যাফে রোজ ওয়াটার মিস্ট",price:256,emoji:"🌹",stock:10,status:IN STOCK,category:"Skincare"},
-{id:10,name:"Rajkonna Multani Mati",bn:"রাজকন্যা মুলতানি মাটি",price:110,emoji:"🌿",stock:10,status:IN STOCK,category:"Skincare"},
-{id:11,name:"Lilac 3X Spot Lightener",bn:"লাইলাক স্পট লাইটেনার",price:299,emoji:"✨",stock:10,status:IN STOCK,category:"Skincare"},
-{id:12,name:"Simple Water Boost Micellar Facial Gel Wash",bn:"সিম্পল ওয়াটার বুস্ট ফেস ওয়াশ",price:745,emoji:"🫧",stock:10,status:IN STOCK,category:"Skincare"},
-{id:13,name:"Skin Cafe Pure & Natural Aloe Vera Gel 98%",bn:"স্কিন ক্যাফে অ্যালোভেরা জেল ৯৮%",price:399,emoji:"🌿",stock:10,status:IN STOCK,category:"Skincare"},
-{id:16,name:"Technic Invite Only Pressed Pigment Palette",bn:"টেকনিক আইশ্যাডো প্যালেট",price:699,emoji:"🎨",stock:10,status:IN STOCK,category:"Makeup"},
-{id:17,name:"Nirvana Color Liquid Matte Lipstick - Timeless L02",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💄",stock:0,status:OUT OF STOCK,category:"Lips"},
-{id:18,name:"Pure Ground Good Bye All Dark Spot Glow Serum",bn:"পিওর গ্রাউন্ড ডার্ক স্পট সিরাম",price:925,emoji:"✨",stock:0,status:OUT OF STOCK,category:"Skincare"},
-{id:19,name:"Nirvana Color Liquid Matte Lipstick - Sweet Sin L06",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💋",stock:0,status:OUT OF STOCK,category:"Lips"},
-{id:21,name:"Beauty Formulas Activated Charcoal Nose Pore Strips",bn:"বিউটি ফর্মুলাস চারকোল নোজ পোর স্ট্রিপ",price:45,emoji:"🖤",stock:0,status:OUT OF STOCK,category:"Skincare"},
-{id:24,name:"Groome Charcoal Purifying & Deep Cleansing Nose Strip",bn:"গ্রুম চারকোল নোজ স্ট্রিপ",price:35,emoji:"🖤",stock:0,status:OUT OF STOCK,category:"Skincare"},
+{id:1,name:"Garnier Skin Active Micellar Cleansing Water",bn:"গার্নিয়ার মাইসেলার ক্লিনজিং ওয়াটার",price:649,emoji:"💧",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:2,name:"Missha All Around Safe Block Soft Finish Sun Milk SPF50+",bn:"মিশা সান মিল্ক SPF50+",price:1199,emoji:"☀️",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:3,name:"Simple Kind to Skin Hydrating Light Moisturiser",bn:"সিম্পল হাইড্রেটিং ময়েশ্চারাইজার",price:749,emoji:"🧴",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:4,name:"Simple Kind To Skin Refreshing Facial Wash Gel",bn:"সিম্পল ফেসিয়াল ওয়াশ জেল",price:749,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:5,name:"Rajkonna All Purpose Toner",bn:"রাজকন্যা অল পারপাস টোনার",price:120,emoji:"💦",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:7,name:"Skin Cafe Sunscreen SPF 50 PA+++ Lightweight & Non-Greasy",bn:"স্কিন ক্যাফে সানস্ক্রিন SPF 50",price:549,emoji:"☀️",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:8,name:"Rajkonna Acne Fighting Facial Wash With Jojoba Beads",bn:"রাজকন্যা অ্যাকনে ফাইটিং ফেসওয়াশ",price:157,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:9,name:"Skin Cafe 100% Natural Rose Water Face And Body Mist",bn:"স্কিন ক্যাফে রোজ ওয়াটার মিস্ট",price:256,emoji:"🌹",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:10,name:"Rajkonna Multani Mati",bn:"রাজকন্যা মুলতানি মাটি",price:110,emoji:"🌿",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:11,name:"Lilac 3X Spot Lightener",bn:"লাইলাক স্পট লাইটেনার",price:299,emoji:"✨",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:12,name:"Simple Water Boost Micellar Facial Gel Wash",bn:"সিম্পল ওয়াটার বুস্ট ফেস ওয়াশ",price:745,emoji:"🫧",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:13,name:"Skin Cafe Pure & Natural Aloe Vera Gel 98%",bn:"স্কিন ক্যাফে অ্যালোভেরা জেল ৯৮%",price:399,emoji:"🌿",stock:10,status:"IN STOCK",category:"Skincare"},
+{id:16,name:"Technic Invite Only Pressed Pigment Palette",bn:"টেকনিক আইশ্যাডো প্যালেট",price:699,emoji:"🎨",stock:10,status:"IN STOCK",category:"Makeup"},
+{id:17,name:"Nirvana Color Liquid Matte Lipstick - Timeless L02",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💄",stock:0,status:"OUT OF STOCK",category:"Lips"},
+{id:18,name:"Pure Ground Good Bye All Dark Spot Glow Serum",bn:"পিওর গ্রাউন্ড ডার্ক স্পট সিরাম",price:925,emoji:"✨",stock:0,status:"OUT OF STOCK",category:"Skincare"},
+{id:19,name:"Nirvana Color Liquid Matte Lipstick - Sweet Sin L06",bn:"নির্ভানা কালার লিকুইড ম্যাট লিপস্টিক",price:493,emoji:"💋",stock:0,status:"OUT OF STOCK",category:"Lips"},
+{id:21,name:"Beauty Formulas Activated Charcoal Nose Pore Strips",bn:"বিউটি ফর্মুলাস চারকোল নোজ পোর স্ট্রিপ",price:45,emoji:"🖤",stock:0,status:"OUT OF STOCK",category:"Skincare"},
+{id:24,name:"Groome Charcoal Purifying & Deep Cleansing Nose Strip",bn:"গ্রুম চারকোল নোজ স্ট্রিপ",price:35,emoji:"🖤",stock:0,status:"OUT OF STOCK",category:"Skincare"},
 {id:29,name:"3W Clinic Honey Eye Cream",bn:"থ্রি ডব্লিউ ক্লিনিক হানি আই ক্রিম",price:399,emoji:"👁️",category:"Skincare"},
 {id:30,name:"LAFZ Halal Caffeine Foaming Face Wash",bn:"লাফজ ক্যাফেইন ফোমিং ফেসওয়াশ",price:299,emoji:"🫧",category:"Skincare"},
 {id:31,name:"Cosrx Acne Pimple Master Patch",bn:"কসআরএক্স অ্যাকনে পিম্পল প্যাচ",price:339,emoji:"✨",category:"Skincare"},
@@ -1422,8 +1422,13 @@ const detail = getProductDetails(product);
 const stockValue = Number(product.stock);
 const stockKnown = Number.isFinite(stockValue);
 const stock = stockKnown ? Math.max(0, stockValue) : null;
+const statusText = String(product.status || "").trim().toUpperCase();
 const outOfStock =
-  !stockKnown || stock <= 0;
+  statusText === "OUT OF STOCK"
+    ? true
+    : statusText === "IN STOCK"
+      ? false
+      : (!stockKnown || stock <= 0);
 
 if(!image)return "";
 
@@ -1651,8 +1656,9 @@ if(!product)return;
 
 const stockKnown = Number.isFinite(Number(product.stock));
 const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
+const statusText = String(product.status || "").trim().toUpperCase();
 
-if(stockKnown && stock <= 0){
+if(statusText === "OUT OF STOCK" || (statusText !== "IN STOCK" && stockKnown && stock <= 0)){
 alert("এই পণ্যটি এখন Out of Stock।");
 return;
 }
