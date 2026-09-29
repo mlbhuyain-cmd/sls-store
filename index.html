@@ -1555,16 +1555,23 @@ return;
 }
 
 const stockById = {};
+const stockByName = {};
 
 data.table.rows.forEach(function(row){
 
 const cells = row.c || [];
 const idCell = cells[0];
-const stockCell = cells[1];
+const nameCell = cells[1];
+const stockCell = cells[2];
 
 const id =
 idCell && idCell.v != null
 ? String(idCell.v).trim()
+: "";
+
+const name =
+nameCell && nameCell.v != null
+? String(nameCell.v).trim().toLowerCase()
 : "";
 
 const stock =
@@ -1572,8 +1579,16 @@ stockCell && stockCell.v != null
 ? Number(stockCell.v)
 : NaN;
 
-if(id && Number.isFinite(stock)){
-stockById[id] = Math.max(0, stock);
+if(Number.isFinite(stock)){
+const value = Math.max(0, stock);
+
+if(id){
+  stockById[id] = value;
+}
+
+if(name){
+  stockByName[name] = value;
+}
 }
 
 });
@@ -1583,29 +1598,24 @@ if(!Object.keys(stockById).length)return;
 products = products.map(function(product){
 
 const id = String(product.id || "").trim();
-
-if(Object.prototype.hasOwnProperty.call(stockById,id)){
-return Object.assign({}, product, {
-stock: stockById[id],
-status: stockById[id] > 0 ? "IN STOCK" : "OUT OF STOCK"
-});
-}
-
-/*
- * If the sheet Product ID and website Product ID ever differ,
- * match by product name without changing any other product data.
- */
 const productName = String(product.name || "").trim().toLowerCase();
 
-const matchedId = Object.keys(stockById).find(function(sheetId){
-  return String(sheetId).trim() === id;
-});
+let liveStock = null;
+let hasLiveStock = false;
 
-if(matchedId){
-  return Object.assign({}, product, {
-    stock: stockById[matchedId],
-    status: stockById[matchedId] > 0 ? "IN STOCK" : "OUT OF STOCK"
-  });
+if(Object.prototype.hasOwnProperty.call(stockById,id)){
+liveStock = stockById[id];
+hasLiveStock = true;
+}else if(Object.prototype.hasOwnProperty.call(stockByName,productName)){
+liveStock = stockByName[productName];
+hasLiveStock = true;
+}
+
+if(hasLiveStock){
+return Object.assign({}, product, {
+stock: liveStock,
+status: liveStock > 0 ? "IN STOCK" : "OUT OF STOCK"
+});
 }
 
 return product;
@@ -1632,7 +1642,7 @@ script.src =
 STOCK_SHEET_ID +
 "/gviz/tq?" +
 "sheet=" + encodeURIComponent(STOCK_SHEET_NAME) +
-"&tq=" + encodeURIComponent("select A,F") +
+"&tq=" + encodeURIComponent("select A,B,F") +
 "&tqx=" +
 encodeURIComponent("out:json;responseHandler:" + callbackName) +
 "&t=" + Date.now();
