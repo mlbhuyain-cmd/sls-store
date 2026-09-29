@@ -1033,6 +1033,9 @@ const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbzfobB1ZAeWKhq_gZ7NBH0LZ4XaF_C-4tUVviVecdQjPTTlrZ4rwl9lPvqoWuz4aK0/exec";
 
 
+const PRODUCTS_API_URL =
+"https://script.google.com/macros/s/AKfycbyWDTqVZxk20cWSTnivqKLxkRzAI2KBmsEYDsfxDSWjPjtxskfx8lMa6RGw-16bsWJ5/exec";
+
 const firebaseConfig = {
 
 apiKey:
@@ -1075,12 +1078,7 @@ firebase.firestore();
  ************************************************************/
 
 let products = [
-/*
- * FALLBACK PRODUCTS
- * The website keeps the existing product list as a fallback.
- * Live product name, price, image, details and stock are loaded
- * from the Google Products Sheet after the page opens.
- */
+/* Live product data loads from Google Sheets after page load. */
 {id:1,name:"Garnier Skin Active Micellar Cleansing Water",bn:"গার্নিয়ার মাইসেলার ক্লিনজিং ওয়াটার",price:649,emoji:"💧",category:"Skincare"},
 {id:2,name:"Missha All Around Safe Block Soft Finish Sun Milk SPF50+",bn:"মিশা সান মিল্ক SPF50+",price:1199,emoji:"☀️",category:"Skincare"},
 {id:3,name:"Simple Kind to Skin Hydrating Light Moisturiser",bn:"সিম্পল হাইড্রেটিং ময়েশ্চারাইজার",price:749,emoji:"🧴",category:"Skincare"},
@@ -1369,9 +1367,126 @@ function getProductDetails(product){
 return product.details || productDetails[product.id] || "Beauty product for everyday personal care.";
 }
 
+function renderProducts(){
+
+const input = document.getElementById("searchInput");
+const search = (input.value || "").toLowerCase().trim();
+
+const list = products.filter(function(product){
+return !search ||
+String(product.name || "").toLowerCase().includes(search) ||
+String(product.bn || "").toLowerCase().includes(search) ||
+String(product.category || "").toLowerCase().includes(search);
+});
+
+const grid = document.getElementById("productGrid");
+
+if(!list.length){
+grid.innerHTML='<div class="empty" style="grid-column:1/-1">কোনো পণ্য পাওয়া যায়নি।</div>';
+return;
+}
+
+grid.innerHTML = list.map(function(product){
+
+const image = getProductImage(product);
+const detail = getProductDetails(product);
+const stockKnown = Number.isFinite(Number(product.stock));
+const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
+const outOfStock = stockKnown && stock <= 0;
+
+if(!image)return "";
+
+return `
+<div class="product">
+<div class="product-image">
+${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">` : ""}
+<span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
+</div>
+<div class="product-content">
+<h3>${escapeHTML(product.name || "")}</h3>
+<div class="product-bn">${escapeHTML(product.bn || "")}</div>
+<div class="muted">${escapeHTML(product.category || "")}</div>
+<div style="font-size:13px;line-height:1.45;margin:8px 0;color:#555;">${escapeHTML(detail || "")}</div>
+<div class="price">${money(product.price)}</div>
+<div class="muted" style="margin:6px 0 10px;">
+${outOfStock ? "OUT OF STOCK / স্টক শেষ" : stockKnown ? "Stock: " + stock : ""}
+</div>
+<button class="primary"
+${outOfStock ? 'disabled style="opacity:.55;cursor:not-allowed;"' : ""}
+onclick="${outOfStock ? "" : "addToCart(" + JSON.stringify(product.id) + ")"}">
+${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কার্টে যোগ করুন"}
+</button>
+</div>
+</div>
+`;
+
+}).join("");
+
+}
+
 /************************************************************
- * CART
+ * LIVE PRODUCTS FROM GOOGLE SHEET
  ************************************************************/
+
+function loadProductsFromSheet(){
+
+const callbackName = "slsProductsCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+const script = document.createElement("script");
+let finished = false;
+
+const timeout = setTimeout(function(){
+if(finished)return;
+finished = true;
+cleanup();
+console.error("Product Sheet request timed out.");
+},15000);
+
+function cleanup(){
+clearTimeout(timeout);
+try{ delete window[callbackName]; }catch(error){ window[callbackName]=undefined; }
+if(script.parentNode)script.parentNode.removeChild(script);
+}
+
+window[callbackName] = function(result){
+if(finished)return;
+finished = true;
+cleanup();
+
+if(result && result.success && Array.isArray(result.products)){
+products = result.products.map(function(product){
+return {
+id: product.id,
+name: product.name || "",
+bn: product.bn || "",
+category: product.category || "",
+price: Number(product.price) || 0,
+stock: Number(product.stock) || 0,
+status: product.status || "",
+image: product.image || "",
+details: product.details || "",
+emoji: "🛍️"
+};
+});
+renderProducts();
+}else{
+console.error("Product Sheet error:", result && result.error);
+}
+};
+
+script.onerror = function(){
+if(finished)return;
+finished = true;
+cleanup();
+console.error("Product Sheet connection failed.");
+};
+
+const params = new URLSearchParams();
+params.set("callback",callbackName);
+params.set("t",Date.now());
+
+script.src = PRODUCTS_API_URL + "?" + params.toString();
+document.head.appendChild(script);
+}
 
 /************************************************************
  * CART
@@ -1379,143 +1494,60 @@ return product.details || productDetails[product.id] || "Beauty product for ever
 
 function addToCart(id){
 
-const product =
-products.find(
-function(p){
-return p.id === id;
-}
-);
-
+const product = products.find(function(p){ return p.id === id; });
 if(!product)return;
 
-const stockKnown =
-Number.isFinite(Number(product.stock));
-const stock =
-stockKnown ? Math.max(0, Number(product.stock)) : null;
+const stockKnown = Number.isFinite(Number(product.stock));
+const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
 
 if(stockKnown && stock <= 0){
-
-alert(
-"এই পণ্যটি এখন Out of Stock।"
-);
-
+alert("এই পণ্যটি এখন Out of Stock।");
 return;
-
 }
 
-const existing =
-cart.find(
-function(item){
-return item.id === id;
-}
-);
+const existing = cart.find(function(item){ return item.id === id; });
 
 if(existing){
-
 if(stockKnown && existing.qty >= stock){
-
-alert(
-"এই পণ্যের যতটুকু Stock আছে, তার বেশি Cart-এ যোগ করা যাবে না।"
-);
-
+alert("এই পণ্যের যতটুকু Stock আছে, তার বেশি Cart-এ যোগ করা যাবে না।");
 return;
-
 }
-
 existing.qty++;
-
 }else{
-
-cart.push({
-
-id:
-product.id,
-
-name:
-product.name,
-
-price:
-product.price,
-
-qty:
-1
-
-});
-
+cart.push({id:product.id,name:product.name,price:product.price,qty:1});
 }
 
 saveCart();
-
 openCart();
 
 }
 
- 
-function changeQty(
-id,
-change
-){
+function changeQty(id,change){
 
-const item =
-cart.find(
-function(x){
-return x.id === id;
-}
-);
-
+const item = cart.find(function(x){ return x.id === id; });
 if(!item)return;
 
-const product =
-products.find(
-function(p){
-return p.id === id;
-}
-);
+const product = products.find(function(p){ return p.id === id; });
+const stockKnown = product && Number.isFinite(Number(product.stock));
+const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
+const nextQty = item.qty + change;
 
-const stockKnown =
-product &&
-Number.isFinite(Number(product.stock));
-const stock =
-stockKnown ? Math.max(0, Number(product.stock)) : null;
-
-const nextQty =
-item.qty + change;
-
-if(
-change > 0 &&
-stockKnown &&
-nextQty > stock
-){
-
-alert(
-"এই পণ্যের বর্তমান Stock-এর বেশি নেওয়া যাবে না।"
-);
-
+if(change > 0 && stockKnown && nextQty > stock){
+alert("এই পণ্যের বর্তমান Stock-এর বেশি নেওয়া যাবে না।");
 return;
-
 }
 
-item.qty =
-nextQty;
+item.qty = nextQty;
 
 if(item.qty <= 0){
-
-cart =
-cart.filter(
-function(x){
-return x.id !== id;
-}
-);
-
+cart = cart.filter(function(x){ return x.id !== id; });
 }
 
 saveCart();
-
 renderCart();
 
 }
 
- 
 function removeFromCart(id){
 
 cart =
@@ -3532,7 +3564,4 @@ updateCheckoutSummary();
 </script>
 
 </body>
-</html>const PRODUCTS_API_URL =
-"https://script.google.com/macros/s/AKfycbyWDTqVZxk20cWSTnivqKLxkRzAI2KBmsEYDsfxDSWjPjtxskfx8lMa6RGw-16bsWJ5/exec";
-
-
+</html>
