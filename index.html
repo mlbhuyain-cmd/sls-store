@@ -1401,12 +1401,9 @@ const stockValue = Number(product.stock);
 const stockKnown = Number.isFinite(stockValue);
 const stock = stockKnown ? Math.max(0, stockValue) : null;
 const statusText = String(product.status || "").trim().toUpperCase();
-const outOfStock =
-  statusText === "OUT OF STOCK"
-    ? true
-    : statusText === "IN STOCK"
-      ? false
-      : (!stockKnown || stock <= 0);
+const outOfStock = stockKnown
+  ? stock <= 0
+  : statusText === "OUT OF STOCK";
 
 if(!image)return "";
 
@@ -1478,12 +1475,10 @@ price: (Number(product.price) > 0)
   : (FALLBACK_PRICES[String(product.id)] || 0),
 stock: Number.isFinite(Number(product.stock))
   ? Math.max(0, Number(product.stock))
-  : (String(product.status || "").trim().toUpperCase() === "IN STOCK"
-      ? 1
-      : String(product.status || "").trim().toUpperCase() === "OUT OF STOCK"
-        ? 0
-        : null),
-status: String(product.status || "").trim(),
+  : null,
+status: Number.isFinite(Number(product.stock))
+  ? (Number(product.stock) > 0 ? "IN STOCK" : "OUT OF STOCK")
+  : String(product.status || "").trim(),
 image: product.image || "",
 details: product.details || "",
 emoji: "🛍️"
@@ -1655,7 +1650,7 @@ const stockKnown = Number.isFinite(Number(product.stock));
 const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
 const statusText = String(product.status || "").trim().toUpperCase();
 
-if(statusText === "OUT OF STOCK" || (statusText !== "IN STOCK" && stockKnown && stock <= 0)){
+if((stockKnown && stock <= 0) || (!stockKnown && statusText === "OUT OF STOCK")){
 alert("এই পণ্যটি এখন Out of Stock।");
 return;
 }
