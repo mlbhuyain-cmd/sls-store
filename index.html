@@ -1400,11 +1400,8 @@ const detail = getProductDetails(product);
 const stockValue = Number(product.stock);
 const stockKnown = Number.isFinite(stockValue);
 const stock = stockKnown ? Math.max(0, stockValue) : null;
-const statusText = String(product.status || "").trim().toUpperCase();
 const outOfStock =
-  (stockKnown && stock <= 0) ||
-  statusText === "OUT OF STOCK" ||
-  statusText === "OUT_OF_STOCK";
+  stockKnown && stock <= 0;
 
 if(!image)return "";
 
