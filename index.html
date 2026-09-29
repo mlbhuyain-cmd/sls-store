@@ -1490,6 +1490,7 @@ emoji: "🛍️"
 };
 });
 renderProducts();
+loadStockDirectlyFromGoogleSheet();
 }else{
 console.error("Product Sheet error:", result && result.error);
 }
@@ -3691,8 +3692,6 @@ renderProducts();
 
 loadProductsFromSheet();
 
-loadStockDirectlyFromGoogleSheet();
-
 /*
  * Keep product stock/status synchronized with Google Sheets.
  * When Stock Qty becomes 0, the product automatically changes
@@ -3700,7 +3699,6 @@ loadStockDirectlyFromGoogleSheet();
  */
 setInterval(function(){
   loadProductsFromSheet();
-  loadStockDirectlyFromGoogleSheet();
 }, 30000);
 
 /*
