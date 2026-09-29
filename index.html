@@ -1490,7 +1490,7 @@ ${outOfStock ? "OUT OF STOCK / স্টক শেষ" : stockKnown ? "IN STOCK 
 </div>
 <button class="primary"
 ${outOfStock ? 'disabled style="opacity:.55;cursor:not-allowed;"' : ""}
-onclick="${outOfStock ? "" : "addToCart(" + JSON.stringify(product.id) + ")"}">
+onclick='${outOfStock ? "" : "addToCart(" + JSON.stringify(product.id) + ")"}'>
 ${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কার্টে যোগ করুন"}
 </button>
 </div>
