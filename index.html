@@ -1389,6 +1389,10 @@ function(product){
 const image = getProductImage(product);
 const detail = getProductDetails(product);
 
+if(!image){
+return "";
+}
+
 return `
 
 <div class="product">
