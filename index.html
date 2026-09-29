@@ -1386,44 +1386,52 @@ String(product.bn || "").toLowerCase().includes(search) ||
 String(product.category || "").toLowerCase().includes(search);
 });
 
-/* Keep cosmetics / beauty products at the top only. */
+/* Keep the newly added products from the latest product batch at the top.
+   Everything else keeps its existing order. */
+const NEW_PRODUCT_IDS = {
+  "29":true,
+  "30":true,
+  "31":true,
+  "33":true,
+  "34":true,
+  "43":true,
+  "44":true,
+  "45":true,
+  "46":true,
+  "51":true,
+  "55":true,
+  "61":true,
+  "62":true,
+  "63":true,
+  "64":true,
+  "65":true,
+  "66":true,
+  "67":true,
+  "68":true,
+  "69":true,
+  "70":true
+};
+
 list.sort(function(a,b){
 
-function priority(product){
+const aNew =
+  Object.prototype.hasOwnProperty.call(
+    NEW_PRODUCT_IDS,
+    String(a.id || "")
+  );
 
-const category =
-String(product.category || "").toLowerCase();
+const bNew =
+  Object.prototype.hasOwnProperty.call(
+    NEW_PRODUCT_IDS,
+    String(b.id || "")
+  );
 
-const text =
-(
-String(product.name || "") + " " +
-String(product.bn || "") + " " +
-category
-).toLowerCase();
+if(aNew && !bNew) return -1;
+if(!aNew && bNew) return 1;
 
-if(
-category.includes("cosmetic") ||
-category.includes("beauty") ||
-category.includes("personal care") ||
-text.includes("cosmetic") ||
-text.includes("beauty")
-){
 return 0;
-}
-
-return 1;
-}
-
-return priority(a) - priority(b);
 
 });
-
-const grid = document.getElementById("productGrid");
-
-if(!list.length){
-grid.innerHTML='<div class="empty" style="grid-column:1/-1">কোনো পণ্য পাওয়া যায়নি।</div>';
-return;
-}
 
 grid.innerHTML = list.map(function(product){
 
