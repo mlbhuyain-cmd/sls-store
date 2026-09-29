@@ -1495,6 +1495,7 @@ console.error("Product Sheet connection failed.");
 
 const params = new URLSearchParams();
 params.set("callback",callbackName);
+params.set("prefix",callbackName);
 params.set("t",Date.now());
 
 script.src = PRODUCTS_API_URL + "?" + params.toString();
