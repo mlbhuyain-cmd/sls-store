@@ -1386,6 +1386,38 @@ String(product.bn || "").toLowerCase().includes(search) ||
 String(product.category || "").toLowerCase().includes(search);
 });
 
+/* Keep cosmetics / beauty products at the top only. */
+list.sort(function(a,b){
+
+function priority(product){
+
+const category =
+String(product.category || "").toLowerCase();
+
+const text =
+(
+String(product.name || "") + " " +
+String(product.bn || "") + " " +
+category
+).toLowerCase();
+
+if(
+category.includes("cosmetic") ||
+category.includes("beauty") ||
+category.includes("personal care") ||
+text.includes("cosmetic") ||
+text.includes("beauty")
+){
+return 0;
+}
+
+return 1;
+}
+
+return priority(a) - priority(b);
+
+});
+
 const grid = document.getElementById("productGrid");
 
 if(!list.length){
@@ -3739,6 +3771,7 @@ setInterval(function(){
 document.addEventListener("visibilitychange", function(){
   if(!document.hidden){
     loadProductsFromSheet();
+    loadStockDirectlyFromGoogleSheet();
   }
 });
 
