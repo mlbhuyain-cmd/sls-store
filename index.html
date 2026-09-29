@@ -1401,7 +1401,7 @@ const stockValue = Number(product.stock);
 const stockKnown = Number.isFinite(stockValue);
 const stock = stockKnown ? Math.max(0, stockValue) : null;
 const outOfStock =
-  stockKnown && stock <= 0;
+  !stockKnown || stock <= 0;
 
 if(!image)return "";
 
