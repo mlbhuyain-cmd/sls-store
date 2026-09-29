@@ -3566,6 +3566,15 @@ renderProducts();
 
 loadProductsFromSheet();
 
+/*
+ * Keep product stock/status synchronized with Google Sheets.
+ * When Stock Qty becomes 0, the product automatically changes
+ * to OUT OF STOCK without changing the rest of the website.
+ */
+setInterval(function(){
+  loadProductsFromSheet();
+}, 30000);
+
 updateCartCount();
 
 updateCheckoutSummary();
