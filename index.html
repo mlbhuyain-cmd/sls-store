@@ -1173,28 +1173,6 @@ return {
 
 }[char];
 
-const FALLBACK_STOCK_QTY = {
-  "1":10,
-  "2":10,
-  "3":10,
-  "4":10,
-  "5":10,
-  "7":10,
-  "8":10,
-  "9":10,
-  "10":10,
-  "11":10,
-  "12":10,
-  "13":10,
-  "16":10,
-  "15":0,
-  "17":0,
-  "18":0,
-  "19":0,
-  "21":0,
-  "24":0
-};
-
 const FALLBACK_PRICES = {};
 products.forEach(function(product){
   FALLBACK_PRICES[String(product.id)] = Number(product.price) || 0;
@@ -1500,13 +1478,11 @@ price: (Number(product.price) > 0)
   : (FALLBACK_PRICES[String(product.id)] || 0),
 stock: Number.isFinite(Number(product.stock))
   ? Math.max(0, Number(product.stock))
-  : (Object.prototype.hasOwnProperty.call(FALLBACK_STOCK_QTY, String(product.id))
-      ? FALLBACK_STOCK_QTY[String(product.id)]
-      : (String(product.status || "").trim().toUpperCase() === "IN STOCK"
-          ? 1
-          : String(product.status || "").trim().toUpperCase() === "OUT OF STOCK"
-            ? 0
-            : null)),
+  : (String(product.status || "").trim().toUpperCase() === "IN STOCK"
+      ? 1
+      : String(product.status || "").trim().toUpperCase() === "OUT OF STOCK"
+        ? 0
+        : null),
 status: String(product.status || "").trim(),
 image: product.image || "",
 details: product.details || "",
@@ -3724,6 +3700,7 @@ loadStockDirectlyFromGoogleSheet();
  */
 setInterval(function(){
   loadProductsFromSheet();
+  loadStockDirectlyFromGoogleSheet();
 }, 30000);
 
 /*
