@@ -1643,6 +1643,18 @@ if(name){
 
 if(!Object.keys(stockById).length)return;
 
+/*
+ * If the Google Sheet returns only zero/empty stock values, do not
+ * overwrite the website's built-in stock values. This prevents a
+ * temporary/blank stock sheet from making every product impossible
+ * to add to Cart.
+ */
+const hasAnyPositiveStock = Object.keys(stockById).some(function(key){
+return Number(stockById[key]) > 0;
+});
+
+if(!hasAnyPositiveStock)return;
+
 products = products.map(function(product){
 
 const id = String(product.id || "").trim();
