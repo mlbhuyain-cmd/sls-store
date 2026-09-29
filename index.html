@@ -1421,7 +1421,7 @@ ${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="
 <div style="font-size:13px;line-height:1.45;margin:8px 0;color:#555;">${escapeHTML(detail || "")}</div>
 <div class="price">${money(product.price)}</div>
 <div class="muted" style="margin:6px 0 10px;">
-${outOfStock ? "OUT OF STOCK / স্টক শেষ" : stockKnown ? "Stock: " + stock : ""}
+${outOfStock ? "OUT OF STOCK / স্টক শেষ" : "IN STOCK / স্টক আছে"}
 </div>
 <button class="primary"
 ${outOfStock ? 'disabled style="opacity:.55;cursor:not-allowed;"' : ""}
@@ -1497,7 +1497,6 @@ console.error("Product Sheet connection failed.");
 };
 
 const params = new URLSearchParams();
-params.set("callback",callbackName);
 params.set("prefix",callbackName);
 params.set("t",Date.now());
 
