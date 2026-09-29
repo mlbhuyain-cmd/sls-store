@@ -1260,6 +1260,110 @@ behavior:"smooth"
  * PRODUCTS
  ************************************************************/
 
+
+const productImages = {
+  "1": "https://i5.walmartimages.com/seo/Garnier-SkinActive-Micellar-Cleansing-Water-All-in-1-Makeup-Remover-Cleanses-13-5-fl-oz_e4d7a4b6-da7a-4d40-ae23-d24c7d725bc6.7bc3198d58d2556bc29c5b44c4801b9f.jpeg",
+  "2": "https://www.arogga.com/_next/image?q=75&url=https%3A%2F%2Fcdn2.arogga.com%2FeyJidWNrZXQiOiJhcm9nZ2EiLCJrZXkiOiJQcm9kdWN0VmFyaWFudC1wdl9pbWFnZXNcLzUxNDI3XC81MTQyNy1zb2Z0LWZpbmlzaC1zbWRrd20uanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTAwMCwiaGVpZ2h0IjoxMDAwLCJmaXQiOiJvdXRzaWRlIn0sIm92ZXJsYXlXaXRoIjp7ImJ1Y2tldCI6ImFyb2dnYSIsImtleSI6Im1pc2NcL3dtLnBuZyIsImFscGhhIjo5MH19fQ%3D%3D&w=128",
+  "3": "https://cdn.shopify.com/s/files/1/0624/1104/6989/files/61xuFHVGiDL._SL1500.jpg?v=1743776900",
+  "4": "https://www.hangngoainhap.com.vn/images/201711/goods_img/1815_P_1511133891033.jpg",
+  "5": "https://amirajkonna.com/storage/uploads/THHwem9qc8GZ1Wz3ijf5aBeUI2HpABfV6byZCMOW.jpg",
+  "7": "https://alifsuper.com/uploads/products/skin-cafe-sunscreen-spf-50-pa-60gm17338153386757ec2a1cb0c.webp?v=1780093574",
+  "8": "https://i.chaldn.com/_mpimage/rajkonna-acne-fighting-facial-wash-100-ml?q=best&src=https%3A%2F%2Feggyolk.chaldal.com%2Fapi%2FPicture%2FRaw%3FpictureId%3D142012&v=1",
+  "9": "https://rokbucket.rokomari.io/ProductNew20190903/260X372/Skin_Cafe_100_Percent_Natural_Rose_Water-Skin_Cafe-afd70-368269.jpg",
+  "10": "https://eoms.cutpricebd.com/oms_products/big/63295dadcd2e7_rajkonna-multani-mati-192459.jpeg",
+  "11": "https://sl-dev-s3.s3.amazonaws.com/product/a230ddd4cff4d32faf983f55251cc6c8-1755070978047.webp",
+  "12": "https://down-my.img.susercontent.com/file/9e8a0cd4c7b3bb1de24122a1d1f9dc65",
+  "13": "https://bk.shajgoj.com/storage/2018/05/Skin-Cafe-Aloe-Vera-Gel.jpg",
+  "16": "https://techniccosmetics.com/cdn/shop/files/29533inviteonly1.jpg?v=1717061780",
+  "17": "https://bk.shajgoj.com/storage/2022/02/Nirvana-Color-Liquid-Matte-Lipstick-Timeless-L02-newpacket-july2023-2.jpg",
+  "18": "https://skinplusbd.com/public/uploads/all/4GHBvP5jS5iLGTeozzuHDDYU5G2XIheXVzSTTdzK.png",
+  "19": "https://bk.shajgoj.com/storage/2022/02/Nirvana-Color-Liquid-Matte-Lipstick-Sweet-Sin-L06-newpacket-july2023-3.jpg",
+  "21": "https://myshop.co.uk/cdn/shop/products/BeautyFormulasCharcoalNosePore6Strips_1024x1024.png?v=1634798311",
+  "24": "https://images.othoba.com/images/thumbs/0536897_groome-charcoal-purifying-deep-cleansing-nose-strips-monthly-pack6-pcs.jpeg",
+  "29": "https://skinkorea.ae/cdn/shop/files/3w-clinic-crystal-honey-eye-cream.png?v=1727784238",
+  "30": "https://bk.shajgoj.com/storage/2021/07/LAFZ-Halal-Caffeine-Foaming-Face-Wash-2.jpg",
+  "31": "https://theglowlab.se/cdn/shop/files/Master_patch_original_fit_blemish_cover_pimple_patch_acne.png?v=1752343162",
+  "33": "https://myaura.xyz/cdn/shop/files/c1.webp?v=1764159216",
+  "34": "https://res.retailershakti.com/incom/images/product/Tresemme-Keratin-Smooth-Shampoo-1561632107-10047011-1.jpg",
+  "43": "https://cdn.ae1stcry.com/brainbees/images/products/583x720/5bbf0aeae6f92a.webp",
+  "44": "https://i.makeup.es/c/cn/cnxg5enohziz.jpg",
+  "45": "https://www.herbtib.com/image/cache/catalog/himalaya/himalaya-neem-turmeric-soap-900x900.jpg",
+  "46": "https://himalayausa.com/cdn/shop/files/4_714ece8d-0028-483d-9a6e-e50b7f5e1656.png?v=1770222739&width=1800",
+  "51": "https://bk.shajgoj.com/storage/2022/03/Nirvana-Color-Nail-Enamel-I-Am-Jealous-05.png",
+  "55": "https://www.ogerio.com/wp-admin/admin-ajax.php?action=rank_math_overlay_thumb&hash=765e3c3be6d2a61ef420168283e0ba62&id=129196&type=ogerio",
+  "60": "https://www.arogga.com/_next/image?q=75&url=https%3A%2F%2Fcdn2.arogga.com%2FeyJidWNrc2V0IjoiYXJvZ2dhIiwia2V5IjoiUHJvZHVjdC1wX2ltYWdlc1wvNjUxNjFcLzY1MTYxLWV5SmtpZFdOclpYUWlPaUp5WlhkU2VXeHBlbVZrSWl3aWJtRnRaWE1pT2lKUGNtOXpkV2N0YldGdVkyVnlYV3hwWldVaUxDSnJaWGtpT2lKc2JXTXdYMFJsZFZ0UjJ4dmR5MVRhRzkzWlhJdFJ6VnNMWFpwTmpkdE5pNXdibWNpTENKbFpHbDBjeUk2VzExOS02NW1kZW8ud2VicCIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTAwMCwiaGVpZ2h0IjoxMDAwLCJmaXQiOiJvdXRzaWRlIn0sIm92ZXJsYXlXaXRoIjp7ImJ1Y2tldCI6ImFyb2dnYSIsImtleSI6Im1pc2NcL3dtLnBuZyIsImFscGhhIjo5MH19fQ%3D%3D&w=1280"
+};
+const productDetails = {
+  "1": "Micellar cleansing water for everyday cleansing and makeup removal.",
+  "2": "SPF50+ PA+++ sun milk with a soft, smooth finish.",
+  "3": "Lightweight moisturiser for everyday skin hydration.",
+  "4": "Gentle refreshing facial wash gel for daily cleansing.",
+  "5": "All-purpose toner with a botanical flower-based formula.",
+  "6": "Salicylic acid daily cleanser for regular face cleansing.",
+  "7": "Lightweight SPF50 sunscreen for everyday sun care.",
+  "8": "Acne-focused facial wash with jojoba beads.",
+  "9": "Natural rose water face and body mist.",
+  "10": "Multani mati clay powder for a traditional skincare routine.",
+  "11": "Spot-lightening skincare cream with alpha arbutin and niacinamide.",
+  "12": "Micellar gel wash designed for gentle daily cleansing.",
+  "13": "98% aloe vera gel for everyday skin care.",
+  "14": "Brightening moisturiser for regular skincare use.",
+  "15": "Niacinamide + TXA dark-spot correcting serum.",
+  "16": "Pressed pigment eyeshadow palette for eye makeup looks.",
+  "17": "Liquid matte lipstick in Timeless L02 shade.",
+  "18": "Dark-spot glow serum with niacinamide and hyaluronic acid.",
+  "19": "Liquid matte lipstick in Sweet Sin L06 shade.",
+  "20": "SPF50+ PA+++ sunblock cream for daily sun care.",
+  "21": "Activated charcoal nose pore strips.",
+  "22": "French Rose & Almond body wash for daily bathing.",
+  "23": "Rosy Lips lip therapy for everyday lip care.",
+  "24": "Charcoal nose strips for pore cleansing.",
+  "25": "BB cream for quick everyday spot coverage.",
+  "26": "Monthly charcoal nose-strip pack for blackhead care.",
+  "27": "Facial and eyebrow razor set for beauty grooming.",
+  "28": "Berry lip sleeping mask for overnight lip care.",
+  "29": "Honey eye cream for the under-eye area.",
+  "30": "Caffeine foaming face wash with a built-in brush.",
+  "31": "Hydrocolloid acne pimple patches.",
+  "32": "Moisturising facial wash for gentle daily cleansing.",
+  "33": "Acne-clearing gel cleanser for acne-prone skin.",
+  "34": "Keratin Smooth shampoo for regular hair care.",
+  "35": "Sea salt body scrub for body exfoliation.",
+  "36": "Herbal beauty soap for everyday personal care.",
+  "37": "Henna hair pack for a traditional hair-care routine.",
+  "38": "Liquid eyeliner for precise eye makeup.",
+  "39": "Tea tree + salicylic acid foaming face wash.",
+  "40": "Rich moisturiser for everyday skin hydration.",
+  "41": "Liquid matte lipstick in Give Me Mocha shade.",
+  "42": "Keratin Smooth conditioner for regular hair care.",
+  "43": "Waterproof black kohl kajal for eye makeup.",
+  "44": "Banana Dreams loose powder for setting makeup.",
+  "45": "Neem & turmeric soap for everyday cleansing.",
+  "46": "Purifying neem face wash with neem and turmeric.",
+  "47": "Micellar cleansing water for gentle daily cleansing.",
+  "48": "Tea tree nose strips for pore care.",
+  "49": "Niacinamide 10% + Zinc 1% serum for skincare.",
+  "50": "Light non-oily moisturiser for everyday use.",
+  "51": "Nail enamel in I Am Jealous shade 05.",
+  "52": "Hydrating lightweight gel moisturiser.",
+  "53": "Ultimate Glam eyeliner for precise eye definition.",
+  "54": "Brightening face wash for oily and combination skin.",
+  "55": "Bamboo makeup brush set for everyday makeup application.",
+  "56": "Monthly tea tree nose-strip pack.",
+  "57": "Cotton pads for everyday personal-care use.",
+  "58": "Nourishing nail polish remover.",
+  "59": "Hair-removal wax strips for personal grooming.",
+  "60": "White Glow shower gel for everyday body cleansing."
+};
+
+function getProductImage(product){
+  return productImages[product.id] || "";
+}
+
+function getProductDetails(product){
+  return productDetails[product.id] || "Beauty product for everyday personal care.";
+}
+
 function renderProducts(){
 
 const input =
@@ -1313,12 +1417,19 @@ grid.innerHTML =
 list.map(
 function(product){
 
+const image = getProductImage(product);
+const detail = getProductDetails(product);
+
 return `
 
 <div class="product">
 
 <div class="product-image">
-${product.emoji}
+${image
+? `<img src="${image}" alt="${escapeHTML(product.name)}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">`
+: ""
+}
+<span style="display:${image ? "none" : "block"}">${product.emoji}</span>
 </div>
 
 <div class="product-content">
@@ -1333,6 +1444,10 @@ ${escapeHTML(product.bn)}
 
 <div class="muted">
 ${escapeHTML(product.category)}
+</div>
+
+<div style="font-size:13px;line-height:1.45;margin:8px 0;color:#555;">
+${escapeHTML(detail)}
 </div>
 
 <div class="price">
