@@ -1356,8 +1356,41 @@ const productDetails = {
   "70": "Gentle daily baby lotion with soothing calendula extract."
 };
 
+const SHWAPNO_PRODUCT_IMAGES = {
+"sw001":"https://himalayausa.com/cdn/shop/files/BrighteningVitaminCOrangeFaceWash.png?v=1780310069",
+"sw002":"https://www.shoppersbd.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/2/_/2_182_1.jpg",
+"sw003":"https://www.shoppersbd.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/2/_/2_182_1.jpg",
+"sw004":"https://imgwlns.gumlet.io/images/products/228881-2.jpg",
+"sw005":"https://himalayausa.com/cdn/shop/files/BrighteningVitaminCOrangeFaceWash.png?v=1780310069",
+"sw006":"https://www.silkrute.com/images/detailed/3450/81uufWYCZtL.jpg",
+"sw007":"https://thedesideli.com/uploads/media_674c7a45b2a48.webp",
+"sw008":"https://bk.shajgoj.com/storage/2025/03/power-bright-licorice-menz-facewash-image-2.jpeg",
+"sw009":"https://www.shoppersbd.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/2/_/2_182_1.jpg",
+"sw010":"https://himalayawellness.com.bd/cdn/shop/files/HimalayababyCreamPack-1.jpg?v=1701058822",
+"sw011":"https://bk.shajgoj.com/storage/2025/03/power-bright-licorice-menz-facewash-image-2.jpeg",
+"sw012":"https://d2t8nl1y0ie1km.cloudfront.net/images/68b5752b7d26667604574bac_Ponds-Bright-Beauty-Face-Wash-100gm_2.webp",
+"sw013":"https://d2t8nl1y0ie1km.cloudfront.net/images/68b5752b7d26667604574bac_Ponds-Bright-Beauty-Face-Wash-100gm_2.webp",
+"sw014":"https://ustore.lk/cdn/shop/files/1747376544_2226_1200x1200.png?v=1778798152",
+"sw015":"https://www.vishalmegamart.com/on/demandware.static/-/Sites-vmm-fmcg-master-catalog/default/dw90cac1f5/images/large/1311011891.jpg",
+"sw016":"https://dms.mydukaan.io/original/jpeg/master/products/tresemme-shampoo-ks-580ml.jpg",
+"sw017":"https://imgwlns.gumlet.io/images/products/305739-1.jpg",
+"sw018":"https://images.apollo247.in/pub/media/catalog/product/d/o/dov0148_1_1.jpg?tr=q-80%2Cf-webp%2Cw-400%2Cdpr-3%2Cc-at_max+400w",
+"sw019":"https://www.vridhistores.com/uploads/2023/May/products/16851288459027.jpg",
+"sw020":"https://cdn.othoba.com/images/thumbs/0322213_clear-shampoo-women-anti-hair-fall-350ml.jpeg",
+"sw021":"https://cdn.othoba.com/images/thumbs/0322213_clear-shampoo-women-anti-hair-fall-350ml.jpeg",
+"sw022":"https://storage.googleapis.com/shy-pub/319551/1696353742675_1.jpeg",
+"sw023":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw024":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw025":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw026":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw027":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw028":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw029":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw030":"https://d2t8nl1y0ie1km.cloudfront.net/images/68b5752b7d26667604574bac_Ponds-Bright-Beauty-Face-Wash-100gm_2.webp"
+};
+
 function getProductImage(product){
-return product.image || productImages[product.id] || "";
+return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[product.id] || "";
 }
 
 function getProductDetails(product){
