@@ -1510,6 +1510,116 @@ document.head.appendChild(script);
  * CART
  ************************************************************/
 
+/* STOCK_SYNC_DIRECT_FROM_GOOGLE_SHEET */
+
+const STOCK_SHEET_ID = "1kxFk3S-hmSSr_HLppR3y42uEleo373oh3bXBN70ueT8";
+const STOCK_SHEET_NAME = "Products";
+
+function loadStockDirectlyFromGoogleSheet(){
+
+const callbackName =
+"slsStockCallback_" +
+Date.now() +
+"_" +
+Math.random().toString(36).slice(2);
+
+const script = document.createElement("script");
+let finished = false;
+
+function cleanup(){
+try{ delete window[callbackName]; }
+catch(e){ window[callbackName] = undefined; }
+if(script.parentNode)script.parentNode.removeChild(script);
+}
+
+const timeout = setTimeout(function(){
+if(finished)return;
+finished = true;
+cleanup();
+},15000);
+
+window[callbackName] = function(data){
+
+if(finished)return;
+finished = true;
+clearTimeout(timeout);
+cleanup();
+
+try{
+
+if(!data || !data.table || !Array.isArray(data.table.rows)){
+return;
+}
+
+const stockById = {};
+
+data.table.rows.forEach(function(row){
+
+const cells = row.c || [];
+const idCell = cells[0];
+const stockCell = cells[5];
+
+const id =
+idCell && idCell.v != null
+? String(idCell.v).trim()
+: "";
+
+const stock =
+stockCell && stockCell.v != null
+? Number(stockCell.v)
+: NaN;
+
+if(id && Number.isFinite(stock)){
+stockById[id] = Math.max(0, stock);
+}
+
+});
+
+if(!Object.keys(stockById).length)return;
+
+products = products.map(function(product){
+
+const id = String(product.id || "").trim();
+
+if(Object.prototype.hasOwnProperty.call(stockById,id)){
+return Object.assign({}, product, {
+stock: stockById[id],
+status: stockById[id] > 0 ? "IN STOCK" : "OUT OF STOCK"
+});
+}
+
+return product;
+
+});
+
+renderProducts();
+
+}catch(error){
+console.error("Direct Google Sheet stock sync error:", error);
+}
+
+};
+
+script.onerror = function(){
+if(finished)return;
+finished = true;
+clearTimeout(timeout);
+cleanup();
+};
+
+script.src =
+"https://docs.google.com/spreadsheets/d/" +
+STOCK_SHEET_ID +
+"/gviz/tq?" +
+"sheet=" + encodeURIComponent(STOCK_SHEET_NAME) +
+"&tqx=" +
+encodeURIComponent("out:json;responseHandler:" + callbackName) +
+"&t=" + Date.now();
+
+document.head.appendChild(script);
+
+}
+
 function addToCart(id){
 
 const product = products.find(function(p){ return p.id === id; });
@@ -3574,6 +3684,8 @@ event.target
 renderProducts();
 
 loadProductsFromSheet();
+
+loadStockDirectlyFromGoogleSheet();
 
 /*
  * Keep product stock/status synchronized with Google Sheets.
