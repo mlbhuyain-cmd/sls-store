@@ -1542,54 +1542,277 @@ ${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কা�
 
 function loadProductsFromSheet(){
 
-const callbackName = "slsProductsCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+/*
+ * Products Sheet is the single source of truth.
+ *
+ * Columns:
+ * A = Product ID
+ * B = Product ID / index
+ * C = Product Name English
+ * D = Product Name Bangla
+ * E = Category
+ * F = Selling Price
+ * G = Stock Qty
+ * H = Stock Status
+ * I = Image URL
+ * J = Product Details
+ *
+ * The sheet is read with Google Visualization JSONP so the
+ * GitHub Pages website can load the Image URL directly.
+ */
+
+const callbackName =
+"slsProductsSheetCallback_" +
+Date.now() +
+"_" +
+Math.random().toString(36).slice(2);
+
 const script = document.createElement("script");
 let finished = false;
+
+function cleanup(){
+clearTimeout(timeout);
+try{
+delete window[callbackName];
+}catch(error){
+window[callbackName] = undefined;
+}
+if(script.parentNode){
+script.parentNode.removeChild(script);
+}
+}
 
 const timeout = setTimeout(function(){
 if(finished)return;
 finished = true;
 cleanup();
-console.error("Product Sheet request timed out.");
+console.error("Products Sheet request timed out.");
 },15000);
 
-function cleanup(){
-clearTimeout(timeout);
-try{ delete window[callbackName]; }catch(error){ window[callbackName]=undefined; }
-if(script.parentNode)script.parentNode.removeChild(script);
-}
+window[callbackName] = function(data){
 
-window[callbackName] = function(result){
 if(finished)return;
+
 finished = true;
 cleanup();
 
-if(result && result.success && Array.isArray(result.products)){
-products = products.slice();
+try{
+
+if(!data || !data.table || !Array.isArray(data.table.rows)){
+console.error("Products Sheet returned invalid data.");
+loadStockDirectlyFromGoogleSheet();
+return;
+}
+
+const rows = data.table.rows;
+
+const sheetById = {};
+const sheetByName = {};
+
+rows.forEach(function(row){
+
+const cells = row.c || [];
+
+function cellValue(index){
+const cell = cells[index];
+return cell && cell.v != null
+? String(cell.v).trim()
+: "";
+}
+
+const id = cellValue(0);
+const name = cellValue(2);
+const bn = cellValue(3);
+const category = cellValue(4);
+const priceRaw = cellValue(5);
+const stockRaw = cellValue(6);
+const status = cellValue(7);
+const image = cellValue(8);
+const details = cellValue(9);
+
+if(!id && !name)return;
+
+const record = {
+id: id,
+name: name,
+bn: bn,
+category: category,
+price: Number(priceRaw) || 0,
+stock: stockRaw === "" ? null : Number(stockRaw),
+status: status,
+image: image,
+details: details
+};
+
+if(id){
+sheetById[id] = record;
+}
+
+if(name){
+sheetByName[
+name.toLowerCase().replace(/\\s+/g," ").trim()
+] = record;
+}
+
+});
+
+/*
+ * Merge Sheet data into the website's existing product list.
+ * Existing products remain as a fallback if a Sheet row is missing.
+ */
+products = products.map(function(product){
+
+const id = String(product.id || "").trim();
+
+const nameKey =
+String(product.name || "")
+.toLowerCase()
+.replace(/\\s+/g," ")
+.trim();
+
+const live =
+sheetById[id] ||
+sheetByName[nameKey];
+
+if(!live){
+return product;
+}
+
+return Object.assign({}, product, {
+
+name: live.name || product.name,
+bn: live.bn || product.bn,
+category: live.category || product.category,
+price: Number(live.price) > 0
+  ? Number(live.price)
+  : product.price,
+
+stock: Number.isFinite(live.stock)
+  ? Math.max(0, live.stock)
+  : product.stock,
+
+status: live.status || product.status,
+
+/*
+ * THIS IS THE IMPORTANT PART:
+ * Products!I = Image URL
+ */
+image: live.image || product.image || "",
+
+details: live.details || product.details
+
+});
+
+});
+
+/*
+ * Also allow products that exist in the Products Sheet
+ * but are not yet in the website's built-in list.
+ */
+rows.forEach(function(row){
+
+const cells = row.c || [];
+
+function value(index){
+const cell = cells[index];
+return cell && cell.v != null
+? String(cell.v).trim()
+: "";
+}
+
+const id = value(0);
+const name = value(2);
+
+if(!id || !name)return;
+
+const alreadyExists =
+products.some(function(product){
+return String(product.id || "").trim() === id;
+}) ||
+products.some(function(product){
+return String(product.name || "").trim().toLowerCase() === name.toLowerCase();
+});
+
+if(alreadyExists)return;
+
+const stockRaw = value(6);
+
+products.push({
+id: id,
+name: name,
+bn: value(3),
+category: value(4),
+price: Number(value(5)) || 0,
+stock: stockRaw === "" ? null : Number(stockRaw),
+status: value(7),
+image: value(8),
+details: value(9)
+});
+
+});
 
 renderProducts();
+
 loadStockDirectlyFromGoogleSheet();
-}else{
-console.error("Product Sheet error:", result && result.error);
-/* Stock must keep working even if the product API is unavailable. */
+
+}catch(error){
+
+console.error(
+"Products Sheet image sync error:",
+error
+);
+
+/*
+ * Stock must keep working even if the image/product
+ * request fails.
+ */
 loadStockDirectlyFromGoogleSheet();
+
 }
+
 };
 
 script.onerror = function(){
+
 if(finished)return;
+
 finished = true;
 cleanup();
-console.error("Product Sheet connection failed.");
+
+console.error("Products Sheet connection failed.");
+
+loadStockDirectlyFromGoogleSheet();
+
 };
 
-const params = new URLSearchParams();
-params.set("callback",callbackName);
-params.set("prefix",callbackName);
-params.set("t",Date.now());
+/*
+ * Public Google Sheet → JSONP
+ *
+ * IMPORTANT:
+ * Replace nothing here.
+ * The Products spreadsheet ID and sheet name are already
+ * the same ones used by the SLS Store system.
+ */
+const query =
+"select A,B,C,D,E,F,G,H,I,J";
 
-script.src = PRODUCTS_API_URL + "?" + params.toString();
+script.src =
+"https://docs.google.com/spreadsheets/d/" +
+STOCK_SHEET_ID +
+"/gviz/tq?" +
+"sheet=" +
+encodeURIComponent(STOCK_SHEET_NAME) +
+"&tq=" +
+encodeURIComponent(query) +
+"&tqx=" +
+encodeURIComponent(
+"out:json;responseHandler:" + callbackName
+) +
+"&t=" +
+Date.now();
+
 document.head.appendChild(script);
+
 }
 
 /************************************************************
