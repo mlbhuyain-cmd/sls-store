@@ -1,0 +1,4200 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SLS Store - Cosmetics</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,"Noto Sans Bengali",sans-serif;
+background:#fff7fa;
+color:#222;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:100;
+background:white;
+box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+
+.nav{
+max-width:1200px;
+margin:auto;
+padding:14px 18px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo{
+margin-right:auto;
+}
+
+.logo img{
+width:58px;
+height:58px;
+object-fit:contain;
+}
+
+.nav button{
+border:0;
+background:white;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.nav button:hover{
+background:#fff0f5;
+}
+
+.cart-button{
+background:#e91e63!important;
+color:white!important;
+font-weight:bold;
+}
+
+.hero{
+background:linear-gradient(135deg,#ffe0eb,#fff);
+padding:55px 18px;
+}
+
+.hero-inner{
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:1.3fr .7fr;
+gap:30px;
+align-items:center;
+}
+
+.hero-logo{
+width:120px;
+height:120px;
+object-fit:contain;
+display:block;
+margin-bottom:18px;
+}
+
+.hero h1{
+font-size:55px;
+margin:0 0 15px;
+}
+
+.hero p{
+font-size:18px;
+line-height:1.7;
+color:#555;
+}
+
+.hero-box{
+background:white;
+border-radius:25px;
+padding:30px;
+text-align:center;
+box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+.hero-video{
+width:100%;
+max-width:260px;
+height:180px;
+object-fit:cover;
+display:block;
+margin:auto;
+border-radius:20px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px 18px;
+}
+
+.search{
+width:100%;
+padding:14px;
+border:1px solid #ead5dd;
+border-radius:12px;
+font-size:16px;
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-top:20px;
+}
+
+.product{
+background:white;
+border:1px solid #efdce4;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.product-image{
+height:190px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#fff0f5,#ffe1eb);
+font-size:70px;
+}
+
+.product-content{
+padding:16px;
+}
+
+.product h3{
+margin:0 0 6px;
+}
+
+.product-bn{
+color:#777;
+font-size:14px;
+}
+
+.price{
+color:#e91e63;
+font-size:20px;
+font-weight:bold;
+margin:12px 0;
+}
+
+.primary{
+width:100%;
+border:0;
+background:#e91e63;
+color:white;
+padding:12px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.primary:hover{
+background:#c2185b;
+}
+
+.secondary{
+width:100%;
+border:1px solid #e91e63;
+background:white;
+color:#e91e63;
+padding:12px;
+border-radius:10px;
+font-weight:bold;
+margin-top:9px;
+cursor:pointer;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-top:35px;
+}
+
+.feature{
+background:white;
+border:1px solid #efdce4;
+padding:20px;
+border-radius:14px;
+text-align:center;
+}
+
+footer{
+background:#222;
+color:white;
+text-align:center;
+padding:35px 15px;
+margin-top:30px;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.55);
+z-index:500;
+padding:20px;
+overflow:auto;
+}
+
+.modal.show{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.modal-box{
+width:min(650px,100%);
+max-height:92vh;
+overflow:auto;
+background:white;
+border-radius:18px;
+padding:22px;
+position:relative;
+}
+
+.modal-box.wide{
+width:min(900px,100%);
+}
+
+.close{
+position:absolute;
+right:12px;
+top:10px;
+border:0;
+background:#f3f3f3;
+width:35px;
+height:35px;
+border-radius:50%;
+font-size:20px;
+cursor:pointer;
+}
+
+.field{
+margin:14px 0;
+}
+
+.field label{
+display:block;
+font-weight:bold;
+margin-bottom:6px;
+}
+
+.field input,
+.field textarea,
+.field select{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+.field textarea{
+min-height:90px;
+}
+
+.notice{
+padding:12px;
+border-radius:10px;
+background:#fff4f7;
+color:#9c1748;
+margin:10px 0;
+}
+
+.success{
+background:#eafff1;
+color:#17743c;
+}
+
+.error{
+background:#fff0f0;
+color:#b00020;
+}
+
+.cart-row{
+display:grid;
+grid-template-columns:1fr auto auto auto;
+gap:10px;
+align-items:center;
+padding:13px 0;
+border-bottom:1px solid #eee;
+}
+
+.qty{
+display:flex;
+align-items:center;
+gap:7px;
+}
+
+.qty button{
+border:1px solid #ddd;
+background:white;
+width:30px;
+height:30px;
+border-radius:7px;
+}
+
+.remove{
+border:0;
+background:#ffe8ee;
+color:#b0003a;
+padding:7px 10px;
+border-radius:7px;
+cursor:pointer;
+}
+
+.totals{
+background:#fff7fa;
+padding:15px;
+border-radius:12px;
+margin:15px 0;
+}
+
+.total-line{
+display:flex;
+justify-content:space-between;
+margin:7px 0;
+}
+
+.grand{
+border-top:1px solid #ead5dd;
+padding-top:10px;
+font-size:21px;
+font-weight:bold;
+color:#e91e63;
+}
+
+.order-card{
+background:white;
+border:1px solid #efdce4;
+border-radius:14px;
+padding:16px;
+margin:12px 0;
+}
+
+.order-head{
+display:flex;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.badge{
+display:inline-block;
+padding:6px 11px;
+border-radius:50px;
+background:#fff0d8;
+color:#9a6200;
+font-size:12px;
+font-weight:bold;
+}
+
+.badge.confirmed{
+background:#e8f1ff;
+color:#1854a6;
+}
+
+.badge.processing{
+background:#f0e9ff;
+color:#6937a6;
+}
+
+.badge.delivery{
+background:#e5fff0;
+color:#16713c;
+}
+
+.status-track{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:5px;
+margin:15px 0;
+}
+
+.status-step{
+text-align:center;
+padding:8px 3px;
+border-radius:8px;
+background:#eee;
+font-size:11px;
+}
+
+.status-step.active{
+background:#e91e63;
+color:white;
+}
+
+.order-actions{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
+.refresh{
+border:0;
+background:#f3f3f3;
+padding:9px 12px;
+border-radius:9px;
+cursor:pointer;
+}
+
+.invoice{
+background:#16803c;
+color:white;
+padding:9px 12px;
+border-radius:9px;
+text-decoration:none;
+display:inline-block;
+}
+
+.image-invoice{
+background:#e91e63;
+color:white;
+padding:9px 12px;
+border-radius:9px;
+border:0;
+cursor:pointer;
+}
+
+.order-product{
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px;
+background:#fff7fa;
+border-radius:10px;
+margin-bottom:8px;
+}
+
+.order-product img{
+width:58px;
+height:58px;
+object-fit:contain;
+background:white;
+border-radius:8px;
+flex:none;
+}
+
+.order-product-name{
+flex:1;
+}
+
+.empty{
+text-align:center;
+padding:30px;
+color:#777;
+}
+
+.muted{
+color:#777;
+font-size:14px;
+}
+
+@media(max-width:900px){
+
+.products{
+grid-template-columns:repeat(3,1fr);
+}
+
+.hero-inner{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:650px){
+
+.products{
+grid-template-columns:repeat(2,1fr);
+}
+
+.features{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:38px;
+}
+
+.cart-row{
+grid-template-columns:1fr auto;
+}
+
+}
+
+@media(max-width:430px){
+
+.products{
+grid-template-columns:1fr;
+}
+
+.nav{
+flex-wrap:wrap;
+}
+
+.logo{
+width:100%;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+<div class="nav">
+
+<div class="logo">
+
+<img
+src="./assets/sls-logo-real.webp?v=final"
+alt="SLS Store Logo">
+
+</div>
+
+<button onclick="goHome()">
+Home / হোম
+</button>
+
+<button onclick="openOrders()">
+My Orders / আমার অর্ডার
+</button>
+
+<button
+id="authButton"
+onclick="authButtonClick()">
+Login / লগইন
+</button>
+
+<button
+class="cart-button"
+onclick="openCart()">
+Cart 🛒 (<span id="cartCount">0</span>)
+</button>
+
+</div>
+
+</header>
+
+
+<section class="hero">
+
+<div class="hero-inner">
+
+<div>
+
+<img
+class="hero-logo"
+src="./assets/sls-logo-real.webp?v=final"
+alt="SLS Store Logo">
+
+<h1>
+Beauty You’ll Love 💕
+</h1>
+
+<p>
+আপনার পছন্দের কসমেটিকস এখন সহজেই অর্ডার করুন।
+<br>
+Fresh Products • Great Value • Friendly Service
+</p>
+
+<button
+class="primary"
+style="width:auto;padding:13px 22px"
+onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+
+Shop Now / কিনুন
+
+</button>
+
+</div>
+
+
+<div class="hero-box">
+
+<video
+class="hero-video"
+autoplay
+muted
+loop
+playsinline
+preload="auto"
+src="./SLS_Store_hero_lipstick_video.mp4">
+</video>
+
+<h2>SLS Store</h2>
+
+<p>Cash on Delivery</p>
+
+<p class="muted">
+
+<b>Delivery Charge</b><br>
+
+Inside Dhaka ৳80<br>
+Sub Dhaka ৳130<br>
+Outside Dhaka ৳150
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<main
+class="container"
+id="products">
+
+<h2>
+All Products / সব পণ্য
+</h2>
+
+<input
+id="searchInput"
+type="search"
+name="product-search"
+class="search"
+autocomplete="off"
+autocorrect="off"
+autocapitalize="off"
+spellcheck="false"
+inputmode="search"
+readonly
+placeholder="Search products / পণ্য খুঁজুন..."
+onfocus="if(this.readOnly){this.readOnly=false;this.value='';}"
+oninput="renderProducts()">
+
+<div
+id="productGrid"
+class="products">
+</div>
+
+
+<div class="features">
+
+<div class="feature">
+
+🚚
+<br>
+
+<b>Home Delivery</b>
+
+<br>
+
+<span class="muted">
+
+ঢাকার ভিতরে ৳80<br>
+Sub Dhaka ৳130<br>
+ঢাকার বাইরে ৳150
+
+</span>
+
+</div>
+
+
+<div class="feature">
+
+💵
+<br>
+
+<b>Cash on Delivery</b>
+
+<br>
+
+<span class="muted">
+পণ্য হাতে পেয়ে টাকা পরিশোধ
+</span>
+
+</div>
+
+
+<div class="feature">
+
+📦
+<br>
+
+<b>Order Tracking</b>
+
+<br>
+
+<span class="muted">
+My Orders থেকে Status দেখুন
+</span>
+
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+<h3>SLS Store</h3>
+
+<p>
+Cosmetics • Cash on Delivery
+</p>
+
+<p>
+317-A Khilgaon, Dhaka, Bangladesh
+</p>
+
+<p>
+Call / WhatsApp: 01954272389
+</p>
+
+</footer>
+
+
+<!-- CART -->
+
+<div
+class="modal"
+id="cartModal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closeModal('cartModal')">
+×
+</button>
+
+<h2>
+Cart / কার্ট
+</h2>
+
+<div id="cartItems"></div>
+
+<div id="cartTotals"></div>
+
+<button
+class="primary"
+onclick="checkout()">
+
+Place Order / অর্ডার করুন
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- AUTH -->
+
+<div
+class="modal"
+id="authModal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closeModal('authModal')">
+×
+</button>
+
+<h2 id="authTitle">
+Login / লগইন
+</h2>
+
+<div id="authMessage"></div>
+
+<div
+class="field"
+id="nameField"
+style="display:none">
+
+<label>
+Name / নাম
+</label>
+
+<input
+id="authName"
+type="text"
+placeholder="Your name">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Email / ইমেইল
+</label>
+
+<input
+id="authEmail"
+type="email"
+placeholder="you@example.com">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Password / পাসওয়ার্ড
+</label>
+
+<input
+id="authPassword"
+type="password"
+placeholder="Minimum 6 characters">
+
+</div>
+
+
+<button
+class="primary"
+id="authSubmit"
+onclick="submitAuth()">
+
+Login / লগইন
+
+</button>
+
+
+<button
+class="secondary"
+id="authToggle"
+onclick="toggleAuthMode()">
+
+Create Account / নতুন অ্যাকাউন্ট
+
+</button>
+
+
+<button
+class="secondary"
+onclick="resetPassword()">
+
+Forgot Password / পাসওয়ার্ড ভুলে গেছেন?
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CHECKOUT -->
+
+<div
+class="modal"
+id="checkoutModal">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closeModal('checkoutModal')">
+×
+</button>
+
+<h2>
+Checkout / অর্ডার নিশ্চিত করুন
+</h2>
+
+<div id="checkoutMessage"></div>
+
+
+<div class="field">
+
+<label>
+Name / নাম
+</label>
+
+<input id="orderName">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Phone / মোবাইল
+</label>
+
+<input
+id="orderPhone"
+type="tel"
+placeholder="019xxxxxxxx">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Address / ঠিকানা
+</label>
+
+<textarea
+id="orderAddress"
+placeholder="House, Road, Area, City"
+oninput="applyAutomaticDelivery()"></textarea>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Automatic Delivery / অটোমেটিক ডেলিভারি
+</label>
+
+<div
+class="muted"
+id="deliveryHint">
+
+Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।
+
+</div>
+
+<input
+id="deliveryArea"
+type="hidden">
+
+</div>
+
+
+<div class="notice">
+
+Payment:
+<b>Cash on Delivery</b>
+
+<br>
+
+পণ্য হাতে পেয়ে টাকা পরিশোধ করবেন।
+
+</div>
+
+
+<div id="checkoutSummary"></div>
+
+
+<button
+class="primary"
+onclick="submitOrder()">
+
+Confirm Order / অর্ডার নিশ্চিত করুন
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div
+class="modal"
+id="ordersModal">
+
+<div class="modal-box wide">
+
+<button
+class="close"
+onclick="closeModal('ordersModal')">
+×
+</button>
+
+<h2>
+My Orders / আমার অর্ডার
+</h2>
+
+<div id="ordersMessage"></div>
+
+<div id="ordersList">
+Loading...
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+/* Prevent customer email/contact autofill from appearing in the product search box. */
+document.addEventListener("DOMContentLoaded", function () {
+  const searchBox = document.getElementById("searchInput");
+  if (!searchBox) return;
+
+  searchBox.value = "";
+  searchBox.setAttribute("autocomplete", "off");
+  searchBox.setAttribute("data-lpignore", "true");
+  searchBox.setAttribute("data-form-type", "other");
+  searchBox.setAttribute("readonly", "readonly");
+
+  searchBox.addEventListener("focus", function () {
+    if (this.readOnly) {
+      this.readOnly = false;
+      this.value = "";
+    }
+  });
+});
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore-compat.js"></script>
+
+
+<script>
+
+/************************************************************
+ * SETTINGS
+ ************************************************************/
+
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzfobB1ZAeWKhq_gZ7NBH0LZ4XaF_C-4tUVviVecdQjPTTlrZ4rwl9lPvqoWuz4aK0/exec";
+
+
+const PRODUCTS_API_URL =
+"https://script.google.com/macros/s/AKfycbyWDTqVZxk20cWSTnivqKLxkRzAI2KBmsEYDsfxDSWjPjtxskfx8lMa6RGw-16bsWJ5/exec";
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyAwyC-viaOzMV1_JxY_kYLHlv5pcxEZgqc",
+
+authDomain:
+"sls-store-5c3c6.firebaseapp.com",
+
+projectId:
+"sls-store-5c3c6",
+
+storageBucket:
+"sls-store-5c3c6.firebasestorage.app",
+
+messagingSenderId:
+"970257728069",
+
+appId:
+"1:970257728069:web:e5502ee5442e2980d4992c",
+
+measurementId:
+"G-NWJS4FZ0GX"
+
+};
+
+
+firebase.initializeApp(
+firebaseConfig
+);
+
+const auth =
+firebase.auth();
+
+const db =
+firebase.firestore();
+
+
+/************************************************************
+ * PRODUCTS
+ ************************************************************/
+
+let products = [
+{id:"sw001",name:"Himalaya Brightening Vitamin-C Orange Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি অরেঞ্জ ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C orange face wash for daily cleansing. Shwapno regular price ৳220."},
+{id:"sw002",name:"Himalaya Intense Oil Clear Lemon Face Wash 100ml",bn:"হিমালয়া ইনটেন্স অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Lemon face wash for oil-control cleansing. Shwapno regular price ৳299."},
+{id:"sw003",name:"Himalaya Oil Control Lemon Face Wash 100ml",bn:"হিমালয়া অয়েল কন্ট্রোল লেমন ফেস ওয়াশ",price:200,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Oil-control lemon face wash. Shwapno regular price ৳200."},
+{id:"sw004",name:"Himalaya Purifying Neem Face Wash 100ml",bn:"হিমালয়া পিউরিফাইং নিম ফেস ওয়াশ",price:230,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Neem face wash for everyday cleansing. Shwapno regular price ৳230."},
+{id:"sw005",name:"Himalaya Brightening Vitamin-C Blueberry Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি ব্লুবেরি ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C blueberry face wash. Shwapno regular price ৳220."},
+{id:"sw006",name:"Himalaya Natural Glow Saffron Face Cream 50gm",bn:"হিমালয়া ন্যাচারাল গ্লো স্যাফরন ফেস ক্রিম",price:160,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Saffron face cream. Shwapno regular price ৳160."},
+{id:"sw007",name:"Himalaya Moisturizing Aloe Vera Face Wash 100ml",bn:"হিমালয়া ময়েশ্চারাইজিং অ্যালোভেরা ফেস ওয়াশ",price:225,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Aloe vera face wash. Shwapno regular price ৳225."},
+{id:"sw008",name:"Himalaya Men Acne Clear Neem Face Wash 100ml",bn:"হিমালয়া মেন অ্যাকনে ক্লিয়ার নিম ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's neem face wash for acne-prone skin. Shwapno regular price ৳299."},
+{id:"sw009",name:"Himalaya Oil Clear Lemon Face Wash 50ml",bn:"হিমালয়া অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:140,stock:10,status:"IN STOCK",category:"Skincare",details:"50ml • Lemon face wash. Shwapno regular price ৳140."},
+{id:"sw010",name:"Himalaya Baby Cream 100gm",bn:"হিমালয়া বেবি ক্রিম ১০০গ্রাম",price:225,stock:10,status:"IN STOCK",category:"Baby Care",details:"100gm • Baby moisturizing cream. Shwapno regular price ৳225."},
+{id:"sw011",name:"Himalaya Men Power Bright Face Wash 100ml",bn:"হিমালয়া মেন পাওয়ার ব্রাইট ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Men's brightening face wash. Shwapno regular price ৳299."},
+{id:"sw012",name:"POND'S Bright Beauty Face Wash 100gm",bn:"পন্ডস ব্রাইট বিউটি ফেস ওয়াশ ১০০গ্রাম",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100gm • Bright beauty face wash. Shwapno regular price ৳220."},
+{id:"sw013",name:"POND'S Bright Beauty Cream 50gm (Imported)",bn:"পন্ডস ব্রাইট বিউটি ক্রিম ৫০গ্রাম",price:485,stock:10,status:"IN STOCK",category:"Skincare",details:"50gm • Imported bright beauty cream. Shwapno regular price ৳485."},
+{id:"sw014",name:"Dove Intense Repair Conditioner 180(±)10ml",bn:"ডাভ ইনটেন্স রিপেয়ার কন্ডিশনার",price:300,stock:10,status:"IN STOCK",category:"Hair Care",details:"180(±)10ml • Intense Repair conditioner. Shwapno regular price ৳300."},
+{id:"sw015",name:"TRESemmé HD Hair Fall Defense Shampoo 580ml",bn:"ট্রেসেমে এইচডি হেয়ার ফল ডিফেন্স শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Hair-fall defense shampoo. Shwapno regular price ৳850."},
+{id:"sw016",name:"TRESemmé Keratin Smooth Shampoo 580ml",bn:"ট্রেসেমে কেরাটিন স্মুথ শ্যাম্পু",price:850,stock:10,status:"IN STOCK",category:"Hair Care",details:"580ml • Keratin Smooth shampoo. Shwapno regular price ৳850."},
+{id:"sw017",name:"TRESemmé Keratin Smooth Conditioner 215(±)25ml",bn:"ট্রেসেমে কেরাটিন স্মুথ কন্ডিশনার",price:320,stock:10,status:"IN STOCK",category:"Hair Care",details:"215(±)25ml • Keratin Smooth conditioner. Shwapno regular price ৳320."},
+{id:"sw018",name:"Dove Intense Repair Shampoo 650ml",bn:"ডাভ ইনটেন্স রিপেয়ার শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Repair-care shampoo. Shwapno regular price ৳740."},
+{id:"sw019",name:"Dove Hair Fall Rescue Shampoo 650ml",bn:"ডাভ হেয়ার ফল রেসকিউ শ্যাম্পু",price:740,stock:10,status:"IN STOCK",category:"Hair Care",details:"650ml • Hair-fall rescue shampoo. Shwapno regular price ৳740."},
+{id:"sw020",name:"Clear Anti Dandruff Anti Hair fall Shampoo 350(±)20ml",bn:"ক্লিয়ার অ্যান্টি ড্যানড্রাফ অ্যান্টি হেয়ার ফল শ্যাম্পু",price:400,stock:10,status:"IN STOCK",category:"Hair Care",details:"350(±)20ml • Anti-dandruff and anti-hair-fall shampoo. Shwapno regular price ৳400."},
+{id:"sw021",name:"Clear Men Cool Sport Menthol Shampoo 450ml",bn:"ক্লিয়ার মেন কুল স্পোর্ট মেন্থল শ্যাম্পু",price:600,stock:10,status:"IN STOCK",category:"Hair Care",details:"450ml • Cooling menthol men's shampoo. Shwapno regular price ৳600."},
+{id:"sw022",name:"LUX Body Wash Black Orchid Scent & Juniper Oil 245ml",bn:"লাক্স বডি ওয়াশ ব্ল্যাক অর্কিড ও জুনিপার অয়েল",price:200,stock:10,status:"IN STOCK",category:"Body Care",details:"245ml • Black Orchid scent and Juniper Oil body wash. Shwapno regular price ৳200."},
+{id:"sw023",name:"Sunsilk Coconut & Aloe Vera Shampoo 375ml",bn:"সানসিল্ক কোকোনাট অ্যান্ড অ্যালোভেরা শ্যাম্পু",price:420,stock:10,status:"IN STOCK",category:"Hair Care",details:"375ml • Coconut & Aloe Vera shampoo. Shwapno regular price ৳420."},
+{id:"sw024",name:"Sunsilk Stunning Black Shine Shampoo 340(±)10ml",bn:"সানসিল্ক স্টানিং ব্ল্যাক শাইন শ্যাম্পু",price:350,stock:10,status:"IN STOCK",category:"Hair Care",details:"340(±)10ml • Black Shine shampoo. Shwapno regular price ৳350."},
+{id:"sw025",name:"Enchanteur Stunning Body Spray 150ml",bn:"এনচ্যানটিয়র স্টানিং বডি স্প্রে",price:450,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Fragranced body spray. Shwapno regular price ৳450."},
+{id:"sw026",name:"Enchanteur Alluring Body Mist 150ml",bn:"এনচ্যানটিয়র অ্যালিউরিং বডি মিস্ট",price:450,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Fragranced body mist. Shwapno regular price ৳450."},
+{id:"sw027",name:"Enchanteur Charming Perfume 18ml",bn:"এনচ্যানটিয়র চার্মিং পারফিউম",price:250,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"18ml • Charming fragrance. Shwapno regular price ৳250."},
+{id:"sw028",name:"Enchanteur Chic EDS Dreamy Twinkle 100ml",bn:"এনচ্যানটিয়র চিক EDS ড্রিমি টুইঙ্কল",price:1200,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"100ml • Dreamy Twinkle fragrance. Shwapno regular price ৳1,200."},
+{id:"sw029",name:"AXE Musk Body Spray 150ml AR",bn:"অ্যাক্স মস্ক বডি স্প্রে",price:425,stock:10,status:"IN STOCK",category:"Body Spray & Perfume",details:"150ml • Musk body spray. Shwapno regular price ৳425."},
+{id:"sw030",name:"Golden Rose Longstay Liquid Matte Lipstick 5.5ml",bn:"গোল্ডেন রোজ লংস্টে লিকুইড ম্যাট লিপস্টিক",price:0,stock:10,status:"IN STOCK",category:"Makeup",details:"5.5ml • Longstay liquid matte lipstick. Shwapno listing found, but current crawl did not expose a regular price."}
+];
+
+
+let cart =
+JSON.parse(
+localStorage.getItem(
+"sls_cart"
+) || "[]"
+);
+
+let authMode =
+"login";
+
+let currentUser =
+null;
+
+let statusTimers =
+{};
+
+let orderHistoryCache =
+{};
+
+
+/************************************************************
+ * HELPERS
+ ************************************************************/
+
+function money(number){
+
+return "৳" +
+Number(
+number || 0
+).toLocaleString(
+"en-BD"
+);
+
+}
+
+
+function escapeHTML(text){
+
+return String(
+text ?? ""
+)
+.replace(
+/[&<>"']/g,
+function(char){
+
+return {
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[char];
+
+const FALLBACK_PRICES = {};
+products.forEach(function(product){
+  FALLBACK_PRICES[String(product.id)] = Number(product.price) || 0;
+});
+
+
+
+}
+);
+
+}
+
+
+function saveCart(){
+
+localStorage.setItem(
+"sls_cart",
+JSON.stringify(cart)
+);
+
+updateCartCount();
+
+}
+
+
+function updateCartCount(){
+
+document
+.getElementById(
+"cartCount"
+)
+.textContent =
+cart.reduce(
+function(total,item){
+return total +
+Number(item.qty || 0);
+},
+0
+);
+
+}
+
+
+function openModal(id){
+
+document
+.getElementById(id)
+.classList
+.add("show");
+
+}
+
+
+function closeModal(id){
+
+document
+.getElementById(id)
+.classList
+.remove("show");
+
+}
+
+
+function goHome(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+
+/************************************************************
+ * PRODUCTS
+ ************************************************************/
+
+
+const productImages = {
+  "1": "https://i5.walmartimages.com/seo/Garnier-SkinActive-Micellar-Cleansing-Water-All-in-1-Makeup-Remover-Cleanses-13-5-fl-oz_e4d7a4b6-da7a-4d40-ae23-d24c7d725bc6.7bc3198d58d2556bc29c5b44c4801b9f.jpeg",
+  "2": "https://www.arogga.com/_next/image?q=75&url=https%3A%2F%2Fcdn2.arogga.com%2FeyJidWNrZXQiOiJhcm9nZ2EiLCJrZXkiOiJQcm9kdWN0VmFyaWFudC1wdl9pbWFnZXNcLzUxNDI3XC81MTQyNy1zb2Z0LWZpbmlzaC1zbWRrd20uanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTAwMCwiaGVpZ2h0IjoxMDAwLCJmaXQiOiJvdXRzaWRlIn0sIm92ZXJsYXlXaXRoIjp7ImJ1Y2tldCI6ImFyb2dnYSIsImtleSI6Im1pc2NcL3dtLnBuZyIsImFscGhhIjo5MH19fQ%3D%3D&w=128",
+  "3": "https://cdn.shopify.com/s/files/1/0624/1104/6989/files/61xuFHVGiDL._SL1500.jpg?v=1743776900",
+  "4": "https://www.hangngoainhap.com.vn/images/201711/goods_img/1815_P_1511133891033.jpg",
+  "5": "https://amirajkonna.com/storage/uploads/THHwem9qc8GZ1Wz3ijf5aBeUI2HpABfV6byZCMOW.jpg",
+  "7": "https://alifsuper.com/uploads/products/skin-cafe-sunscreen-spf-50-pa-60gm17338153386757ec2a1cb0c.webp?v=1780093574",
+  "8": "https://i.chaldn.com/_mpimage/rajkonna-acne-fighting-facial-wash-100-ml?q=best&src=https%3A%2F%2Feggyolk.chaldal.com%2Fapi%2FPicture%2FRaw%3FpictureId%3D142012&v=1",
+  "9": "https://rokbucket.rokomari.io/ProductNew20190903/260X372/Skin_Cafe_100_Percent_Natural_Rose_Water-Skin_Cafe-afd70-368269.jpg",
+  "10": "https://eoms.cutpricebd.com/oms_products/big/63295dadcd2e7_rajkonna-multani-mati-192459.jpeg",
+  "11": "https://sl-dev-s3.s3.amazonaws.com/product/a230ddd4cff4d32faf983f55251cc6c8-1755070978047.webp",
+  "12": "https://down-my.img.susercontent.com/file/9e8a0cd4c7b3bb1de24122a1d1f9dc65",
+  "13": "https://bk.shajgoj.com/storage/2018/05/Skin-Cafe-Aloe-Vera-Gel.jpg",
+  "16": "https://techniccosmetics.com/cdn/shop/files/29533inviteonly1.jpg?v=1717061780",
+  "17": "https://bk.shajgoj.com/storage/2022/02/Nirvana-Color-Liquid-Matte-Lipstick-Timeless-L02-newpacket-july2023-2.jpg",
+  "18": "https://skinplusbd.com/public/uploads/all/4GHBvP5jS5iLGTeozzuHDDYU5G2XIheXVzSTTdzK.png",
+  "19": "https://bk.shajgoj.com/storage/2022/02/Nirvana-Color-Liquid-Matte-Lipstick-Sweet-Sin-L06-newpacket-july2023-3.jpg",
+  "21": "https://myshop.co.uk/cdn/shop/products/BeautyFormulasCharcoalNosePore6Strips_1024x1024.png?v=1634798311",
+  "24": "https://images.othoba.com/images/thumbs/0536897_groome-charcoal-purifying-deep-cleansing-nose-strips-monthly-pack6-pcs.jpeg",
+  "29": "https://skinkorea.ae/cdn/shop/files/3w-clinic-crystal-honey-eye-cream.png?v=1727784238",
+  "30": "https://bk.shajgoj.com/storage/2021/07/LAFZ-Halal-Caffeine-Foaming-Face-Wash-2.jpg",
+  "31": "https://theglowlab.se/cdn/shop/files/Master_patch_original_fit_blemish_cover_pimple_patch_acne.png?v=1752343162",
+  "33": "https://myaura.xyz/cdn/shop/files/c1.webp?v=1764159216",
+  "34": "https://res.retailershakti.com/incom/images/product/Tresemme-Keratin-Smooth-Shampoo-1561632107-10047011-1.jpg",
+  "43": "https://cdn.ae1stcry.com/brainbees/images/products/583x720/5bbf0aeae6f92a.webp",
+  "44": "https://i.makeup.es/c/cn/cnxg5enohziz.jpg",
+  "45": "https://www.herbtib.com/image/cache/catalog/himalaya/himalaya-neem-turmeric-soap-900x900.jpg",
+  "46": "https://himalayausa.com/cdn/shop/files/4_714ece8d-0028-483d-9a6e-e50b7f5e1656.png?v=1770222739&width=1800",
+  "51": "https://bk.shajgoj.com/storage/2022/03/Nirvana-Color-Nail-Enamel-I-Am-Jealous-05.png",
+  "55": "https://www.ogerio.com/wp-admin/admin-ajax.php?action=rank_math_overlay_thumb&hash=765e3c3be6d2a61ef420168283e0ba62&id=129196&type=ogerio",
+  "60": "https://www.arogga.com/_next/image?q=75&url=https%3A%2F%2Fcdn2.arogga.com%2FeyJidWNrc2V0IjoiYXJvZ2dhIiwia2V5IjoiUHJvZHVjdC1wX2ltYWdlc1wvNjUxNjFcLzY1MTYxLWV5SmtpZFdOclpYUWlPaUp5WlhkU2VXeHBlbVZrSWl3aWJtRnRaWE1pT2lKUGNtOXpkV2N0YldGdVkyVnlYV3hwWldVaUxDSnJaWGtpT2lKc2JXTXdYMFJsZFZ0UjJ4dmR5MVRhRzkzWlhJdFJ6VnNMWFpwTmpkdE5pNXdibWNpTENKbFpHbDBjeUk2VzExOS02NW1kZW8ud2VicCIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6MTAwMCwiaGVpZ2h0IjoxMDAwLCJmaXQiOiJvdXRzaWRlIn0sIm92ZXJsYXlXaXRoIjp7ImJ1Y2tldCI6ImFyb2dnYSIsImtleSI6Im1pc2NcL3dtLnBuZyIsImFscGhhIjo5MH19fQ%3D%3D&w=1280",
+  "61": "https://m237.apollo247.com/pub/media/catalog/product/H/I/HIM0353_1-JULY23_1.jpg",
+  "62": "https://gs.painest.com/public/uploads/products/photos/parachute-just-for-baby---milky-glow-wash---100mlp-paikaree-i2kb.webp",
+  "63": "https://www.skinplusbd.com/public/uploads/all/0xT5DkqdmFzXyaD948R8VX37eEdoaMu8HStnaTZx.png",
+  "64": "https://bk.shajgoj.com/storage/2023/08/Johnsons-Baby-TTT-Bath-200-ml-Johnsons-Baby-Oil-3.jpg",
+  "65": "https://i.chaldn.com/_mpimage/clariss-baby-daily-bath-200-ml?m=1600&q=best&src=https%3A%2F%2Feggyolk.chaldal.com%2Fapi%2FPicture%2FRaw%3FpictureId%3D69420&v=1",
+  "66": "https://foodpanda.dhmedia.io/image/darkstores/nv-global-catalog/bd/224246c2-b4fa-4a54-b86c-0226dc5fccfa.jpg?height=480",
+  "67": "https://magpiely.com.bd/cdn/shop/products/KODO-BSO-200.jpg?v=1674828075",
+  "68": "https://himalayawellness.in/cdn/shop/products/baby-lotion-100ml.jpg?v=1622098989",
+  "69": "https://cdn.dotpe.in/longtail/store-items/5697977/OVxTUH8f.webp",
+  "70": "https://www.rokomari.com/product/409115/clariss-baby-daily-lotion-200ml"
+};
+const productDetails = {
+  "1": "Micellar cleansing water for everyday cleansing and makeup removal.",
+  "2": "SPF50+ PA+++ sun milk with a soft, smooth finish.",
+  "3": "Lightweight moisturiser for everyday skin hydration.",
+  "4": "Gentle refreshing facial wash gel for daily cleansing.",
+  "5": "All-purpose toner with a botanical flower-based formula.",
+  "6": "Salicylic acid daily cleanser for regular face cleansing.",
+  "7": "Lightweight SPF50 sunscreen for everyday sun care.",
+  "8": "Acne-focused facial wash with jojoba beads.",
+  "9": "Natural rose water face and body mist.",
+  "10": "Multani mati clay powder for a traditional skincare routine.",
+  "11": "Spot-lightening skincare cream with alpha arbutin and niacinamide.",
+  "12": "Micellar gel wash designed for gentle daily cleansing.",
+  "13": "98% aloe vera gel for everyday skin care.",
+  "14": "Brightening moisturiser for regular skincare use.",
+  "15": "Niacinamide + TXA dark-spot correcting serum.",
+  "16": "Pressed pigment eyeshadow palette for eye makeup looks.",
+  "17": "Liquid matte lipstick in Timeless L02 shade.",
+  "18": "Dark-spot glow serum with niacinamide and hyaluronic acid.",
+  "19": "Liquid matte lipstick in Sweet Sin L06 shade.",
+  "20": "SPF50+ PA+++ sunblock cream for daily sun care.",
+  "21": "Activated charcoal nose pore strips.",
+  "22": "French Rose & Almond body wash for daily bathing.",
+  "23": "Rosy Lips lip therapy for everyday lip care.",
+  "24": "Charcoal nose strips for pore cleansing.",
+  "25": "BB cream for quick everyday spot coverage.",
+  "26": "Monthly charcoal nose-strip pack for blackhead care.",
+  "27": "Facial and eyebrow razor set for beauty grooming.",
+  "28": "Berry lip sleeping mask for overnight lip care.",
+  "29": "Honey eye cream for the under-eye area.",
+  "30": "Caffeine foaming face wash with a built-in brush.",
+  "31": "Hydrocolloid acne pimple patches.",
+  "32": "Moisturising facial wash for gentle daily cleansing.",
+  "33": "Acne-clearing gel cleanser for acne-prone skin.",
+  "34": "Keratin Smooth shampoo for regular hair care.",
+  "35": "Sea salt body scrub for body exfoliation.",
+  "36": "Herbal beauty soap for everyday personal care.",
+  "37": "Henna hair pack for a traditional hair-care routine.",
+  "38": "Liquid eyeliner for precise eye makeup.",
+  "39": "Tea tree + salicylic acid foaming face wash.",
+  "40": "Rich moisturiser for everyday skin hydration.",
+  "41": "Liquid matte lipstick in Give Me Mocha shade.",
+  "42": "Keratin Smooth conditioner for regular hair care.",
+  "43": "Waterproof black kohl kajal for eye makeup.",
+  "44": "Banana Dreams loose powder for setting makeup.",
+  "45": "Neem & turmeric soap for everyday cleansing.",
+  "46": "Purifying neem face wash with neem and turmeric.",
+  "47": "Micellar cleansing water for gentle daily cleansing.",
+  "48": "Tea tree nose strips for pore care.",
+  "49": "Niacinamide 10% + Zinc 1% serum for skincare.",
+  "50": "Light non-oily moisturiser for everyday use.",
+  "51": "Nail enamel in I Am Jealous shade 05.",
+  "52": "Hydrating lightweight gel moisturiser.",
+  "53": "Ultimate Glam eyeliner for precise eye definition.",
+  "54": "Brightening face wash for oily and combination skin.",
+  "55": "Bamboo makeup brush set for everyday makeup application.",
+  "56": "Monthly tea tree nose-strip pack.",
+  "57": "Cotton pads for everyday personal-care use.",
+  "58": "Nourishing nail polish remover.",
+  "59": "Hair-removal wax strips for personal grooming.",
+  "60": "White Glow shower gel for everyday body cleansing.",
+  "61": "Mild tear-free baby bath designed to gently cleanse delicate baby skin.",
+  "62": "Gentle nourishing baby wash for delicate skin and hair.",
+  "63": "Gentle baby bath wash for regular bathing and soft-feeling skin.",
+  "64": "Gentle head-to-toe baby wash for hair and body.",
+  "65": "Mild and gentle baby bath for everyday cleansing.",
+  "66": "Gentle head-to-toe wash for baby's skin and hair.",
+  "67": "Gentle baby shampoo for delicate baby hair and scalp.",
+  "68": "Nourishing baby lotion for soft and hydrated skin.",
+  "69": "Gentle hypoallergenic bubble bath for babies.",
+  "70": "Gentle daily baby lotion with soothing calendula extract."
+};
+
+const SHWAPNO_PRODUCT_IMAGES = {
+"sw001":"https://cdn.othoba.com/images/thumbs/1344008_himalaya-brightening-vitamin-c-orange-face-wash-100ml.jpeg",
+"sw002":"https://himalayawellness.ph/cdn/shop/products/OilControlLemonFaceWash_800x.png?v=1614313929",
+"sw003":"https://cdn.grofers.com/cdn-cgi/image/f%3Dauto%2Cfit%3Dscale-down%2Cq%3D85%2Cmetadata%3Dnone%2Cw%3D480%2Ch%3D480/app/images/products/full_screen/pro_82796.jpg?ts=1684835965",
+"sw004":"https://www.ohsogo.com/cdn/shop/files/Vit-C-Face-Wash_1_514f8c19-82e8-4830-966c-13a90b1d92e5.jpg?v=1738663654",
+"sw005":"https://i.ebayimg.com/images/g/tMQAAOSwp7Rn-ggH/s-l1200.jpg",
+"sw006":"https://bk.shajgoj.com/storage/2025/02/himalaya-natural-glow-saffron-face-cream-5100-1.jpg",
+"sw007":"https://i.ebayimg.com/images/g/Q5kAAOSwDXJklbM0/s-l1200.jpg",
+"sw008":"https://th-live-01.slatic.net/p/5bb109c1fcf93b605bbfdffecbc4049b.jpg",
+"sw009":"https://cdn.grofers.com/cdn-cgi/image/f%3Dauto%2Cfit%3Dscale-down%2Cq%3D85%2Cmetadata%3Dnone%2Cw%3D480%2Ch%3D480/app/images/products/full_screen/pro_82796.jpg?ts=1684835965",
+"sw010":"https://himalayawellness.com.bd/cdn/shop/files/HimalayababyCreamPack-1.jpg?v=1701058822&width=1800",
+"sw011":"https://static-01.daraz.com.bd/p/46b5865c1cbdfe3c6e0af2e5acc1a630.jpg",
+"sw012":"https://genmartbd.com/public/uploads/all/AT5Zz4Sha15pCSQlTEWrp82zxqQOYw9LjEnptySu.jpg",
+"sw013":"https://www.shopaholic.pk/images/product_gallery/1696325898_ponds-brightbeauty-cream-50gm-2jpg10.jpg",
+"sw014":"https://static-01.daraz.lk/p/1956f5ce850ce20eb1c74145f599879a.png",
+"sw015":"https://www.vishalmegamart.com/on/demandware.static/-/Sites-vmm-fmcg-master-catalog/default/dw90cac1f5/images/large/1311011891.jpg?v=20260929",
+"sw016":"https://www.tresemme.in/cdn/shop/files/11874_S1-8909106001428_1745c3a7-acb5-4128-881e-9fb5beefc5a4.jpg?v=1717656892&width=1445&cache=20260929",
+"sw017":"https://d2t8nl1y0ie1km.cloudfront.net/images/thumbs/67dab6cdac5a5cedd1d7d6a0_Tresemme-Keratin-Smooth-Conditioner-21525ml_2.webp",
+"sw018":"https://images.apollo247.in/pub/media/catalog/product/d/o/dov0148_1_1.jpg?tr=q-80%2Cf-webp%2Cw-400%2Cdpr-3%2Cc-at_max+400w",
+"sw019":"https://img.joomcdn.net/1e906d2bba34d829510144ad1d8602a0e0f6274c_original.jpeg",
+"sw020":"https://cdn.othoba.com/images/thumbs/0322213_clear-shampoo-women-anti-hair-fall-350ml.jpeg?v=20260929",
+"sw021":"https://foodpanda.dhmedia.io/image/darkstores/nv-global-catalog/bd/023bd930-a2e9-437b-9f06-0f66afb972a1.jpg?height=480",
+"sw022":"https://assets.unileversolutions.com/v1/45288590.jpg",
+"sw023":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Volume_375ml-Sunsilk-68925-307001.png",
+"sw024":"https://rokbucket.rokomari.io/ProductNew20190903/260X372/Sunsilk_Shampoo_Stunning_Black_Shine_340-Sunsilk-b0110-306853.png",
+"sw025":"https://cdn.othoba.com/images/thumbs/1356712_150-ml-enchanteur-stunning-body-spray-international-malaysian-product-used-for-female.png",
+"sw026":"https://down-id.img.susercontent.com/file/3e77381c52c30de9d98056cc1cfd8f5b",
+"sw027":"https://enchanteur.pk/cdn/shop/files/9c83b0ee7fea2d99fd7693aba518b31e.webp?v=1759475712&width=1445",
+"sw028":"https://guardian.com.my/media/catalog/product/1/2/121105809_ench_eds_ecomm_thumbnails_guardians-03.jpg?auto=webp&fit=cover&format=pjpg&width=640",
+"sw029":"https://www.urbanbeauty.pk/cdn/shop/products/AXEMuskDeodorantBodySpray150ml_2000x.jpg?v=1674141936",
+"sw030":"https://static.ticimax.cloud/14805/uploads/urunresimleri/buyuk/golden-rose-longstay-liquid-matte-lipsti-4e9d.jpg"
+};
+
+function getProductImage(product){
+return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[product.id] || "";
+}
+
+function getProductDetails(product){
+return product.details || productDetails[product.id] || "Beauty product for everyday personal care.";
+}
+
+function renderProducts(){
+
+const input = document.getElementById("searchInput");
+const search = (input.value || "").toLowerCase().trim();
+
+const list = products.filter(function(product){
+return !search ||
+String(product.name || "").toLowerCase().includes(search) ||
+String(product.bn || "").toLowerCase().includes(search) ||
+String(product.category || "").toLowerCase().includes(search);
+});
+
+const grid = document.getElementById("productGrid");
+if(!grid)return;
+
+/* Keep the newly added products from the latest product batch at the top.
+   Everything else keeps its existing order. */
+const NEW_PRODUCT_IDS = {
+  "29":true,
+  "30":true,
+  "31":true,
+  "33":true,
+  "34":true,
+  "43":true,
+  "44":true,
+  "45":true,
+  "46":true,
+  "51":true,
+  "55":true,
+  "61":true,
+  "62":true,
+  "63":true,
+  "64":true,
+  "65":true,
+  "66":true,
+  "67":true,
+  "68":true,
+  "69":true,
+  "70":true
+};
+
+list.sort(function(a,b){
+
+const aNew =
+  Object.prototype.hasOwnProperty.call(
+    NEW_PRODUCT_IDS,
+    String(a.id || "")
+  );
+
+const bNew =
+  Object.prototype.hasOwnProperty.call(
+    NEW_PRODUCT_IDS,
+    String(b.id || "")
+  );
+
+if(aNew && !bNew) return -1;
+if(!aNew && bNew) return 1;
+
+return 0;
+
+});
+
+grid.innerHTML = list.map(function(product){
+
+const image = getProductImage(product);
+const detail = getProductDetails(product);
+const stockValue = Number(product.stock);
+const stockKnown = Number.isFinite(stockValue);
+const stock = stockKnown ? Math.max(0, stockValue) : null;
+const statusText = String(product.status || "").trim().toUpperCase();
+const outOfStock = stockKnown
+  ? stock <= 0
+  : statusText === "OUT OF STOCK";
+
+/* Show the product even when a remote product image is unavailable. */
+
+return `
+<div class="product">
+<div class="product-image">
+${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">` : ""}
+<span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
+</div>
+<div class="product-content">
+<h3>${escapeHTML(product.name || "")}</h3>
+<div class="product-bn">${escapeHTML(product.bn || "")}</div>
+<div class="muted">${escapeHTML(product.category || "")}</div>
+<div style="font-size:13px;line-height:1.45;margin:8px 0;color:#555;">${escapeHTML(detail || "")}</div>
+<div class="price">${money(product.price)}</div>
+<div class="muted" style="margin:6px 0 10px;">
+${outOfStock ? "OUT OF STOCK / স্টক শেষ" : stockKnown ? "IN STOCK / স্টক আছে" : ""}
+</div>
+<button class="primary"
+${outOfStock ? 'disabled style="opacity:.55;cursor:not-allowed;"' : ""}
+onclick='${outOfStock ? "" : "addToCart(" + JSON.stringify(product.id) + ")"}'>
+${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কার্টে যোগ করুন"}
+</button>
+</div>
+</div>
+`;
+
+}).join("");
+
+}
+
+/************************************************************
+ * LIVE PRODUCTS FROM GOOGLE SHEET
+ ************************************************************/
+
+function loadProductsFromSheet(){
+
+/*
+ * Products Sheet is the single source of truth.
+ *
+ * Columns:
+ * A = Product ID
+ * B = Product ID / index
+ * C = Product Name English
+ * D = Product Name Bangla
+ * E = Category
+ * F = Selling Price
+ * G = Stock Qty
+ * H = Stock Status
+ * I = Image URL
+ * J = Product Details
+ *
+ * The sheet is read with Google Visualization JSONP so the
+ * GitHub Pages website can load the Image URL directly.
+ */
+
+const callbackName =
+"slsProductsSheetCallback_" +
+Date.now() +
+"_" +
+Math.random().toString(36).slice(2);
+
+const script = document.createElement("script");
+let finished = false;
+
+function cleanup(){
+clearTimeout(timeout);
+try{
+delete window[callbackName];
+}catch(error){
+window[callbackName] = undefined;
+}
+if(script.parentNode){
+script.parentNode.removeChild(script);
+}
+}
+
+const timeout = setTimeout(function(){
+if(finished)return;
+finished = true;
+cleanup();
+console.error("Products Sheet request timed out.");
+},15000);
+
+window[callbackName] = function(data){
+
+if(finished)return;
+
+finished = true;
+cleanup();
+
+try{
+
+if(!data || !data.table || !Array.isArray(data.table.rows)){
+console.error("Products Sheet returned invalid data.");
+loadStockDirectlyFromGoogleSheet();
+return;
+}
+
+const rows = data.table.rows;
+
+const sheetById = {};
+const sheetByName = {};
+
+rows.forEach(function(row){
+
+const cells = row.c || [];
+
+function cellValue(index){
+const cell = cells[index];
+return cell && cell.v != null
+? String(cell.v).trim()
+: "";
+}
+
+const id = cellValue(0);
+const name = cellValue(2);
+const bn = cellValue(3);
+const category = cellValue(4);
+const priceRaw = cellValue(5);
+const stockRaw = cellValue(6);
+const status = cellValue(7);
+const image = cellValue(8);
+const details = cellValue(9);
+
+if(!id && !name)return;
+
+const record = {
+id: id,
+name: name,
+bn: bn,
+category: category,
+price: Number(priceRaw) || 0,
+stock: stockRaw === "" ? null : Number(stockRaw),
+status: status,
+image: image,
+details: details
+};
+
+if(id){
+sheetById[id] = record;
+}
+
+if(name){
+sheetByName[
+name.toLowerCase().replace(/\\s+/g," ").trim()
+] = record;
+}
+
+});
+
+/*
+ * Merge Sheet data into the website's existing product list.
+ * Existing products remain as a fallback if a Sheet row is missing.
+ */
+products = products.map(function(product){
+
+const id = String(product.id || "").trim();
+
+const nameKey =
+String(product.name || "")
+.toLowerCase()
+.replace(/\\s+/g," ")
+.trim();
+
+const live =
+sheetById[id] ||
+sheetByName[nameKey];
+
+if(!live){
+return product;
+}
+
+return Object.assign({}, product, {
+
+name: live.name || product.name,
+bn: live.bn || product.bn,
+category: live.category || product.category,
+price: Number(live.price) > 0
+  ? Number(live.price)
+  : product.price,
+
+stock: Number.isFinite(live.stock)
+  ? Math.max(0, live.stock)
+  : product.stock,
+
+status: live.status || product.status,
+
+/*
+ * THIS IS THE IMPORTANT PART:
+ * Products!I = Image URL
+ */
+image: live.image || product.image || "",
+
+details: live.details || product.details
+
+});
+
+});
+
+/*
+ * Also allow products that exist in the Products Sheet
+ * but are not yet in the website's built-in list.
+ */
+rows.forEach(function(row){
+
+const cells = row.c || [];
+
+function value(index){
+const cell = cells[index];
+return cell && cell.v != null
+? String(cell.v).trim()
+: "";
+}
+
+const id = value(0);
+const name = value(2);
+
+if(!id || !name)return;
+
+const alreadyExists =
+products.some(function(product){
+return String(product.id || "").trim() === id;
+}) ||
+products.some(function(product){
+return String(product.name || "").trim().toLowerCase() === name.toLowerCase();
+});
+
+if(alreadyExists)return;
+
+const stockRaw = value(6);
+
+products.push({
+id: id,
+name: name,
+bn: value(3),
+category: value(4),
+price: Number(value(5)) || 0,
+stock: stockRaw === "" ? null : Number(stockRaw),
+status: value(7),
+image: value(8),
+details: value(9)
+});
+
+});
+
+renderProducts();
+
+loadStockDirectlyFromGoogleSheet();
+
+}catch(error){
+
+console.error(
+"Products Sheet image sync error:",
+error
+);
+
+/*
+ * Stock must keep working even if the image/product
+ * request fails.
+ */
+loadStockDirectlyFromGoogleSheet();
+
+}
+
+};
+
+script.onerror = function(){
+
+if(finished)return;
+
+finished = true;
+cleanup();
+
+console.error("Products Sheet connection failed.");
+
+loadStockDirectlyFromGoogleSheet();
+
+};
+
+/*
+ * Public Google Sheet → JSONP
+ *
+ * IMPORTANT:
+ * Replace nothing here.
+ * The Products spreadsheet ID and sheet name are already
+ * the same ones used by the SLS Store system.
+ */
+const query =
+"select A,B,C,D,E,F,G,H,I,J";
+
+script.src =
+"https://docs.google.com/spreadsheets/d/" +
+STOCK_SHEET_ID +
+"/gviz/tq?" +
+"sheet=" +
+encodeURIComponent(STOCK_SHEET_NAME) +
+"&tq=" +
+encodeURIComponent(query) +
+"&tqx=" +
+encodeURIComponent(
+"out:json;responseHandler:" + callbackName
+) +
+"&t=" +
+Date.now();
+
+document.head.appendChild(script);
+
+}
+
+/************************************************************
+ * CART
+ ************************************************************/
+
+/* STOCK_SYNC_DIRECT_FROM_GOOGLE_SHEET */
+
+const STOCK_SHEET_ID = "1kxFk3S-hmSSr_HLppR3y42uEleo373oh3bXBN70ueT8";
+const STOCK_SHEET_NAME = "Products";
+
+function loadStockDirectlyFromGoogleSheet(){
+
+const callbackName =
+"slsStockCallback_" +
+Date.now() +
+"_" +
+Math.random().toString(36).slice(2);
+
+const script = document.createElement("script");
+let finished = false;
+
+function cleanup(){
+try{ delete window[callbackName]; }
+catch(e){ window[callbackName] = undefined; }
+if(script.parentNode)script.parentNode.removeChild(script);
+}
+
+const timeout = setTimeout(function(){
+if(finished)return;
+finished = true;
+cleanup();
+},15000);
+
+window[callbackName] = function(data){
+
+if(finished)return;
+finished = true;
+clearTimeout(timeout);
+cleanup();
+
+try{
+
+if(!data || !data.table || !Array.isArray(data.table.rows)){
+return;
+}
+
+const stockById = {};
+const stockByName = {};
+
+data.table.rows.forEach(function(row){
+
+const cells = row.c || [];
+const idCell = cells[0];
+const nameCell = cells[1];
+const stockCell = cells[2];
+
+const id =
+idCell && idCell.v != null
+? String(idCell.v).trim()
+: "";
+
+const name =
+nameCell && nameCell.v != null
+? String(nameCell.v).trim().toLowerCase()
+: "";
+
+const stock =
+stockCell && stockCell.v != null
+? Number(stockCell.v)
+: NaN;
+
+if(Number.isFinite(stock)){
+const value = Math.max(0, stock);
+
+if(id){
+  stockById[id] = value;
+}
+
+if(name){
+  stockByName[name] = value;
+}
+}
+
+});
+
+if(!Object.keys(stockById).length)return;
+
+/*
+ * If the Google Sheet returns only zero/empty stock values, do not
+ * overwrite the website's built-in stock values. This prevents a
+ * temporary/blank stock sheet from making every product impossible
+ * to add to Cart.
+ */
+const hasAnyPositiveStock = Object.keys(stockById).some(function(key){
+return Number(stockById[key]) > 0;
+});
+
+if(!hasAnyPositiveStock)return;
+
+products = products.map(function(product){
+
+const id = String(product.id || "").trim();
+const productName = String(product.name || "").trim().toLowerCase();
+
+let liveStock = null;
+let hasLiveStock = false;
+
+if(Object.prototype.hasOwnProperty.call(stockById,id)){
+liveStock = stockById[id];
+hasLiveStock = true;
+}else if(Object.prototype.hasOwnProperty.call(stockByName,productName)){
+liveStock = stockByName[productName];
+hasLiveStock = true;
+}
+
+if(hasLiveStock){
+return Object.assign({}, product, {
+stock: liveStock,
+status: liveStock > 0 ? "IN STOCK" : "OUT OF STOCK"
+});
+}
+
+return product;
+
+});
+
+renderProducts();
+
+}catch(error){
+console.error("Direct Google Sheet stock sync error:", error);
+}
+
+};
+
+script.onerror = function(){
+if(finished)return;
+finished = true;
+clearTimeout(timeout);
+cleanup();
+};
+
+script.src =
+"https://docs.google.com/spreadsheets/d/" +
+STOCK_SHEET_ID +
+"/gviz/tq?" +
+"sheet=" + encodeURIComponent(STOCK_SHEET_NAME) +
+"&tq=" + encodeURIComponent("select A,B,F") +
+"&tqx=" +
+encodeURIComponent("out:json;responseHandler:" + callbackName) +
+"&t=" + Date.now();
+
+document.head.appendChild(script);
+
+}
+
+function addToCart(id){
+
+const product = products.find(function(p){ return p.id === id; });
+if(!product)return;
+
+const stockKnown = Number.isFinite(Number(product.stock));
+const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
+const statusText = String(product.status || "").trim().toUpperCase();
+
+if((stockKnown && stock <= 0) || (!stockKnown && statusText === "OUT OF STOCK")){
+alert("এই পণ্যটি এখন Out of Stock।");
+return;
+}
+
+const existing = cart.find(function(item){ return item.id === id; });
+
+if(existing){
+if(stockKnown && existing.qty >= stock){
+alert("এই পণ্যের যতটুকু Stock আছে, তার বেশি Cart-এ যোগ করা যাবে না।");
+return;
+}
+existing.qty++;
+}else{
+cart.push({id:product.id,name:product.name,price:product.price,qty:1});
+}
+
+saveCart();
+openCart();
+
+}
+
+function changeQty(id,change){
+
+const item = cart.find(function(x){ return x.id === id; });
+if(!item)return;
+
+const product = products.find(function(p){ return p.id === id; });
+const stockKnown = product && Number.isFinite(Number(product.stock));
+const stock = stockKnown ? Math.max(0, Number(product.stock)) : null;
+const nextQty = item.qty + change;
+
+if(change > 0 && stockKnown && nextQty > stock){
+alert("এই পণ্যের বর্তমান Stock-এর বেশি নেওয়া যাবে না।");
+return;
+}
+
+item.qty = nextQty;
+
+if(item.qty <= 0){
+cart = cart.filter(function(x){ return x.id !== id; });
+}
+
+saveCart();
+renderCart();
+
+}
+
+function removeFromCart(id){
+
+cart =
+cart.filter(
+function(x){
+return x.id !== id;
+}
+);
+
+saveCart();
+
+renderCart();
+
+}
+
+
+function getProductTotal(){
+
+return cart.reduce(
+function(total,item){
+
+return total +
+(
+Number(item.price || 0) *
+Number(item.qty || 0)
+);
+
+},
+0
+);
+
+}
+
+
+function renderCart(){
+
+const box =
+document.getElementById(
+"cartItems"
+);
+
+const totals =
+document.getElementById(
+"cartTotals"
+);
+
+if(!cart.length){
+
+box.innerHTML =
+'<div class="empty">Cart is empty / কার্ট খালি</div>';
+
+totals.innerHTML = "";
+
+return;
+
+}
+
+box.innerHTML =
+cart.map(
+function(item){
+
+return `
+
+<div class="cart-row">
+
+<div>
+
+<b>
+${escapeHTML(item.name)}
+</b>
+
+<br>
+
+<span class="muted">
+${money(item.price)}
+</span>
+
+</div>
+
+<div class="qty">
+
+<button
+onclick="changeQty(${JSON.stringify(item.id)},-1)">
+−
+</button>
+
+<b>
+${item.qty}
+</b>
+
+<button
+onclick="changeQty(${JSON.stringify(item.id)},1)">
++
+</button>
+
+</div>
+
+<div>
+<b>
+${money(
+item.price * item.qty
+)}
+</b>
+</div>
+
+<button
+class="remove"
+onclick="removeFromCart(${JSON.stringify(item.id)})">
+
+Remove
+
+</button>
+
+</div>
+
+`;
+
+}
+).join("");
+
+totals.innerHTML = `
+
+<div class="totals">
+
+<div class="total-line">
+
+<span>
+Product Total
+</span>
+
+<b>
+${money(
+getProductTotal()
+)}
+</b>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function openCart(){
+
+renderCart();
+
+openModal(
+"cartModal"
+);
+
+}
+
+
+/************************************************************
+ * CHECKOUT
+ ************************************************************/
+
+function checkout(){
+
+if(!cart.length){
+
+alert(
+"Cart is empty."
+);
+
+return;
+
+}
+
+if(!currentUser){
+
+closeModal(
+"cartModal"
+);
+
+openAuth();
+
+return;
+
+}
+
+document
+.getElementById(
+"orderName"
+)
+.value =
+currentUser.displayName ||
+"";
+
+document
+.getElementById(
+"checkoutMessage"
+)
+.innerHTML = "";
+
+applyAutomaticDelivery();
+
+closeModal(
+"cartModal"
+);
+
+openModal(
+"checkoutModal"
+);
+
+}
+
+
+/************************************************************
+ * AUTH
+ ************************************************************/
+
+function openAuth(){
+
+openModal(
+"authModal"
+);
+
+}
+
+
+function authButtonClick(){
+
+if(currentUser){
+
+if(
+confirm(
+"Logout করবেন?"
+)
+){
+
+auth.signOut();
+
+}
+
+}else{
+
+openAuth();
+
+}
+
+}
+
+
+function toggleAuthMode(){
+
+authMode =
+authMode === "login"
+? "register"
+: "login";
+
+const title =
+document.getElementById(
+"authTitle"
+);
+
+const nameField =
+document.getElementById(
+"nameField"
+);
+
+const submit =
+document.getElementById(
+"authSubmit"
+);
+
+const toggle =
+document.getElementById(
+"authToggle"
+);
+
+if(authMode === "register"){
+
+title.textContent =
+"Create Account / নতুন অ্যাকাউন্ট";
+
+nameField.style.display =
+"block";
+
+submit.textContent =
+"Create Account / অ্যাকাউন্ট তৈরি করুন";
+
+toggle.textContent =
+"Login / লগইন";
+
+}else{
+
+title.textContent =
+"Login / লগইন";
+
+nameField.style.display =
+"none";
+
+submit.textContent =
+"Login / লগইন";
+
+toggle.textContent =
+"Create Account / নতুন অ্যাকাউন্ট";
+
+}
+
+}
+
+
+async function submitAuth(){
+
+const email =
+document.getElementById(
+"authEmail"
+)
+.value
+.trim();
+
+const password =
+document.getElementById(
+"authPassword"
+)
+.value;
+
+const name =
+document.getElementById(
+"authName"
+)
+.value
+.trim();
+
+const message =
+document.getElementById(
+"authMessage"
+);
+
+if(!email || !password){
+
+message.innerHTML =
+'<div class="notice error">Email এবং Password দিন।</div>';
+
+return;
+
+}
+
+try{
+
+if(authMode === "register"){
+
+if(password.length < 6){
+
+throw new Error(
+"Password কমপক্ষে 6 characters হতে হবে।"
+);
+
+}
+
+const result =
+await auth
+.createUserWithEmailAndPassword(
+email,
+password
+);
+
+if(name){
+
+await result.user
+.updateProfile({
+displayName:name
+});
+
+}
+
+message.innerHTML =
+'<div class="notice success">Account তৈরি হয়েছে।</div>';
+
+}else{
+
+await auth
+.signInWithEmailAndPassword(
+email,
+password
+);
+
+message.innerHTML =
+'<div class="notice success">Login successful.</div>';
+
+}
+
+setTimeout(
+function(){
+closeModal(
+"authModal"
+);
+},
+500
+);
+
+}catch(error){
+
+message.innerHTML =
+'<div class="notice error">' +
+escapeHTML(
+error.message
+) +
+'</div>';
+
+}
+
+}
+
+
+async function resetPassword(){
+
+const email =
+document.getElementById(
+"authEmail"
+)
+.value
+.trim();
+
+if(!email){
+
+alert(
+"প্রথমে Email লিখুন।"
+);
+
+return;
+
+}
+
+try{
+
+await auth
+.sendPasswordResetEmail(
+email
+);
+
+alert(
+"Password reset email পাঠানো হয়েছে।"
+);
+
+}catch(error){
+
+alert(
+error.message
+);
+
+}
+
+}
+
+
+/************************************************************
+ * DELIVERY
+ ************************************************************/
+
+const SUB_DHAKA =
+[
+"gazipur",
+"গাজীপুর",
+"konabari",
+"কোনাবাড়ী",
+"savar",
+"সাভার",
+"ashulia",
+"আশুলিয়া",
+"tongi",
+"টঙ্গী",
+"narayanganj",
+"নারায়ণগঞ্জ",
+"rupganj",
+"রূপগঞ্জ",
+"keraniganj",
+"কেরানীগঞ্জ",
+"kaliganj",
+"কালীগঞ্জ",
+"dohar",
+"দোহার",
+"nawabganj",
+"নবাবগঞ্জ",
+"sonargaon",
+"সোনারগাঁও",
+"joydebpur",
+"জয়দেবপুর"
+];
+
+
+const INSIDE_DHAKA =
+[
+"dhaka",
+"ঢাকা",
+"khilgaon",
+"খিলগাঁও",
+"tilpapara",
+"তিলপাপাড়া",
+"malibagh",
+"মালিবাগ",
+"rampura",
+"রামপুরা",
+"badda",
+"বাড্ডা",
+"gulshan",
+"গুলশান",
+"banani",
+"বনানী",
+"mohakhali",
+"মহাখালী",
+"uttara",
+"উত্তরা",
+"mirpur",
+"মিরপুর",
+"kazipara",
+"কাজীপাড়া",
+"shewrapara",
+"শেওড়াপাড়া",
+"agargaon",
+"আগারগাঁও",
+"farmgate",
+"ফার্মগেট",
+"tejgaon",
+"তেজগাঁও",
+"dhanmondi",
+"ধানমন্ডি",
+"mohammadpur",
+"মোহাম্মদপুর",
+"shyamoli",
+"শ্যামলী",
+"kallyanpur",
+"কল্যাণপুর",
+"adabor",
+"আদাবর",
+"motijheel",
+"মতিঝিল",
+"paltan",
+"পল্টন",
+"gulistan",
+"গুলিস্তান",
+"jatrabari",
+"যাত্রাবাড়ী",
+"wari",
+"ওয়ারী",
+"sutrapur",
+"সূত্রাপুর",
+"lalbagh",
+"লালবাগ",
+"demra",
+"ডেমরা",
+"basabo",
+"বাসাবো",
+"mugda",
+"মুগদা"
+];
+
+
+function getAreaFromAddress(
+address
+){
+
+const text =
+String(
+address || ""
+)
+.toLowerCase()
+.trim();
+
+if(!text)return "";
+
+for(
+let i=0;
+i<SUB_DHAKA.length;
+i++
+){
+
+if(
+text.includes(
+SUB_DHAKA[i]
+)
+){
+
+return "Sub Dhaka";
+
+}
+
+}
+
+for(
+let i=0;
+i<INSIDE_DHAKA.length;
+i++
+){
+
+if(
+text.includes(
+INSIDE_DHAKA[i]
+)
+){
+
+return "Inside Dhaka";
+
+}
+
+}
+
+return "Outside Dhaka";
+
+}
+
+
+function getDeliveryCharge(){
+
+const area =
+document.getElementById(
+"deliveryArea"
+).value;
+
+if(
+area === "Inside Dhaka"
+)return 80;
+
+if(
+area === "Sub Dhaka"
+)return 130;
+
+if(
+area === "Outside Dhaka"
+)return 150;
+
+return 0;
+
+}
+
+
+function applyAutomaticDelivery(){
+
+const address =
+document.getElementById(
+"orderAddress"
+).value
+.trim();
+
+const area =
+getAreaFromAddress(
+address
+);
+
+document
+.getElementById(
+"deliveryArea"
+)
+.value =
+area;
+
+const hint =
+document.getElementById(
+"deliveryHint"
+);
+
+if(!area){
+
+hint.textContent =
+"Address লিখলেই Delivery Charge অটোমেটিক হিসাব হবে।";
+
+}else if(
+area === "Inside Dhaka"
+){
+
+hint.textContent =
+"✓ Inside Dhaka — Delivery Charge ৳80";
+
+}else if(
+area === "Sub Dhaka"
+){
+
+hint.textContent =
+"✓ Sub Dhaka — Delivery Charge ৳130";
+
+}else{
+
+hint.textContent =
+"✓ Outside Dhaka — Delivery Charge ৳150";
+
+}
+
+updateCheckoutSummary();
+
+}
+
+
+function updateCheckoutSummary(){
+
+const productTotal =
+getProductTotal();
+
+const charge =
+getDeliveryCharge();
+
+const grandTotal =
+productTotal +
+charge;
+
+document
+.getElementById(
+"checkoutSummary"
+)
+.innerHTML = `
+
+<div class="totals">
+
+<div class="total-line">
+
+<span>
+Product Total
+</span>
+
+<b>
+${money(productTotal)}
+</b>
+
+</div>
+
+
+<div class="total-line">
+
+<span>
+Delivery Charge
+</span>
+
+<b>
+${
+charge
+? money(charge)
+: "লোকেশন দিন"
+}
+</b>
+
+</div>
+
+
+<div class="total-line grand">
+
+<span>
+Grand Total
+</span>
+
+<span>
+${money(grandTotal)}
+</span>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/************************************************************
+ * ORDER ID
+ *
+ * IMPORTANT:
+ * New orders use SLSWEB.
+ * Backend also supports old SLWEB.
+ ************************************************************/
+
+function createClientOrderId(){
+
+return (
+"SLSWEB-" +
+Date.now() +
+"-" +
+Math.random()
+.toString(36)
+.slice(2,7)
+.toUpperCase()
+);
+
+}
+
+
+/************************************************************
+ * SUBMIT ORDER
+ ************************************************************/
+
+async function submitOrder(){
+
+if(!currentUser){
+
+alert(
+"Please login first."
+);
+
+return;
+
+}
+
+if(!cart.length){
+
+alert(
+"Cart is empty."
+);
+
+return;
+
+}
+
+const name =
+document.getElementById(
+"orderName"
+)
+.value
+.trim();
+
+const phone =
+document.getElementById(
+"orderPhone"
+)
+.value
+.trim();
+
+const address =
+document.getElementById(
+"orderAddress"
+)
+.value
+.trim();
+
+const message =
+document.getElementById(
+"checkoutMessage"
+);
+
+if(!name || !phone || !address){
+
+message.innerHTML =
+'<div class="notice error">Name, Phone এবং Address অবশ্যই দিতে হবে।</div>';
+
+return;
+
+}
+
+applyAutomaticDelivery();
+
+const deliveryArea =
+document.getElementById(
+"deliveryArea"
+)
+.value;
+
+if(!deliveryArea){
+
+message.innerHTML =
+'<div class="notice error">Address দিন।</div>';
+
+return;
+
+}
+
+const productTotal =
+getProductTotal();
+
+const deliveryCharge =
+getDeliveryCharge();
+
+const grandTotal =
+productTotal +
+deliveryCharge;
+
+const clientOrderId =
+createClientOrderId();
+
+const items =
+cart.map(
+function(item){
+
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
+return {
+
+id:
+item.id,
+
+name:
+item.name,
+
+price:
+item.price,
+
+qty:
+item.qty,
+
+image:
+product ? getProductImage(product) : ""
+
+};
+
+}
+);
+
+const orderData = {
+
+uid:
+currentUser.uid,
+
+email:
+currentUser.email || "",
+
+clientOrderId:
+clientOrderId,
+
+name:
+name,
+
+customerName:
+name,
+
+phone:
+phone,
+
+address:
+address,
+
+deliveryArea:
+deliveryArea,
+
+deliveryLocation:
+address,
+
+items:
+items,
+
+productTotal:
+productTotal,
+
+deliveryCharge:
+deliveryCharge,
+
+grandTotal:
+grandTotal,
+
+total:
+grandTotal,
+
+paymentMethod:
+"Cash on Delivery",
+
+status:
+"Pending"
+
+};
+
+message.innerHTML =
+'<div class="notice">Order হচ্ছে... একটু অপেক্ষা করুন।</div>';
+
+
+try{
+
+/*
+ * FIRESTORE
+ */
+
+await db
+.collection("orders")
+.doc(clientOrderId)
+.set({
+...orderData,
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+});
+
+
+/*
+ * GOOGLE SHEET
+ *
+ * no-cors is intentionally used.
+ */
+
+await fetch(
+APPS_SCRIPT_URL,
+{
+
+method:"POST",
+
+mode:"no-cors",
+
+headers:{
+"Content-Type":
+"text/plain;charset=utf-8"
+},
+
+body:
+JSON.stringify(
+orderData
+)
+
+}
+);
+
+
+/*
+ * CLEAR CART
+ */
+
+cart = [];
+
+saveCart();
+
+closeModal(
+"checkoutModal"
+);
+
+alert(
+
+"Order placed successfully!\n\n" +
+
+"Order ID: " +
+clientOrderId +
+
+"\nGrand Total: " +
+money(grandTotal) +
+
+"\nDelivery: " +
+deliveryArea +
+
+"\nDelivery Charge: " +
+money(deliveryCharge) +
+
+"\nPayment: Cash on Delivery"
+
+);
+
+openOrders();
+
+}catch(error){
+
+console.error(error);
+
+message.innerHTML =
+'<div class="notice error">' +
+escapeHTML(
+error.message
+) +
+'</div>';
+
+}
+
+}
+
+
+/************************************************************
+ * LIVE STATUS - JSONP
+ *
+ * THIS IS THE IMPORTANT FIX
+ ************************************************************/
+
+function getLiveStatus(
+clientOrderId,
+phone
+){
+
+return new Promise(
+function(resolve){
+
+const callbackName =
+"slsStatusCallback_" +
+Date.now() +
+"_" +
+Math.random()
+.toString(36)
+.slice(2);
+
+const script =
+document.createElement(
+"script"
+);
+
+let finished = false;
+
+const timeout =
+setTimeout(
+function(){
+
+if(finished)return;
+
+finished = true;
+
+cleanup();
+
+resolve(null);
+
+},
+12000
+);
+
+
+function cleanup(){
+
+clearTimeout(
+timeout
+);
+
+try{
+
+delete window[
+callbackName
+];
+
+}catch(error){
+
+window[
+callbackName
+] =
+undefined;
+
+}
+
+if(script.parentNode){
+
+script.parentNode
+.removeChild(
+script
+);
+
+}
+
+}
+
+
+window[
+callbackName
+] =
+function(result){
+
+if(finished)return;
+
+finished = true;
+
+cleanup();
+
+resolve(result);
+
+};
+
+
+script.onerror =
+function(){
+
+if(finished)return;
+
+finished = true;
+
+cleanup();
+
+resolve(null);
+
+};
+
+
+const params = new URLSearchParams();
+
+params.set(
+"action",
+"status"
+);
+
+params.set(
+"clientOrderId",
+clientOrderId || ""
+);
+
+params.set(
+"phone",
+phone || ""
+);
+
+/*
+ * Apps Script backend expects prefix.
+ */
+params.set(
+"prefix",
+callbackName
+);
+
+params.set(
+"t",
+Date.now()
+);
+
+
+script.src =
+APPS_SCRIPT_URL +
+"?" +
+params.toString();
+
+
+document.head.appendChild(
+script
+);
+
+});
+
+}
+
+
+/************************************************************
+ * STATUS
+ ************************************************************/
+
+function statusClass(
+status
+){
+
+const value =
+String(
+status || "Pending"
+)
+.toLowerCase();
+
+if(
+value === "confirmed"
+)
+return "confirmed";
+
+if(
+value === "processing"
+)
+return "processing";
+
+if(
+value === "delivery"
+)
+return "delivery";
+
+return "";
+
+}
+
+
+function createStatusTrack(
+status
+){
+
+const statuses = [
+
+"Pending",
+"Confirmed",
+"Processing",
+"Delivery"
+
+];
+
+let currentIndex =
+statuses.indexOf(
+status
+);
+
+if(currentIndex < 0)
+currentIndex = 0;
+
+return `
+
+<div class="status-track">
+
+${statuses.map(
+function(item,index){
+
+return `
+
+<div class="status-step ${
+index <= currentIndex
+? "active"
+: ""
+}">
+
+${item}
+
+</div>
+
+`;
+
+}
+).join("")}
+
+</div>
+
+`;
+
+}
+
+
+/************************************************************
+ * UPDATE ONE ORDER LIVE STATUS
+ ************************************************************/
+
+async function updateOrderLive(
+order,
+card
+){
+
+const live =
+card.querySelector(
+".live-status"
+);
+
+const invoice =
+card.querySelector(
+".invoice-box"
+);
+
+live.innerHTML =
+"Checking live status...";
+
+let result =
+await getLiveStatus(
+order.clientOrderId ||
+order.id,
+order.phone ||
+""
+);
+
+
+/*
+ * If old ID is used, try alternate ID.
+ *
+ * SLWEB <-> SLSWEB
+ */
+
+if(
+!(
+result &&
+result.success &&
+result.found
+)
+){
+
+const original =
+order.clientOrderId ||
+order.id ||
+"";
+
+let alternate = "";
+
+if(
+original
+.toUpperCase()
+.startsWith(
+"SLSWEB-"
+)
+){
+
+alternate =
+"SLWEB-" +
+original.substring(
+7
+);
+
+}else if(
+original
+.toUpperCase()
+.startsWith(
+"SLWEB-"
+)
+){
+
+alternate =
+"SLSWEB-" +
+original.substring(
+6
+);
+
+}
+
+if(alternate){
+
+const second =
+await getLiveStatus(
+alternate,
+order.phone || ""
+);
+
+if(
+second &&
+second.success &&
+second.found
+){
+
+result = second;
+
+}
+
+}
+
+}
+
+
+/*
+ * SUCCESS
+ */
+
+if(
+result &&
+result.success &&
+result.found
+){
+
+const status =
+result.status ||
+result.orderStatus ||
+"Pending";
+
+live.innerHTML =
+"Live Status: <b>" +
+escapeHTML(status) +
+"</b>";
+
+const badge =
+card.querySelector(
+".badge"
+);
+
+if(badge){
+
+badge.textContent =
+status;
+
+badge.className =
+"badge " +
+statusClass(status);
+
+}
+
+const track =
+card.querySelector(
+".track-box"
+);
+
+if(track){
+
+track.innerHTML =
+createStatusTrack(
+status
+);
+
+}
+
+if(
+result.pdfUrl
+){
+
+invoice.innerHTML = `
+
+<a
+class="invoice"
+href="${escapeHTML(result.pdfUrl)}"
+target="_blank"
+rel="noopener">
+
+📄 Open PDF Invoice
+
+</a>
+
+`;
+
+}else{
+
+invoice.innerHTML = "";
+
+}
+
+}else{
+
+live.innerHTML = `
+
+Live status এখনও পাওয়া যায়নি।
+
+<br>
+
+<span class="muted">
+
+Google Sheet-এর Status update করার পর
+Refresh Status চাপুন।
+
+</span>
+
+`;
+
+}
+
+}
+
+
+/************************************************************
+ * MY ORDERS
+ ************************************************************/
+
+async function openOrders(){
+
+if(!currentUser){
+
+openAuth();
+
+return;
+
+}
+
+openModal(
+"ordersModal"
+);
+
+const list =
+document.getElementById(
+"ordersList"
+);
+
+list.innerHTML =
+'<div class="empty">Orders loading...</div>';
+
+
+Object.values(
+statusTimers
+)
+.forEach(
+clearInterval
+);
+
+statusTimers = {};
+
+
+try{
+
+const snapshot =
+await db
+.collection("orders")
+.where(
+"uid",
+"==",
+currentUser.uid
+)
+.get();
+
+const orders =
+snapshot.docs
+.map(
+function(doc){
+
+return {
+
+id:
+doc.id,
+
+...doc.data()
+
+};
+
+}
+)
+.sort(
+function(a,b){
+
+const aTime =
+a.createdAt &&
+a.createdAt.toMillis
+? a.createdAt.toMillis()
+: 0;
+
+const bTime =
+b.createdAt &&
+b.createdAt.toMillis
+? b.createdAt.toMillis()
+: 0;
+
+return bTime - aTime;
+
+}
+);
+
+
+if(!orders.length){
+
+list.innerHTML =
+'<div class="empty">এখনো কোনো অর্ডার নেই।</div>';
+
+return;
+
+}
+
+
+orders.forEach(function(order){
+const cacheId = String(order.clientOrderId || order.id)
+.replace(/[^a-zA-Z0-9_-]/g, "_");
+orderHistoryCache[cacheId] = order;
+});
+
+list.innerHTML =
+orders.map(
+function(order){
+
+const status =
+order.status ||
+"Pending";
+
+const orderId =
+order.clientOrderId ||
+order.id;
+
+const date =
+order.createdAt &&
+order.createdAt.toDate
+? order.createdAt
+.toDate()
+.toLocaleString(
+"en-BD"
+)
+: "Recent";
+
+const items =
+(order.items || [])
+.map(
+function(item){
+
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
+const image =
+item.image ||
+(product ? getProductImage(product) : "");
+
+return `
+<div class="order-product">
+${image ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(item.name)}" loading="lazy">` : ""}
+<div class="order-product-name">
+<b>${escapeHTML(item.name)}</b>
+<br>
+<span class="muted">Qty: ${item.qty} × ${money(item.price)}</span>
+</div>
+</div>
+`;
+
+}
+)
+.join("");
+
+
+const safeId =
+String(orderId)
+.replace(
+/[^a-zA-Z0-9_-]/g,
+"_"
+);
+
+
+return `
+
+<div
+class="order-card"
+id="order-${safeId}">
+
+<div class="order-head">
+
+<div>
+
+<b>
+Order:
+${escapeHTML(orderId)}
+</b>
+
+<br>
+
+<span class="muted">
+${escapeHTML(date)}
+</span>
+
+</div>
+
+<span
+class="badge ${statusClass(status)}">
+
+${escapeHTML(status)}
+
+</span>
+
+</div>
+
+
+<div style="margin-top:10px">
+
+${items}
+
+</div>
+
+
+<div class="totals">
+
+<div class="total-line">
+
+<span>
+Product Total
+</span>
+
+<b>
+${money(order.productTotal)}
+</b>
+
+</div>
+
+
+<div class="total-line">
+
+<span>
+Delivery
+</span>
+
+<b>
+${money(order.deliveryCharge)}
+</b>
+
+</div>
+
+
+<div class="total-line grand">
+
+<span>
+Grand Total
+</span>
+
+<span>
+${money(order.grandTotal)}
+</span>
+
+</div>
+
+</div>
+
+
+<div class="track-box">
+
+${createStatusTrack(status)}
+
+</div>
+
+
+<div class="live-status">
+
+Checking live status...
+
+</div>
+
+
+<div class="order-actions">
+
+<button
+class="refresh"
+onclick="refreshSingleOrder('${escapeHTML(orderId)}')">
+
+🔄 Refresh Status
+
+</button>
+
+<span class="invoice-box"></span>
+
+<button
+class="image-invoice"
+onclick="openImageInvoice('${safeId}')">
+
+🧾 ছবিসহ Invoice
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+).join("");
+
+
+orders.forEach(
+function(order){
+
+const orderId =
+order.clientOrderId ||
+order.id;
+
+const safeId =
+String(orderId)
+.replace(
+/[^a-zA-Z0-9_-]/g,
+"_"
+);
+
+const card =
+document.getElementById(
+"order-" +
+safeId
+);
+
+if(!card)return;
+
+updateOrderLive(
+order,
+card
+);
+
+
+statusTimers[
+orderId
+] =
+setInterval(
+function(){
+
+if(
+document
+.getElementById(
+"ordersModal"
+)
+.classList
+.contains("show")
+){
+
+updateOrderLive(
+order,
+card
+);
+
+}
+
+},
+30000
+);
+
+});
+
+}catch(error){
+
+list.innerHTML =
+'<div class="notice error">' +
+escapeHTML(
+error.message
+) +
+'</div>';
+
+}
+
+}
+
+
+/************************************************************
+ * IMAGE INVOICE
+ ************************************************************/
+
+function openImageInvoice(cacheId){
+
+const order =
+orderHistoryCache[cacheId];
+
+if(!order){
+alert("Order data পাওয়া যায়নি। আবার My Orders খুলুন।");
+return;
+}
+
+const date =
+order.createdAt &&
+order.createdAt.toDate
+? order.createdAt.toDate().toLocaleString("en-BD")
+: "Recent";
+
+const rows =
+(order.items || [])
+.map(function(item){
+
+const product =
+products.find(function(p){
+return p.id === item.id;
+});
+
+const image =
+item.image ||
+(product ? getProductImage(product) : "");
+
+return `
+<div style="display:flex;gap:14px;align-items:center;border-bottom:1px solid #eee;padding:12px 0">
+${image ? `<img src="${escapeHTML(image)}" style="width:85px;height:85px;object-fit:contain;border:1px solid #eee;border-radius:10px;background:#fff">` : ""}
+<div style="flex:1">
+<div style="font-weight:700">${escapeHTML(item.name)}</div>
+<div style="color:#777;margin-top:5px">Qty: ${item.qty} × ${money(item.price)}</div>
+</div>
+<div style="font-weight:700">${money(item.price * item.qty)}</div>
+</div>
+`;
+
+}).join("");
+
+const html = `
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SLS Store Invoice - ${escapeHTML(order.clientOrderId || order.id)}</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f8f3f5;margin:0;padding:20px;color:#222}
+.invoice-page{max-width:760px;margin:auto;background:#fff;padding:24px;border-radius:16px}
+h1{color:#e91e63;margin:0 0 5px}
+.meta{color:#666;margin-bottom:20px}
+.total{display:flex;justify-content:space-between;padding:7px 0}
+.grand{font-size:21px;font-weight:700;color:#e91e63;border-top:1px solid #eee;margin-top:8px;padding-top:12px}
+.print{background:#e91e63;color:white;border:0;border-radius:9px;padding:11px 18px;font-size:16px;margin-bottom:18px}
+@media print{.print{display:none}body{background:#fff;padding:0}.invoice-page{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="invoice-page">
+<button class="print" onclick="window.print()">🖨️ Print / Save PDF</button>
+<h1>SLS STORE</h1>
+<div class="meta">
+Order: <b>${escapeHTML(order.clientOrderId || order.id)}</b><br>
+Date: ${escapeHTML(date)}
+</div>
+<div>${rows}</div>
+<div style="margin-top:18px">
+<div class="total"><span>Product Total</span><b>${money(order.productTotal)}</b></div>
+<div class="total"><span>Delivery</span><b>${money(order.deliveryCharge)}</b></div>
+<div class="total grand"><span>Grand Total</span><span>${money(order.grandTotal)}</span></div>
+</div>
+</div>
+</body>
+</html>
+`;
+
+const win = window.open("", "_blank");
+if(!win){
+alert("Invoice খুলতে browser popup অনুমতি দিন।");
+return;
+}
+
+win.document.open();
+win.document.write(html);
+win.document.close();
+
+}
+
+/************************************************************
+ * REFRESH ONE ORDER
+ ************************************************************/
+
+async function refreshSingleOrder(
+orderId
+){
+
+const cards =
+document.querySelectorAll(
+".order-card"
+);
+
+for(
+let i=0;
+i<cards.length;
+i++
+){
+
+const card =
+cards[i];
+
+const text =
+card.innerText || "";
+
+if(
+text.includes(
+orderId
+)
+){
+
+const live =
+card.querySelector(
+".live-status"
+);
+
+live.innerHTML =
+"Refreshing...";
+
+const result =
+await getLiveStatus(
+orderId,
+""
+);
+
+if(
+result &&
+result.success &&
+result.found
+){
+
+const status =
+result.status ||
+"Pending";
+
+const badge =
+card.querySelector(
+".badge"
+);
+
+badge.textContent =
+status;
+
+badge.className =
+"badge " +
+statusClass(status);
+
+card.querySelector(
+".track-box"
+).innerHTML =
+createStatusTrack(
+status
+);
+
+live.innerHTML =
+"Live Status: <b>" +
+escapeHTML(status) +
+"</b>";
+
+if(
+result.pdfUrl
+){
+
+card.querySelector(
+".invoice-box"
+).innerHTML = `
+
+<a
+class="invoice"
+href="${escapeHTML(result.pdfUrl)}"
+target="_blank"
+rel="noopener">
+
+📄 Open PDF Invoice
+
+</a>
+
+`;
+
+}
+
+}else{
+
+live.innerHTML = `
+
+Live status এখনও পাওয়া যায়নি।
+
+<br>
+
+<span class="muted">
+Google Sheet-এর Status update করার পর
+আবার Refresh Status চাপুন।
+</span>
+
+`;
+
+}
+
+return;
+
+}
+
+}
+
+}
+
+
+/************************************************************
+ * AUTH STATE
+ ************************************************************/
+
+auth.onAuthStateChanged(
+function(user){
+
+currentUser =
+user || null;
+
+const button =
+document.getElementById(
+"authButton"
+);
+
+if(user){
+
+button.textContent =
+"Logout / লগআউট";
+
+}else{
+
+button.textContent =
+"Login / লগইন";
+
+}
+
+}
+);
+
+
+/************************************************************
+ * CLOSE MODAL BY BACKGROUND
+ ************************************************************/
+
+document.addEventListener(
+"click",
+function(event){
+
+if(
+event.target.classList
+.contains("modal")
+){
+
+event.target
+.classList
+.remove("show");
+
+}
+
+}
+);
+
+
+/************************************************************
+ * START
+ ************************************************************/
+
+renderProducts();
+
+/*
+ * Load products and stock independently.
+ * Stock comes directly from Products!F, so a stale/unavailable
+ * product API cannot block IN STOCK / OUT OF STOCK updates.
+ */
+loadProductsFromSheet();
+loadStockDirectlyFromGoogleSheet();
+
+/*
+ * Keep product stock/status synchronized with Google Sheets.
+ * Only Stock Qty / status is changed here.
+ */
+setInterval(function(){
+  loadProductsFromSheet();
+  loadStockDirectlyFromGoogleSheet();
+}, 30000);
+
+/*
+ * Re-check stock whenever the customer returns to the website.
+ * This does not change any other website functionality.
+ */
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden){
+    loadProductsFromSheet();
+    loadStockDirectlyFromGoogleSheet();
+  }
+});
+
+updateCartCount();
+
+updateCheckoutSummary();
+
+</script>
+
+</body>
+</html>
