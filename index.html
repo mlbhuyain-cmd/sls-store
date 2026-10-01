@@ -3115,144 +3115,76 @@ clientOrderId,
 phone
 ){
 
-return new Promise(
-function(resolve){
+return new Promise(function(resolve){
+
+const attempts = ["status","getStatus","getOrderStatus"];
+let attemptIndex = 0;
+let finished = false;
+
+function tryNext(){
+
+if(finished)return;
+
+if(attemptIndex >= attempts.length){
+finished = true;
+resolve(null);
+return;
+}
+
+const action = attempts[attemptIndex++];
 
 const callbackName =
 "slsStatusCallback_" +
 Date.now() +
 "_" +
-Math.random()
-.toString(36)
-.slice(2);
+Math.random().toString(36).slice(2);
 
-const script =
-document.createElement(
-"script"
-);
-
-let finished = false;
-
-const timeout =
-setTimeout(
-function(){
-
-if(finished)return;
-
-finished = true;
-
-cleanup();
-
-resolve(null);
-
-},
-12000
-);
-
+const script = document.createElement("script");
+let timer = null;
 
 function cleanup(){
-
-clearTimeout(
-timeout
-);
-
-try{
-
-delete window[
-callbackName
-];
-
-}catch(error){
-
-window[
-callbackName
-] =
-undefined;
-
+if(timer) clearTimeout(timer);
+try{ delete window[callbackName]; }catch(e){}
+if(script.parentNode) script.parentNode.removeChild(script);
 }
 
-if(script.parentNode){
-
-script.parentNode
-.removeChild(
-script
-);
-
-}
-
-}
-
-
-window[
-callbackName
-] =
-function(result){
-
+window[callbackName] = function(data){
 if(finished)return;
-
-finished = true;
 
 cleanup();
 
-resolve(result);
-
-};
-
-
-script.onerror =
-function(){
-
-if(finished)return;
-
+if(data && data.success && data.found){
 finished = true;
-
-cleanup();
-
-resolve(null);
-
+resolve(data);
+}else{
+tryNext();
+}
 };
 
+timer = setTimeout(function(){
+cleanup();
+tryNext();
+}, 8000);
 
 const params = new URLSearchParams();
+params.set("action", action);
+params.set("clientOrderId", clientOrderId || "");
+params.set("phone", phone || "");
+params.set("prefix", callbackName);
+params.set("callback", callbackName);
+params.set("t", Date.now());
 
-params.set(
-"action",
-"status"
-);
+script.onerror = function(){
+cleanup();
+tryNext();
+};
 
-params.set(
-"clientOrderId",
-clientOrderId || ""
-);
+script.src = APPS_SCRIPT_URL + "?" + params.toString();
+document.head.appendChild(script);
 
-params.set(
-"phone",
-phone || ""
-);
+}
 
-/*
- * Apps Script backend expects prefix.
- */
-params.set(
-"prefix",
-callbackName
-);
-
-params.set(
-"t",
-Date.now()
-);
-
-
-script.src =
-APPS_SCRIPT_URL +
-"?" +
-params.toString();
-
-
-document.head.appendChild(
-script
-);
+tryNext();
 
 });
 
@@ -4050,10 +3982,23 @@ card.querySelector(
 live.innerHTML =
 "Refreshing...";
 
+let refreshPhone = "";
+
+for(const key in orderHistoryCache){
+const cached = orderHistoryCache[key];
+if(
+cached &&
+String(cached.clientOrderId || cached.id || "") === String(orderId)
+){
+refreshPhone = cached.phone || "";
+break;
+}
+}
+
 const result =
 await getLiveStatus(
 orderId,
-""
+refreshPhone
 );
 
 if(
