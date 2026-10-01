@@ -400,9 +400,19 @@ background:#f0e9ff;
 color:#6937a6;
 }
 
+.badge.picking{
+background:#fff4d6;
+color:#9a6200;
+}
+
 .badge.delivery{
 background:#e5fff0;
 color:#16713c;
+}
+
+.badge.delivered{
+background:#d9fbe8;
+color:#116b38;
 }
 
 .status-track{
@@ -1081,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", function () {
  ************************************************************/
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzfobB1ZAeWKhq_gZ7NBH0LZ4XaF_C-4tUVviVecdQjPTTlrZ4rwl9lPvqoWuz4aK0/exec";
+"https://script.google.com/macros/s/AKfycbyo658vjryARUx6J7TjKcXfWLqeYMinaVHW8jW7Iv1Qe0jc4QYchIQAWLoK0VjGlV-6/exec";
 
 
 const PRODUCTS_API_URL =
@@ -3065,7 +3075,7 @@ orderId: clientOrderId,
 grandTotal: grandTotal,
 deliveryArea: deliveryArea,
 deliveryCharge: deliveryCharge
-});openOrders();
+});
 
 }catch(error){
 
@@ -3269,6 +3279,11 @@ value === "confirmed"
 return "confirmed";
 
 if(
+value === "picking"
+)
+return "picking";
+
+if(
 value === "processing"
 )
 return "processing";
@@ -3277,6 +3292,11 @@ if(
 value === "delivery"
 )
 return "delivery";
+
+if(
+value === "delivered"
+)
+return "delivered";
 
 return "";
 
@@ -3289,10 +3309,11 @@ status
 
 const statuses = [
 
-"Pending",
 "Confirmed",
+"Picking",
 "Processing",
-"Delivery"
+"Delivery",
+"Delivered"
 
 ];
 
