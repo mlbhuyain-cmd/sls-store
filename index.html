@@ -998,6 +998,25 @@ Confirm Order / অর্ডার নিশ্চিত করুন
 </div>
 
 
+<!-- ORDER SUCCESS -->
+<div class="modal" id="orderSuccessModal">
+<div class="modal-box" style="text-align:center;max-width:560px">
+<h2 style="color:#16803c;margin-top:5px">✓ Order placed successfully!</h2>
+<p style="font-size:16px">আপনার অর্ডার সফলভাবে নেওয়া হয়েছে।</p>
+<div class="totals" style="text-align:left">
+<div class="total-line"><span>Order ID</span><b id="successOrderId"></b></div>
+<div class="total-line"><span>Grand Total</span><b id="successGrandTotal"></b></div>
+<div class="total-line"><span>Delivery</span><b id="successDelivery"></b></div>
+<div class="total-line"><span>Delivery Charge</span><b id="successDeliveryCharge"></b></div>
+<div class="total-line"><span>Payment</span><b>Cash on Delivery</b></div>
+</div>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+<button class="secondary" style="width:auto" onclick="closeModal('orderSuccessModal');goHome()">Continue Shopping</button>
+<button class="primary" style="width:auto" onclick="closeModal('orderSuccessModal');openOrders()">My Orders / আমার অর্ডার</button>
+</div>
+</div>
+</div>
+
 <!-- ORDERS -->
 
 <div
@@ -2975,7 +2994,7 @@ paymentMethod:
 "Cash on Delivery",
 
 status:
-"Pending"
+"Confirmed"
 
 };
 
@@ -3041,27 +3060,12 @@ closeModal(
 "checkoutModal"
 );
 
-alert(
-
-"Order placed successfully!\n\n" +
-
-"Order ID: " +
-clientOrderId +
-
-"\nGrand Total: " +
-money(grandTotal) +
-
-"\nDelivery: " +
-deliveryArea +
-
-"\nDelivery Charge: " +
-money(deliveryCharge) +
-
-"\nPayment: Cash on Delivery"
-
-);
-
-openOrders();
+showOrderSuccessModal({
+orderId: clientOrderId,
+grandTotal: grandTotal,
+deliveryArea: deliveryArea,
+deliveryCharge: deliveryCharge
+});openOrders();
 
 }catch(error){
 
@@ -3078,6 +3082,17 @@ error.message
 
 }
 
+
+/************************************************************
+ * ORDER SUCCESS MODAL
+ ************************************************************/
+function showOrderSuccessModal(data){
+document.getElementById("successOrderId").textContent = data.orderId || "";
+document.getElementById("successGrandTotal").textContent = money(data.grandTotal || 0);
+document.getElementById("successDelivery").textContent = data.deliveryArea || "";
+document.getElementById("successDeliveryCharge").textContent = money(data.deliveryCharge || 0);
+openModal("orderSuccessModal");
+}
 
 /************************************************************
  * LIVE STATUS - JSONP
