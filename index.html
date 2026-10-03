@@ -1595,282 +1595,197 @@ ${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কা�
 
 function loadProductsFromSheet(){
 
-/*
- * Products Sheet is the single source of truth.
- *
- * Preferred/current columns:
- * A Product ID
- * B Product Name
- * C Category
- * D Offer Price
- * E MRP
- * F Stock Quantity
- * G Stock
- * H Description
- * I SKU
- * J Image URL
- *
- * The parser is header-aware so older SLS Store sheet layouts still
- * work while the new 10-column layout is introduced.
- */
+  /*
+   * Google Sheet is the single source of truth.
+   *
+   * A Product ID
+   * B Product Name
+   * C Category
+   * D Offer Price
+   * E MRP
+   * F Stock Quantity
+   * G Stock
+   * H Description
+   * I SKU
+   * J Image URL
+   */
 
-const callbackName =
-"slsProductsSheetCallback_" +
-Date.now() +
-"_" +
-Math.random().toString(36).slice(2);
+  const callbackName = "slsProductsSheetCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+  const script = document.createElement("script");
+  let finished = false;
 
-const script = document.createElement("script");
-let finished = false;
+  function cleanup(){
+    clearTimeout(timeout);
+    try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+    if(script.parentNode) script.parentNode.removeChild(script);
+  }
 
-function cleanup(){
-clearTimeout(timeout);
-try{
-delete window[callbackName];
-}catch(error){
-window[callbackName] = undefined;
+  const timeout = setTimeout(function(){
+    if(finished) return;
+    finished = true;
+    cleanup();
+    console.error("Products Sheet request timed out.");
+    loadStockDirectlyFromGoogleSheet();
+  },15000);
+
+  window[callbackName] = function(data){
+    if(finished) return;
+    finished = true;
+    cleanup();
+
+    try{
+      if(!data || !data.table || !Array.isArray(data.table.rows)){
+        throw new Error("Invalid Google Sheet response");
+      }
+
+      const rows = data.table.rows;
+
+      function cell(row,index){
+        const c = row && row.c && row.c[index];
+        return c && c.v != null ? String(c.v).trim() : "";
+      }
+
+      function num(row,index){
+        const s = cell(row,index).replace(/,/g,"").replace(/৳/g,"").trim();
+        if(!s) return 0;
+        const n = Number(s);
+        return Number.isFinite(n) ? n : 0;
+      }
+
+      function cleanImage(value){
+        let s = String(value || "").trim();
+
+        // Google Sheets may expose a Markdown-style hyperlink:
+        // [https://example.com/a.jpg](https://example.com/a.jpg)
+        const markdown = s.match(/\]\((https?:\\/\\/[^)]+)\)/i);
+        if(markdown) s = markdown[1];
+
+        const plain = s.match(/https?:\\/\\/[^\\s)]+/i);
+        if(plain) s = plain[0];
+
+        // Remove accidental trailing markdown punctuation.
+        s = s.replace(/[)\\]]+$/,"");
+
+        return s;
+      }
+
+      function normalizeName(value){
+        return String(value || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9\\u0980-\\u09ff]+/g,"")
+          .trim();
+      }
+
+      const sheetById = {};
+      const sheetByName = {};
+
+      rows.forEach(function(row){
+        const id = cell(row,0);
+        const name = cell(row,1);
+        if(!id || !name) return;
+
+        const offerPrice = num(row,3);
+        const mrp = num(row,4);
+        const stockQtyText = cell(row,5);
+        const stockQty = stockQtyText === "" ? null : Number(stockQtyText);
+
+        const record = {
+          id: id,
+          name: name,
+          category: cell(row,2),
+          price: offerPrice,
+          mrp: mrp,
+          offerPrice: offerPrice,
+          stock: Number.isFinite(stockQty) ? Math.max(0,stockQty) : null,
+          status: Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : cell(row,6),
+          details: cell(row,7),
+          sku: cell(row,8),
+          image: cleanImage(cell(row,9))
+        };
+
+        sheetById[id] = record;
+        sheetByName[normalizeName(name)] = record;
+      });
+
+      // Replace/update products from the Sheet.
+      products = products.map(function(product){
+        const id = String(product.id || "").trim();
+        const live = sheetById[id] || sheetByName[normalizeName(product.name)];
+
+        if(!live) return product;
+
+        return Object.assign({}, product, {
+          id: live.id || product.id,
+          name: live.name || product.name,
+          category: live.category || product.category,
+          price: live.price,
+          mrp: live.mrp,
+          offerPrice: live.offerPrice,
+          stock: live.stock !== null ? live.stock : product.stock,
+          status: live.status || product.status,
+          details: live.details || product.details,
+          sku: live.sku || product.sku || "",
+          image: live.image || product.image || ""
+        });
+      });
+
+      // Add every Sheet product that is not already in the built-in list.
+      Object.keys(sheetById).forEach(function(id){
+        const live = sheetById[id];
+
+        const exists = products.some(function(product){
+          return String(product.id || "").trim() === id ||
+                 normalizeName(product.name) === normalizeName(live.name);
+        });
+
+        if(exists) return;
+
+        products.push({
+          id: live.id,
+          name: live.name,
+          category: live.category,
+          price: live.price,
+          mrp: live.mrp,
+          offerPrice: live.offerPrice,
+          stock: live.stock,
+          status: live.status,
+          details: live.details,
+          sku: live.sku,
+          image: live.image
+        });
+      });
+
+      renderProducts();
+      loadStockDirectlyFromGoogleSheet();
+
+    }catch(error){
+      console.error("Products Sheet sync error:",error);
+      loadStockDirectlyFromGoogleSheet();
+    }
+  };
+
+  script.onerror = function(){
+    if(finished) return;
+    finished = true;
+    cleanup();
+    console.error("Products Sheet connection failed.");
+    loadStockDirectlyFromGoogleSheet();
+  };
+
+  // Request the exact A:J range. gid is the Products sheet tab supplied by the user.
+  const query = "select A,B,C,D,E,F,G,H,I,J";
+
+  script.src =
+    "https://docs.google.com/spreadsheets/d/" +
+    STOCK_SHEET_ID +
+    "/gviz/tq?" +
+    "gid=" + encodeURIComponent(STOCK_SHEET_GID) +
+    "&headers=1" +
+    "&tqx=out:json;responseHandler:" + encodeURIComponent(callbackName) +
+    "&tq=" + encodeURIComponent(query);
+
+  document.head.appendChild(script);
 }
-if(script.parentNode){
-script.parentNode.removeChild(script);
-}
-}
-
-const timeout = setTimeout(function(){
-if(finished)return;
-finished = true;
-cleanup();
-console.error("Products Sheet request timed out.");
-},15000);
-
-window[callbackName] = function(data){
-
-if(finished)return;
-
-finished = true;
-cleanup();
-
-try{
-
-if(!data || !data.table || !Array.isArray(data.table.rows)){
-console.error("Products Sheet returned invalid data.");
-loadStockDirectlyFromGoogleSheet();
-return;
-}
-
-const rows = data.table.rows;
-const cols = Array.isArray(data.table.cols) ? data.table.cols : [];
-
-function normHeader(value){
-return String(value || "")
-.toLowerCase()
-.replace(/[(){}\\[\\]:;,._\\-\\/\\\\]+/g," ")
-.replace(/\\s+/g," ")
-.trim();
-}
-
-const headers = cols.map(function(col){
-return normHeader(col && (col.label || col.id || ""));
-});
-
-function col(aliases, fallback){
-for(let i=0;i<headers.length;i++){
-if(aliases.indexOf(headers[i]) >= 0)return i;
-}
-return fallback;
-}
-
-/*
- * New layout:
- * A ID, B Name, C Category, D Price, E MRP, F Offer Price,
- * G Stock, H Description, I SKU, J Image URL.
- *
- * Fallbacks keep the current/old sheet layout readable.
- */
-const idI = col(["product id","productid","id","product code"],0);
-const nameI = col(["product name","name","product"],1);
-const categoryI = col(["category","product category"],2);
-const priceI = 3;
-const mrpI = 4;
-const offerI = 3;
-const stockI = 5;
-const descI = 7;
-const skuI = 8;
-const imageI = 9;
-
-const sheetById = {};
-const sheetByName = {};
-
-function cellValue(row,index){
-const cell = row.c && row.c[index];
-return cell && cell.v != null ? String(cell.v).trim() : "";
-}
-
-function numberValue(row,index){
-const value = cellValue(row,index).replace(/,/g,"");
-const n = Number(value);
-return Number.isFinite(n) ? n : 0;
-}
-
-function normalizeName(value){
-return String(value || "")
-.toLowerCase()
-.replace(/[^a-z0-9\\u0980-\\u09ff]+/g,"")
-.trim();
-}
-
-rows.forEach(function(row){
-
-const id = cellValue(row,idI);
-const name = cellValue(row,nameI);
-if(!id && !name)return;
-
-const basePrice = numberValue(row,priceI);
-const offerPrice = numberValue(row,offerI);
-const effectivePrice = offerPrice > 0 ? offerPrice : basePrice;
-const stockRaw = cellValue(row,stockI);
-const stockNumber = stockRaw === "" ? null : Number(stockRaw);
-
-const record = {
-id:id,
-name:name,
-category:cellValue(row,categoryI),
-price:basePrice,
-mrp:numberValue(row,mrpI),
-offerPrice:offerPrice,
-effectivePrice:effectivePrice,
-stock:Number.isFinite(stockNumber) ? Math.max(0,stockNumber) : null,
-status:Number.isFinite(stockNumber) ? (stockNumber > 0 ? "IN STOCK" : "OUT OF STOCK") : "",
-details:cellValue(row,descI),
-sku:cellValue(row,skuI),
-image:cellValue(row,imageI)
-};
-
-if(id)sheetById[id]=record;
-if(name)sheetByName[normalizeName(name)]=record;
-
-});
-
-/*
- * Merge Sheet data into the existing product list.
- * Sheet values override the built-in fallback values.
- */
-products = products.map(function(product){
-
-const id = String(product.id || "").trim();
-const nameKey = normalizeName(product.name);
-const live = sheetById[id] || sheetByName[nameKey];
-
-if(!live)return product;
-
-return Object.assign({},product,{
-name:live.name || product.name,
-category:live.category || product.category,
-price:live.price > 0 ? live.price : product.price,
-mrp:live.mrp > 0 ? live.mrp : (product.mrp || 0),
-offerPrice:live.offerPrice > 0 ? live.offerPrice : (product.offerPrice || 0),
-stock:live.stock !== null ? live.stock : product.stock,
-status:live.status || product.status,
-details:live.details || product.details,
-sku:live.sku || product.sku || "",
-image:live.image || product.image || ""
-});
-
-});
-
-/*
- * Add products that exist in the Sheet but not in the old built-in list.
- */
-rows.forEach(function(row){
-
-const id = cellValue(row,idI);
-const name = cellValue(row,nameI);
-if(!id || !name)return;
-
-const alreadyExists =
-products.some(function(product){
-return String(product.id || "").trim() === id;
-}) ||
-products.some(function(product){
-return normalizeName(product.name) === normalizeName(name);
-});
-
-if(alreadyExists)return;
-
-const basePrice = numberValue(row,priceI);
-const offerPrice = numberValue(row,offerI);
-const stockRaw = cellValue(row,stockI);
-const stockNumber = stockRaw === "" ? null : Number(stockRaw);
-
-products.push({
-id:id,
-name:name,
-category:cellValue(row,categoryI),
-price:basePrice,
-mrp:numberValue(row,mrpI),
-offerPrice:offerPrice,
-stock:Number.isFinite(stockNumber) ? Math.max(0,stockNumber) : null,
-status:Number.isFinite(stockNumber) ? (stockNumber > 0 ? "IN STOCK" : "OUT OF STOCK") : "",
-details:cellValue(row,descI),
-sku:cellValue(row,skuI),
-image:cellValue(row,imageI)
-});
-
-});
-
-renderProducts();
-loadStockDirectlyFromGoogleSheet();
-
-}catch(error){
-
-console.error("Products Sheet sync error:",error);
-loadStockDirectlyFromGoogleSheet();
-
-}
-
-};
-
-script.onerror = function(){
-
-if(finished)return;
-
-finished = true;
-cleanup();
-
-console.error("Products Sheet connection failed.");
-loadStockDirectlyFromGoogleSheet();
-
-};
-
-const query =
-"select A,B,C,D,E,F,G,H,I,J";
-
-script.src =
-"https://docs.google.com/spreadsheets/d/" +
-STOCK_SHEET_ID +
-"/gviz/tq?" +
-"gid=" +
-encodeURIComponent(STOCK_SHEET_GID) +
-"&tq=" +
-encodeURIComponent(query) +
-"&tqx=" +
-encodeURIComponent("out:json;responseHandler:" + callbackName) +
-"&t=" +
-Date.now();
-
-document.head.appendChild(script);
-
-}
-
-/************************************************************
- * CART
- ************************************************************/
-
-/* STOCK_SYNC_DIRECT_FROM_GOOGLE_SHEET */
-
-const STOCK_SHEET_ID = "1BYDHVHOv6rxdp0bGJQftkLeRD1h9yuRq_xDwlauL1Bs";
-const STOCK_SHEET_NAME = "Products";
-const STOCK_SHEET_GID = "1827426276";
-
 function loadStockDirectlyFromGoogleSheet(){
 
 const callbackName =
