@@ -4254,7 +4254,19 @@ updateCheckoutSummary();
             status:v(6),details:v(7),sku:v(8),image:cleanImage(v(9))
           });
         });
-        if(live.length) render(live);
+        if(live.length){
+          if(Array.isArray(window.products)){
+            live.forEach(function(lp){
+              var existing = window.products.find(function(p){
+                return String(p.id||"").trim() === String(lp.id).trim() ||
+                       String(p.name||"").trim().toLowerCase() === String(lp.name||"").trim().toLowerCase();
+              });
+              if(existing) Object.assign(existing, lp);
+              else window.products.push(lp);
+            });
+          }
+          render(live);
+        }
       }catch(e){
         console.error("Live product sync failed:",e);
       }
@@ -4270,7 +4282,7 @@ updateCheckoutSummary();
 
     script.src="https://docs.google.com/spreadsheets/d/1BYDHVHOv6rxdp0bGJQftkLeRD1h9yuRq_xDwlauL1Bs/gviz/tq?gid=1827426276&headers=1&tqx="+
       encodeURIComponent("out:json;responseHandler:"+callback)+
-      "&tq="+encodeURIComponent("select A,B,C,D,E,F,G,H,I,J");
+      "&tq="+encodeURIComponent("select A,B,C,D,E,F,G,H,I,J")+"&t="+Date.now();
     document.head.appendChild(script);
   }
 
