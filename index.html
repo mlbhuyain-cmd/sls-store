@@ -1660,20 +1660,28 @@ function loadProductsFromSheet(){
       function cleanImage(value){
         let s = String(value || "").trim();
 
-        // Google Sheets may expose a Markdown-style hyperlink:
-        // [https://example.com/a.jpg](https://example.com/a.jpg)
-        const markdown = s.match(/\]\((https?:\\/\\/[^)]+)\)/i);
-        if(markdown) s = markdown[1];
+        // Supports both a plain URL and Google Sheets Markdown hyperlink:
+        // [https://example.com/image.jpg](https://example.com/image.jpg)
+        const start = s.indexOf("](");
+        if(start >= 0){
+          const end = s.indexOf(")", start + 2);
+          if(end > start){
+            const candidate = s.slice(start + 2, end).trim();
+            if(/^https?:\\/\\//i.test(candidate)){
+              s = candidate;
+            }
+          }
+        }
 
-        const plain = s.match(/https?:\\/\\/[^\\s)]+/i);
-        if(plain) s = plain[0];
+        // If the cell contains extra text, take the first HTTP(S) URL.
+        const urlStart = s.search(/https?:\\/\\//i);
+        if(urlStart > 0){
+          s = s.slice(urlStart);
+        }
 
-        // Remove accidental trailing markdown punctuation.
-        s = s.replace(/[)\\]]+$/,"");
-
+        s = s.replace(/[\\]\\)]+$/g,"").trim();
         return s;
       }
-
       function normalizeName(value){
         return String(value || "")
           .toLowerCase()
