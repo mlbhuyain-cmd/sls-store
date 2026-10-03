@@ -1264,13 +1264,6 @@ return {
 
 }[char];
 
-const FALLBACK_PRICES = {};
-products.forEach(function(product){
-  FALLBACK_PRICES[String(product.id)] = Number(product.price) || 0;
-});
-
-
-
 }
 );
 
