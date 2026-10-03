@@ -4131,6 +4131,96 @@ updateCartCount();
 
 updateCheckoutSummary();
 
+
+
+
+/*
+ * INDEPENDENT PRODUCT CATALOG SAFETY LOADER
+ * This runs separately from Firebase/cart/order code.
+ */
+(function(){
+  function startIndependentCatalog(){
+    var grid = document.getElementById("productGrid");
+    if(!grid) return;
+
+    var sheetId = "1BYDHVHOv6rxdp0bGJQftkLeRD1h9yuRq_xDwlauL1Bs";
+    var sheetGid = "1827426276";
+    var callback = "slsIndependentProducts_" + Date.now();
+    var script = document.createElement("script");
+    var done = false;
+
+    function esc(v){
+      return String(v == null ? "" : v).replace(/[&<>"']/g,function(ch){
+        return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch];
+      });
+    }
+
+    function img(v){
+      var s = String(v || "").trim();
+      var m = s.match(/https?:\/\/[^\s)\]]+/i);
+      return m ? m[0].replace(/[)\]]+$/,"") : "";
+    }
+
+    function money2(v){
+      var n = Number(String(v || "").replace(/,/g,"").replace(/৳/g,""));
+      return Number.isFinite(n) ? "৳" + n.toLocaleString("en-BD") : "৳0";
+    }
+
+    function render(rows){
+      if(!rows || !rows.length) return;
+      var html = rows.map(function(r){
+        var c = r.c || [];
+        function val(i){ return c[i] && c[i].v != null ? String(c[i].v).trim() : ""; }
+        var id=val(0), name=val(1), cat=val(2), offer=val(3), mrp=val(4), stock=val(5), desc=val(7), image=img(val(9));
+        if(!id || !name) return "";
+        var qty=Number(stock), out=Number.isFinite(qty) && qty<=0;
+        return '<div class="product">'+
+          '<div class="product-image">'+
+          (image ? '<img src="'+esc(image)+'" alt="'+esc(name)+'" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;">' : '<span>🛍️</span>')+
+          '</div>'+
+          '<div class="product-content">'+
+          '<h3>'+esc(name)+'</h3>'+
+          '<div class="muted">'+esc(cat)+'</div>'+
+          '<div style="font-size:13px;line-height:1.45;margin:8px 0;color:#555">'+esc(desc)+'</div>'+
+          '<div class="price">'+money2(offer)+'</div>'+
+          (Number(mrp)>0 ? '<div class="price-meta"><span class="mrp">MRP '+money2(mrp)+'</span></div>' : '')+
+          '<div class="muted" style="margin:6px 0 10px">'+(out?'OUT OF STOCK / স্টক শেষ':'IN STOCK / স্টক আছে')+'</div>'+
+          '<button class="primary" '+(out?'disabled':'')+' data-sls-id="'+esc(id)+'">'+(out?'Out of Stock / স্টক শেষ':'Add to Cart / কার্টে যোগ করুন')+'</button>'+
+          '</div></div>';
+      }).join("");
+      if(html) grid.innerHTML=html;
+    }
+
+    window[callback]=function(data){
+      if(done) return;
+      done=true;
+      if(data && data.table && Array.isArray(data.table.rows)) render(data.table.rows);
+      try{ delete window[callback]; }catch(e){}
+      if(script.parentNode) script.parentNode.removeChild(script);
+    };
+
+    script.onerror=function(){
+      if(done) return;
+      done=true;
+      try{ delete window[callback]; }catch(e){}
+      if(script.parentNode) script.parentNode.removeChild(script);
+    };
+
+    script.src="https://docs.google.com/spreadsheets/d/"+sheetId+"/gviz/tq?gid="+
+      encodeURIComponent(sheetGid)+"&headers=1&tqx="+
+      encodeURIComponent("out:json;responseHandler:"+callback)+
+      "&tq="+encodeURIComponent("select A,B,C,D,E,F,G,H,I,J");
+
+    document.head.appendChild(script);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",function(){ setTimeout(startIndependentCatalog,100); });
+  }else{
+    setTimeout(startIndependentCatalog,100);
+  }
+})();
+
 </script>
 
 </body>
