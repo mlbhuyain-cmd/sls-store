@@ -1849,8 +1849,8 @@ const cols = Array.isArray(data.table.cols) ? data.table.cols : [];
 function normHeader(value){
 return String(value || "")
 .toLowerCase()
-.replace(/[(){}\\[\\]:;,._\\-\\/\\\\]+/g," ")
-.replace(/\\s+/g," ")
+.replace(/[()[\]{}:;,._\-\/\\]+/g," ")
+.replace(/\s+/g," ")
 .trim();
 }
 
