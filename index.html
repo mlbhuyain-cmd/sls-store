@@ -2092,7 +2092,7 @@ ${money(item.price)}
 <div class="qty">
 
 <button
-onclick="changeQty(${JSON.stringify(item.id)},-1)">
+onclick="changeQty('${String(item.id).replace(/'/g,"\\'")}',-1)">
 −
 </button>
 
@@ -2101,7 +2101,7 @@ ${item.qty}
 </b>
 
 <button
-onclick="changeQty(${JSON.stringify(item.id)},1)">
+onclick="changeQty('${String(item.id).replace(/'/g,"\\'")}',1)">
 +
 </button>
 
@@ -2117,7 +2117,7 @@ item.price * item.qty
 
 <button
 class="remove"
-onclick="removeFromCart(${JSON.stringify(item.id)})">
+onclick="removeFromCart('${String(item.id).replace(/'/g,"\\'")}')">
 
 Remove
 
