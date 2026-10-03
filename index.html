@@ -1142,15 +1142,24 @@ measurementId:
 };
 
 
-firebase.initializeApp(
-firebaseConfig
-);
+let auth = null;
+let db = null;
 
-const auth =
-firebase.auth();
-
-const db =
-firebase.firestore();
+/*
+ * Firebase must never block the product catalog.
+ * If Firebase is unavailable, products can still load from Google Sheets.
+ */
+try{
+  if(typeof firebase !== "undefined"){
+    if(!firebase.apps || !firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }
+    auth = firebase.auth();
+    db = firebase.firestore();
+  }
+}catch(firebaseError){
+  console.error("Firebase initialization failed. Product catalog will continue:", firebaseError);
+}
 
 
 /************************************************************
@@ -4036,6 +4045,7 @@ return;
  * AUTH STATE
  ************************************************************/
 
+if(auth){
 auth.onAuthStateChanged(
 function(user){
 
@@ -4061,7 +4071,7 @@ button.textContent =
 
 }
 );
-
+}
 
 /************************************************************
  * CLOSE MODAL BY BACKGROUND
