@@ -1602,9 +1602,9 @@ function loadProductsFromSheet(){
  * A Product ID
  * B Product Name
  * C Category
- * D Price
+ * D Offer Price
  * E MRP
- * F Offer Price
+ * F Stock Quantity
  * G Stock
  * H Description
  * I SKU
@@ -1689,13 +1689,13 @@ return fallback;
 const idI = col(["product id","productid","id","product code"],0);
 const nameI = col(["product name","name","product"],1);
 const categoryI = col(["category","product category"],2);
-const priceI = col(["price","selling price","sale price","regular price","offer price","offer"],3);
-const mrpI = col(["mrp","mrp price","maximum retail price"],4);
-const offerI = col(["offer price","offer","discount price","sale offer price"],3);
-const stockI = col(["stock","stock qty","stock quantity","stock  quantity","quantity","qty"],6);
-const descI = col(["description","product description","details"],7);
-const skuI = col(["sku","product sku","code"],8);
-const imageI = col(["image url","image","product image","image link","photo url","photo","picture url","picture","product picture","product image url"],9);
+const priceI = 3;
+const mrpI = 4;
+const offerI = 3;
+const stockI = 5;
+const descI = 7;
+const skuI = 8;
+const imageI = 9;
 
 const sheetById = {};
 const sheetByName = {};
@@ -1848,8 +1848,8 @@ script.src =
 "https://docs.google.com/spreadsheets/d/" +
 STOCK_SHEET_ID +
 "/gviz/tq?" +
-"sheet=" +
-encodeURIComponent(STOCK_SHEET_NAME) +
+"gid=" +
+encodeURIComponent(STOCK_SHEET_GID) +
 "&tq=" +
 encodeURIComponent(query) +
 "&tqx=" +
@@ -1931,7 +1931,7 @@ return fallback;
 
 const idI = col(["product id","productid","id","product code"],0);
 const nameI = col(["product name","name","product"],1);
-const stockI = col(["stock","stock qty","stock quantity","quantity","qty"],6);
+const stockI = 5;
 
 const stockById = {};
 const stockByName = {};
