@@ -1205,12 +1205,16 @@ let products = [
 ];
 
 
-let cart =
-JSON.parse(
-localStorage.getItem(
-"sls_cart"
-) || "[]"
-);
+let cart = [];
+
+try{
+  const savedCart = localStorage.getItem("sls_cart");
+  const parsedCart = savedCart ? JSON.parse(savedCart) : [];
+  cart = Array.isArray(parsedCart) ? parsedCart : [];
+}catch(cartStorageError){
+  console.warn("Saved cart could not be read; starting with an empty cart.", cartStorageError);
+  cart = [];
+}
 
 let authMode =
 "login";
