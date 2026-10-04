@@ -2043,6 +2043,12 @@ function getProductImage(product){
 return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[product.id] || "";
 }
 
+function imageProxyUrl(url){
+  url = String(url || "").trim();
+  if(!url) return "";
+  return "https://wsrv.nl/?url=" + encodeURIComponent(url) + "&w=900&h=900&fit=contain&output=webp";
+}
+
 function offerImageCandidates(product){
   const list = [];
   const add = function(url){
@@ -2058,8 +2064,8 @@ function offerImageCandidates(product){
   add(SHWAPNO_PRODUCT_IMAGES[String(product.id)]);
   add(productImages[String(product.id)]);
 
-  // wsrv.nl can fetch/cache remote images that refuse direct embedding.
-  direct && add("https://wsrv.nl/?url=" + encodeURIComponent(direct) + "&w=700&h=700&fit=contain");
+  const originals = list.slice();
+  originals.forEach(function(url){ add(imageProxyUrl(url)); });
 
   return list;
 }
@@ -2211,7 +2217,7 @@ const outOfStock = stockKnown
 return `
 <div class="product">
 <div class="product-image">
-${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">` : ""}
+${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="if(this.dataset.proxy!=="1" && this.src){this.dataset.proxy="1";this.src=imageProxyUrl(this.src);}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
 <span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
 </div>
 <div class="product-content">
