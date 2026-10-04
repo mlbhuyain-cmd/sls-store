@@ -253,8 +253,13 @@ letter-spacing:.3px;
 @media(max-width:900px){
 .hero-inner{
 grid-template-columns:1fr;
-gap:35px;
-padding:0 18px;
+gap:25px;
+padding:28px 22px 24px;
+min-height:0;
+}
+
+.shajgoj-style-hero{
+min-height:0;
 }
 
 .hero-content-column{
@@ -266,10 +271,10 @@ margin-left:auto;
 margin-right:auto;
 }
 
-.hero-box{
-max-width:520px;
-width:100%;
-margin:auto;
+.hero-video-panel{
+max-width:620px;
+height:300px;
+margin:0 auto;
 }
 }
 
@@ -338,17 +343,23 @@ font-size:12px;
 }
 
 .hero{
-background:linear-gradient(135deg,#ffe0eb,#fff);
-padding:45px 18px;
+background:linear-gradient(135deg,#f9a0c2 0%,#f7c0d5 48%,#ffd9e6 100%);
+padding:0;
+overflow:hidden;
+}
+
+.shajgoj-style-hero{
+min-height:430px;
 }
 
 .hero-inner{
 max-width:1500px;
+min-height:430px;
 margin:0 auto;
-padding:0 35px;
+padding:34px 55px 28px;
 display:grid;
-grid-template-columns:minmax(0,1.25fr) minmax(380px,.75fr);
-gap:120px;
+grid-template-columns:minmax(0,1.05fr) minmax(440px,.95fr);
+gap:70px;
 align-items:center;
 }
 
@@ -357,40 +368,104 @@ min-width:0;
 }
 
 .hero-logo{
-width:120px;
-height:120px;
+width:105px;
+height:105px;
 object-fit:contain;
 display:block;
-margin-bottom:18px;
+margin-bottom:10px;
+}
+
+.hero-badge{
+display:inline-block;
+background:#ff2f67;
+color:#fff;
+font-size:13px;
+font-weight:800;
+padding:7px 13px;
+border-radius:20px;
+margin:0 0 12px;
+box-shadow:0 4px 12px rgba(255,47,103,.22);
 }
 
 .hero h1{
-font-size:55px;
-margin:0 0 15px;
+font-size:58px;
+line-height:1.02;
+margin:0 0 14px;
+letter-spacing:-1.5px;
 }
 
 .hero p{
 font-size:18px;
 line-height:1.7;
-color:#555;
+color:#4e3540;
+margin:0 0 18px;
 }
 
-.hero-box{
-background:white;
-border-radius:25px;
-padding:30px;
-text-align:center;
-box-shadow:0 8px 30px rgba(0,0,0,.08);
+.hero-shop-button{
+width:auto!important;
+padding:13px 24px!important;
+border-radius:24px!important;
+font-size:15px;
+}
+
+.hero-video-panel{
+width:100%;
+max-width:560px;
+height:330px;
+margin-left:auto;
+position:relative;
+border-radius:24px;
+overflow:hidden;
+background:#fff;
+box-shadow:0 12px 35px rgba(104,35,63,.16);
 }
 
 .hero-video{
 width:100%;
-max-width:260px;
-height:180px;
+height:100%;
+max-width:none;
 object-fit:cover;
 display:block;
-margin:auto;
-border-radius:20px;
+margin:0;
+border-radius:0;
+}
+
+.hero-video-caption{
+position:absolute;
+left:18px;
+right:18px;
+bottom:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:9px;
+background:rgba(255,255,255,.94);
+color:#222;
+padding:10px 14px;
+border-radius:22px;
+font-size:14px;
+box-shadow:0 4px 14px rgba(0,0,0,.10);
+}
+
+.hero-dots{
+height:58px;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:15px;
+}
+
+.hero-dots span{
+width:15px;
+height:15px;
+border-radius:50%;
+background:#5f5f5f;
+display:block;
+}
+
+.hero-dots span.active{
+background:#ff3b70;
 }
 
 .container{
@@ -955,7 +1030,7 @@ oninput="syncHeaderSearch(this.value)">
 </header>
 
 
-<section class="hero">
+<section class="hero shajgoj-style-hero">
 
 <div class="hero-inner">
 
@@ -966,6 +1041,8 @@ class="hero-logo"
 src="./assets/sls-logo-real.webp?v=final"
 alt="SLS Store Logo">
 
+<div class="hero-badge">✨ TODAY'S BEAUTY OFFER</div>
+
 <h1>
 Beauty You’ll Love 💕
 </h1>
@@ -973,12 +1050,11 @@ Beauty You’ll Love 💕
 <p>
 আপনার পছন্দের কসমেটিকস এখন সহজেই অর্ডার করুন।
 <br>
-Fresh Products • Great Value • Friendly Service
+<b>Fresh Products • Great Value • Friendly Service</b>
 </p>
 
 <button
-class="primary"
-style="width:auto;padding:13px 22px"
+class="primary hero-shop-button"
 onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
 
 Shop Now / কিনুন
@@ -987,8 +1063,7 @@ Shop Now / কিনুন
 
 </div>
 
-
-<div class="hero-box">
+<div class="hero-video-panel">
 
 <video
 class="hero-video"
@@ -1000,22 +1075,24 @@ preload="auto"
 src="./SLS_Store_hero_lipstick_video.mp4">
 </video>
 
-<h2>SLS Store</h2>
-
-<p>Cash on Delivery</p>
-
-<p class="muted">
-
-<b>Delivery Charge</b><br>
-
-Inside Dhaka ৳80<br>
-Sub Dhaka ৳130<br>
-Outside Dhaka ৳150
-
-</p>
+<div class="hero-video-caption">
+<span>🔥</span>
+<b>Special Offer</b>
+<span>•</span>
+<span>Limited Time</span>
+</div>
 
 </div>
 
+</div>
+
+<div class="hero-dots" aria-hidden="true">
+<span class="active"></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
 </div>
 
 </section>
