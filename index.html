@@ -2277,16 +2277,16 @@ function loadProductsFromSheet(){
   /*
    * Google Sheet is the single source of truth.
    *
-   * A Product ID
-   * B Product Name
-   * C Category
-   * D Offer Price
-   * E MRP
-   * F Stock Quantity
-   * G Stock
-   * H Description
-   * I Image URL
-   * J (optional/unused)
+   * A Product Name
+   * B Category
+   * C Offer Price
+   * D MRP
+   * E Stock Quantity
+   * F Stock
+   * G Description
+   * H SKU
+   * I (unused)
+   * J Image URL
    */
 
   const callbackName = "slsProductsSheetCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
@@ -2411,32 +2411,32 @@ function loadProductsFromSheet(){
 
       const sheetById = {};
       const sheetByName = {};      rows.forEach(function(row){
-        const id = cell(row,0);
-        const name = cell(row,1);
-        if(!id || !name) return;
+        const name = cell(row,0);
+        if(!name) return;
 
-        const offerPrice = num(row,3);
-        const mrp = num(row,4);
-        const stockQtyText = cell(row,5);
+        const category = cell(row,1);
+        const offerPrice = num(row,2);
+        const mrp = num(row,3);
+        const stockQtyText = cell(row,4);
         const stockQty = stockQtyText === "" ? null : Number(stockQtyText);
+        const statusText = cell(row,5);
+        const details = cell(row,6);
+        const sku = cell(row,7);
+        const imageUrl = normalizeProductImageUrl(cleanImage(imageCell(row,9)));
+        const id = sku || ("sheet-" + normalizeName(name).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));
 
         const record = {
           id: id,
           name: name,
-          category: cell(row,2),
+          category: category,
           price: offerPrice,
           mrp: mrp,
           offerPrice: offerPrice,
           stock: Number.isFinite(stockQty) ? Math.max(0,stockQty) : null,
-          status: Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : cell(row,6),
-          details: cell(row,7),
-          sku: cell(row,9),
-          image: (function(){
-          // Products sheet: Column I = Image URL
-          // Column J is optional and is not used for the product image.
-          const colI = cleanImage(imageCell(row,8));
-          return normalizeProductImageUrl(colI);
-        })()
+          status: statusText || (Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : ""),
+          details: details,
+          sku: sku,
+          image: imageUrl
         };
 
         sheetById[id] = record;
@@ -4967,13 +4967,15 @@ updateCheckoutSummary();
         rows.forEach(function(row){
           var cells=row.c||[];
           function v(i){return cells[i]&&cells[i].v!=null?String(cells[i].v).trim():"";}
-          var id=v(0),name=v(1);
-          if(!id||!name)return;
+          var name=v(0);
+          if(!name)return;
+          var sku=v(7);
+          var id=sku || ("sheet-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));
           live.push({
-            id:id,name:name,category:v(2),price:Number(v(3))||0,
-            offerPrice:Number(v(3))||0,mrp:Number(v(4))||0,
-            stock:v(5)===""?null:Number(v(5)),
-            status:v(6),details:v(7),sku:v(8),image:cleanImage(v(9))
+            id:id,name:name,category:v(1),price:Number(v(2))||0,
+            offerPrice:Number(v(2))||0,mrp:Number(v(3))||0,
+            stock:v(4)===""?null:Number(v(4)),
+            status:v(5),details:v(6),sku:sku,image:cleanImage(v(9))
           });
         });
         if(live.length){
