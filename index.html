@@ -2296,7 +2296,31 @@ function loadProductsFromSheet(){
 
       function cell(row,index){
         const c = row && row.c && row.c[index];
-        return c && c.v != null ? String(c.v).trim() : "";
+        if(!c) return "";
+        if(c.v != null) return String(c.v).trim();
+        // Google Sheets may return an IMAGE()/HYPERLINK() formula in the formula field.
+        if(c.f != null) return String(c.f).trim();
+        return "";
+      }
+
+      function imageCell(row,index){
+        const c = row && row.c && row.c[index];
+        if(!c) return "";
+
+        let s = c.v != null ? String(c.v).trim() : "";
+        const formula = c.f != null ? String(c.f).trim() : "";
+
+        // Prefer the visible value when it is already a URL.
+        if(/^https?:\/\//i.test(s)) return s;
+
+        // Extract URL from =IMAGE("URL"), =IMAGE("URL",...), =HYPERLINK("URL",...)
+        const source = formula || s;
+        const match = source.match(/(?:IMAGE|HYPERLINK)\s*\(\s*["'](https?:\/\/[^"']+)["']/i);
+        if(match) return match[1];
+
+        // Extract any URL embedded in the formula/value.
+        const url = source.match(/https?:\/\/[^\s"')]+/i);
+        return url ? url[0] : s;
       }
 
       function num(row,index){
@@ -2385,7 +2409,7 @@ function loadProductsFromSheet(){
           image: (function(){
           // Products sheet: Column I = Image URL
           // Column J is optional and is not used for the product image.
-          const colI = cleanImage(cell(row,8));
+          const colI = cleanImage(imageCell(row,8));
           return normalizeProductImageUrl(colI);
         })()
         };
