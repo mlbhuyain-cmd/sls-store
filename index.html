@@ -55,14 +55,6 @@ border-radius:18px;
 box-shadow:0 3px 10px rgba(255,47,103,.28);
 }
 
-@media(max-width:650px){
-.hero-offer-video{
-max-width:100%;
-height:150px;
-margin-bottom:16px;
-}
-}
-
 .site-header{
 position:sticky;
 top:0;
@@ -258,6 +250,28 @@ letter-spacing:.3px;
 .category-nav{justify-content:flex-start;}
 }
 
+@media(max-width:900px){
+.hero-inner{
+grid-template-columns:1fr;
+gap:35px;
+}
+
+.hero-content-column{
+text-align:center;
+}
+
+.hero-logo{
+margin-left:auto;
+margin-right:auto;
+}
+
+.hero-box{
+max-width:520px;
+width:100%;
+margin:auto;
+}
+}
+
 @media(max-width:650px){
 .top-nav{
 height:auto;
@@ -328,19 +342,12 @@ padding:45px 18px;
 }
 
 .hero-inner{
-max-width:1500px;
+max-width:1200px;
 margin:auto;
 display:grid;
-grid-template-columns:.75fr 1.45fr .75fr;
-gap:55px;
+grid-template-columns:minmax(0,1.45fr) minmax(360px,.85fr);
+gap:70px;
 align-items:center;
-}
-
-.hero-offer-column{
-display:flex;
-align-items:center;
-justify-content:center;
-min-width:0;
 }
 
 .hero-content-column{
@@ -949,22 +956,6 @@ oninput="syncHeaderSearch(this.value)">
 <section class="hero">
 
 <div class="hero-inner">
-
-<div class="hero-offer-column">
-
-<div class="hero-offer-video">
-<video
-autoplay
-muted
-loop
-playsinline
-preload="auto"
-src="./SLS_Store_hero_lipstick_video.mp4">
-</video>
-<div class="hero-offer-video-label">🔥 TODAY'S OFFER</div>
-</div>
-
-</div>
 
 <div class="hero-content-column">
 
