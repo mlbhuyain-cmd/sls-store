@@ -24,49 +24,263 @@ background:#fff7fa;
 color:#222;
 }
 
-header{
+.site-header{
 position:sticky;
 top:0;
 z-index:100;
-background:white;
-box-shadow:0 2px 12px rgba(0,0,0,.08);
+background:#fff;
+border-bottom:1px solid #e5e5e5;
+box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
 
-.nav{
-max-width:1200px;
+.top-nav{
+max-width:1260px;
 margin:auto;
-padding:14px 18px;
+height:68px;
+padding:0 18px;
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.brand-logo{
 display:flex;
 align-items:center;
 gap:10px;
+text-decoration:none;
+color:#111;
+min-width:235px;
 }
 
-.logo{
-margin-right:auto;
-}
-
-.logo img{
+.brand-logo img{
 width:58px;
 height:58px;
 object-fit:contain;
 }
 
-.nav button{
+.brand-logo span{
+font-size:27px;
+font-weight:900;
+letter-spacing:4px;
+}
+
+.brands-link{
 border:0;
-background:white;
-padding:10px;
-border-radius:8px;
+background:transparent;
+font-size:17px;
+font-weight:700;
+color:#111;
 cursor:pointer;
+white-space:nowrap;
 }
 
-.nav button:hover{
-background:#fff0f5;
+.header-search{
+height:46px;
+flex:1;
+max-width:520px;
+margin-left:auto;
+display:flex;
+align-items:center;
+border:2px solid #ff2f67;
+border-radius:28px;
+background:#fff;
+overflow:hidden;
 }
 
-.cart-button{
-background:#e91e63!important;
-color:white!important;
+.search-icon{
+font-size:27px;
 font-weight:bold;
+padding-left:17px;
+line-height:1;
+transform:rotate(-20deg);
+}
+
+.header-search input{
+border:0;
+outline:0;
+width:100%;
+height:100%;
+padding:0 14px;
+font-size:16px;
+background:transparent;
+}
+
+.header-pill{
+border:0;
+height:46px;
+padding:0 20px;
+border-radius:24px;
+font-weight:800;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.wishlist-button{
+background:#17203a;
+color:white;
+font-size:14px;
+}
+
+.login-button{
+background:#f4f4f4;
+color:#111;
+font-size:14px;
+}
+
+.header-bag{
+height:46px;
+border:0;
+border-radius:24px;
+background:#ff3b70;
+color:#fff;
+padding:0 14px 0 16px;
+display:flex;
+align-items:center;
+gap:7px;
+font-weight:900;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.bag-icon{
+font-size:20px;
+font-weight:bold;
+}
+
+.bag-label{
+font-size:14px;
+}
+
+.bag-count{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:22px;
+height:22px;
+padding:0 5px;
+border-radius:50%;
+background:white;
+color:#ff3b70;
+font-size:13px;
+}
+
+.category-nav{
+max-width:1260px;
+margin:auto;
+min-height:68px;
+padding:0 18px 10px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+overflow-x:auto;
+scrollbar-width:none;
+}
+
+.category-nav::-webkit-scrollbar{
+display:none;
+}
+
+.category-nav button{
+border:0;
+background:transparent;
+padding:9px 10px;
+font-size:16px;
+color:#111;
+white-space:nowrap;
+cursor:pointer;
+border-radius:22px;
+}
+
+.category-nav button:hover{
+background:#f7f7f7;
+}
+
+.category-nav .category-pill{
+color:#fff;
+font-weight:800;
+padding:11px 17px;
+letter-spacing:.3px;
+}
+
+.category-pill.blue{background:#2860e7;}
+.category-pill.pink{background:#e600a8;}
+.category-pill.purple{background:#ad45c9;}
+.category-pill.teal{background:#0db5b7;}
+.category-pill.green{background:#17633f;}
+
+@media(max-width:1000px){
+.brand-logo{min-width:auto;}
+.brand-logo span{font-size:20px;letter-spacing:2px;}
+.brands-link{display:none;}
+.top-nav{gap:10px;}
+.wishlist-button span{display:none;}
+.header-pill{padding:0 14px;}
+.category-nav{justify-content:flex-start;}
+}
+
+@media(max-width:650px){
+.top-nav{
+height:auto;
+padding:10px 12px;
+flex-wrap:wrap;
+}
+
+.brand-logo{
+order:1;
+flex:1;
+}
+
+.brand-logo img{
+width:48px;
+height:48px;
+}
+
+.brand-logo span{
+font-size:18px;
+}
+
+.header-search{
+order:3;
+flex-basis:100%;
+max-width:none;
+margin:0;
+height:42px;
+}
+
+.wishlist-button{
+order:2;
+height:40px;
+padding:0 13px;
+}
+
+.login-button{
+order:2;
+height:40px;
+padding:0 14px;
+}
+
+.header-bag{
+order:2;
+height:40px;
+padding:0 12px;
+}
+
+.category-nav{
+min-height:54px;
+padding:0 12px 8px;
+gap:6px;
+}
+
+.category-nav button{
+font-size:14px;
+padding:8px 10px;
+}
+
+.category-nav .category-pill{
+padding:9px 13px;
+font-size:12px;
+}
 }
 
 .hero{
@@ -576,39 +790,59 @@ width:100%;
 <body>
 
 
-<header>
+<header class="site-header">
 
-<div class="nav">
+<div class="top-nav">
 
-<div class="logo">
+<a class="brand-logo" href="javascript:void(0)" onclick="goHome()" aria-label="SLS Store Home">
+<img src="./assets/sls-logo-real.webp?v=final" alt="SLS Store Logo">
+<span>SLS STORE</span>
+</a>
 
-<img
-src="./assets/sls-logo-real.webp?v=final"
-alt="SLS Store Logo">
+<button class="brands-link" onclick="goHome()">BRANDS</button>
+
+<div class="header-search">
+<span class="search-icon">⌕</span>
+<input
+id="headerSearchInput"
+type="search"
+placeholder="Search products / পণ্য খুঁজুন..."
+autocomplete="off"
+oninput="syncHeaderSearch(this.value)">
+</div>
+
+<button class="header-pill wishlist-button" onclick="openOrders()">
+♡ <span>WISHLIST</span>
+</button>
+
+<button class="header-pill login-button" id="authButton" onclick="authButtonClick()">
+<span id="authButtonText">LOGIN</span>
+</button>
+
+<button class="header-bag" onclick="openCart()">
+<span class="bag-icon">♧</span>
+<span class="bag-label">BAG</span>
+<span class="bag-count" id="cartCount">0</span>
+</button>
 
 </div>
 
-<button onclick="goHome()">
-Home / হোম
-</button>
+<nav class="category-nav" aria-label="Store categories">
 
-<button onclick="openOrders()">
-My Orders / আমার অর্ডার
-</button>
+<button onclick="filterHeaderCategory('Makeup')">Makeup</button>
+<button onclick="filterHeaderCategory('Skin')">Skin</button>
+<button onclick="filterHeaderCategory('Hair')">Hair</button>
+<button onclick="filterHeaderCategory('Personal Care')">Personal care</button>
+<button onclick="filterHeaderCategory('Mom & Baby')">Mom & Baby</button>
+<button onclick="filterHeaderCategory('Fragrance')">Fragrance</button>
 
-<button
-id="authButton"
-onclick="authButtonClick()">
-Login / লগইন
-</button>
+<button class="category-pill blue" onclick="filterHeaderCategory('Undergarments')">UNDERGARMENTS</button>
+<button class="category-pill pink" onclick="filterHeaderCategory('Combo')">COMBO</button>
+<button class="category-pill purple" onclick="filterHeaderCategory('Jewellery')">JEWELLERY</button>
+<button class="category-pill teal" onclick="filterHeaderCategory('Clearance')">CLEARANCE SALE</button>
+<button class="category-pill green" onclick="filterHeaderCategory('Men')">MEN</button>
 
-<button
-class="cart-button"
-onclick="openCart()">
-Cart 🛒 (<span id="cartCount">0</span>)
-</button>
-
-</div>
+</nav>
 
 </header>
 
@@ -1328,6 +1562,29 @@ behavior:"smooth"
 });
 
 }
+
+function syncHeaderSearch(value){
+const mainSearch = document.getElementById("searchInput");
+if(mainSearch){
+mainSearch.readOnly = false;
+mainSearch.value = value || "";
+}
+renderProducts();
+}
+
+function filterHeaderCategory(category){
+const mainSearch = document.getElementById("searchInput");
+const headerSearch = document.getElementById("headerSearchInput");
+
+if(headerSearch) headerSearch.value = category;
+if(mainSearch){
+mainSearch.readOnly = false;
+mainSearch.value = category;
+}
+document.getElementById("products").scrollIntoView({behavior:"smooth"});
+renderProducts();
+}
+
 
 
 /************************************************************
