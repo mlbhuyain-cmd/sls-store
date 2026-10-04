@@ -2043,6 +2043,27 @@ function getProductImage(product){
 return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[product.id] || "";
 }
 
+function offerImageCandidates(product){
+  const list = [];
+  const add = function(url){
+    url = String(url || "").trim();
+    if(!url) return;
+    if(list.indexOf(url) === -1) list.push(url);
+  };
+
+  const direct = getProductImage(product);
+  add(direct);
+
+  // Use the existing built-in product image if the Sheet URL fails.
+  add(SHWAPNO_PRODUCT_IMAGES[String(product.id)]);
+  add(productImages[String(product.id)]);
+
+  // wsrv.nl can fetch/cache remote images that refuse direct embedding.
+  direct && add("https://wsrv.nl/?url=" + encodeURIComponent(direct) + "&w=700&h=700&fit=contain");
+
+  return list;
+}
+
 function getProductDetails(product){
 return product.details || productDetails[product.id] || "Beauty product for everyday personal care.";
 }
@@ -2075,7 +2096,10 @@ function startOfferProductReel(){
   }
 
   reel.innerHTML = offers.map(function(product,index){
-    const image = getProductImage(product);
+    const imageCandidates = offerImageCandidates(product);
+    const image = imageCandidates[0] || "";
+    const fallbackImage = imageCandidates[1] || "";
+    const proxyImage = imageCandidates[imageCandidates.length - 1] || "";
     const name = escapeHTML(product.name || "");
     const mrp = money(product.mrp);
     const offer = money(product.offerPrice);
@@ -2083,7 +2107,7 @@ function startOfferProductReel(){
     return `
       <div class="offer-reel-slide ${index === 0 ? "active" : ""}">
         <img src="${image}" alt="${name}" loading="eager"
-          onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#ffe4ef,#fff)'">
+          onerror="if(this.dataset.step==='0'){this.dataset.step='1';this.src='${proxyImage}';}else if(this.dataset.step==='1' && '${fallbackImage}'){this.dataset.step='2';this.src='${fallbackImage}';}else{this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#ffe4ef,#fff)';}">
         <div class="offer-reel-info">
           <div class="offer-reel-title">${name}</div>
           <div class="offer-reel-price">
