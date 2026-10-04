@@ -2318,6 +2318,24 @@ function loadProductsFromSheet(){
         return String(value || "").toLowerCase().trim();
       }
 
+      function normalizeProductImageUrl(value){
+        let s = String(value || "").trim();
+        if(!s) return "";
+
+        // Google Drive file link -> direct image URL
+        let m = s.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+        if(m) return "https://drive.google.com/uc?export=view&id=" + m[1];
+
+        m = s.match(/[?&]id=([^&]+)/i);
+        if(/drive\.google\.com/i.test(s) && m) {
+          return "https://drive.google.com/uc?export=view&id=" + m[1];
+        }
+
+        // Remove wrapping quotes/spaces sometimes pasted into Sheets.
+        s = s.replace(/^["']|["']$/g,"").trim();
+        return s;
+      }
+
       const sheetById = {};
       const sheetByName = {};      rows.forEach(function(row){
         const id = cell(row,0);
@@ -2339,11 +2357,12 @@ function loadProductsFromSheet(){
           stock: Number.isFinite(stockQty) ? Math.max(0,stockQty) : null,
           status: Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : cell(row,6),
           details: cell(row,7),
-          sku: cell(row,8),
+          sku: cell(row,9),
           image: (function(){
+          // Products sheet: Column I = Image URL
+          // Column J is optional and is not used for the product image.
           const colI = cleanImage(cell(row,8));
-          const colJ = cleanImage(cell(row,9));
-          return colI || colJ;
+          return normalizeProductImageUrl(colI);
         })()
         };
 
