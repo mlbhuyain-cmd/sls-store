@@ -763,6 +763,46 @@ width:100%;
 
 }
 
+
+.hero-offer-area{
+display:flex;
+align-items:center;
+justify-content:center;
+width:100%;
+min-height:330px;
+}
+
+.offer-reel-main{
+max-width:620px;
+width:100%;
+height:330px;
+}
+
+.offer-reel-main .offer-slide img{
+padding:35px 55px 70px;
+}
+
+@media(max-width:900px){
+.hero-offer-area{
+min-height:280px;
+}
+.offer-reel-main{
+height:280px;
+}
+}
+
+@media(max-width:650px){
+.hero-offer-area{
+min-height:205px;
+}
+.offer-reel-main{
+height:205px;
+}
+.offer-reel-main .offer-slide img{
+padding:25px 30px 55px;
+}
+}
+
 </style>
 
 </head>
@@ -811,38 +851,9 @@ Cart 🛒 (<span id="cartCount">0</span>)
 
 <div class="hero-inner">
 
-<div>
+<div class="hero-offer-area">
 
-<img
-class="hero-logo"
-src="./assets/sls-logo-real.webp?v=final"
-alt="SLS Store Logo">
-
-<h1>
-Beauty You’ll Love 💕
-</h1>
-
-<p>
-আপনার পছন্দের কসমেটিকস এখন সহজেই অর্ডার করুন।
-<br>
-Fresh Products • Great Value • Friendly Service
-</p>
-
-<button
-class="primary"
-style="width:auto;padding:13px 22px"
-onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
-
-Shop Now / কিনুন
-
-</button>
-
-</div>
-
-
-<div class="hero-box">
-
-<div class="offer-reel" id="offerReel" aria-label="SLS Store Offer Products">
+<div class="offer-reel offer-reel-main" id="offerReel" aria-label="SLS Store Offer Products">
   <div class="offer-reel-fallback" id="offerReelFallback">
     <video
       class="hero-video"
@@ -861,6 +872,21 @@ Shop Now / কিনুন
   <div class="offer-reel-dots" id="offerReelDots"></div>
   <div class="offer-reel-progress" id="offerReelProgress"></div>
 </div>
+
+</div>
+
+
+<div class="hero-box">
+
+<video
+class="hero-video"
+autoplay
+muted
+loop
+playsinline
+preload="auto"
+src="./SLS_Store_hero_lipstick_video.mp4">
+</video>
 
 <h2>SLS Store</h2>
 
