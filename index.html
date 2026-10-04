@@ -2277,15 +2277,15 @@ function loadProductsFromSheet(){
   /*
    * Google Sheet is the single source of truth.
    *
-   * A Product Name
-   * B Category
-   * C Offer Price
-   * D MRP
-   * E Stock Quantity
-   * F Stock
-   * G Description
-   * H SKU
-   * I (unused)
+   * A Product ID
+   * B Product Name
+   * C Category
+   * D Offer Price
+   * E MRP
+   * F Stock Quantity
+   * G Stock
+   * H Description
+   * I SKU
    * J Image URL
    */
 
@@ -2411,19 +2411,20 @@ function loadProductsFromSheet(){
 
       const sheetById = {};
       const sheetByName = {};      rows.forEach(function(row){
-        const name = cell(row,0);
+        const productId = cell(row,0);
+        const name = cell(row,1);
         if(!name) return;
 
-        const category = cell(row,1);
-        const offerPrice = num(row,2);
-        const mrp = num(row,3);
-        const stockQtyText = cell(row,4);
+        const category = cell(row,2);
+        const offerPrice = num(row,3);
+        const mrp = num(row,4);
+        const stockQtyText = cell(row,5);
         const stockQty = stockQtyText === "" ? null : Number(stockQtyText);
-        const statusText = cell(row,5);
-        const details = cell(row,6);
-        const sku = cell(row,7);
+        const statusText = cell(row,6);
+        const details = cell(row,7);
+        const sku = cell(row,8);
         const imageUrl = normalizeProductImageUrl(cleanImage(imageCell(row,9)));
-        const id = sku || ("sheet-" + normalizeName(name).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));
+        const id = productId || sku || ("sheet-" + normalizeName(name).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));
 
         const record = {
           id: id,
