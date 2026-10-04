@@ -2044,15 +2044,22 @@ const catalogId = String(product.catalogId || product.id || "");
 return product.image || SHWAPNO_PRODUCT_IMAGES[catalogId] || productImages[catalogId] || "";
 }
 
-function imageProxyUrl(url){
+function imageProxyUrls(url){
   url = String(url || "").trim();
-  if(!/^https?:\/\//i.test(url)) return "";
-  return "https://images.weserv.nl/?url=" + encodeURIComponent(url) + "&w=900&h=900&fit=contain&output=webp";
+  if(!/^https?:\/\//i.test(url)) return [];
+  const e = encodeURIComponent(url);
+  return [
+    "https://wsrv.nl/?url=" + e + "&w=900&h=900&fit=contain&output=jpg",
+    "https://images.weserv.nl/?url=" + e + "&w=900&h=900&fit=contain&output=jpg",
+    "https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=" + e
+  ];
+}
+function imageProxyUrl(url){
+  return imageProxyUrls(url)[0] || "";
 }
 
 function getProductImage(product){
-  // Keep the original Column-I URL as the first choice.
-  // If that host blocks hotlinking, the card will switch to weserv.
+  // Column I remains the original source.
   return rawProductImage(product);
 }
 
@@ -2229,7 +2236,7 @@ const outOfStock = stockKnown
 return `
 <div class="product">
 <div class="product-image">
-${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-proxy="${imageProxyUrl(image)}" data-fallback="${getFallbackProductImage(product)}" onerror="if(this.dataset.proxy && this.dataset.step!=="proxy"){this.dataset.step="proxy";this.src=this.dataset.proxy;}else if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
+${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" referrerpolicy="no-referrer" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-proxies="${encodeURIComponent(JSON.stringify(imageProxyUrls(image)))}" data-proxy-index="0" data-fallback="${getFallbackProductImage(product)}" onerror="try{const a=JSON.parse(decodeURIComponent(this.dataset.proxies||"%5B%5D"));const n=Number(this.dataset.proxyIndex||0);if(a[n]){this.dataset.proxyIndex=String(n+1);this.src=a[n];return;}}catch(e){} if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
 <span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
 </div>
 <div class="product-content">
