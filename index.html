@@ -120,6 +120,200 @@ margin:auto;
 border-radius:20px;
 }
 
+.offer-reel{
+position:relative;
+width:100%;
+max-width:260px;
+height:180px;
+margin:auto;
+border-radius:20px;
+overflow:hidden;
+background:linear-gradient(135deg,#fff0f5,#ffe1eb);
+box-shadow:0 10px 28px rgba(233,30,99,.14);
+isolation:isolate;
+}
+
+.offer-reel-fallback{
+position:absolute;
+inset:0;
+z-index:1;
+transition:opacity .35s ease;
+}
+
+.offer-reel.has-offers .offer-reel-fallback{
+opacity:0;
+pointer-events:none;
+}
+
+.offer-reel-track{
+position:absolute;
+inset:0;
+z-index:2;
+}
+
+.offer-slide{
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+transform:translateX(28px) scale(.97);
+transition:opacity .65s ease,transform .65s ease;
+pointer-events:none;
+background:linear-gradient(135deg,#fff,#fff7fa);
+}
+
+.offer-slide.active{
+opacity:1;
+transform:translateX(0) scale(1);
+pointer-events:auto;
+}
+
+.offer-slide img{
+width:100%;
+height:100%;
+object-fit:contain;
+padding:25px 24px 46px;
+display:block;
+animation:offerKenBurns 3.6s ease-in-out infinite;
+}
+
+@keyframes offerKenBurns{
+0%,100%{transform:scale(.94)}
+50%{transform:scale(1.04)}
+}
+
+.offer-slide::after{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:72px;
+background:linear-gradient(transparent,rgba(0,0,0,.78));
+z-index:1;
+}
+
+.offer-caption{
+position:absolute;
+left:12px;
+right:12px;
+bottom:8px;
+z-index:3;
+text-align:left;
+color:white;
+text-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+
+.offer-name{
+font-size:12px;
+font-weight:700;
+line-height:1.25;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.offer-price-row{
+display:flex;
+align-items:center;
+gap:7px;
+margin-top:2px;
+font-size:13px;
+}
+
+.offer-price-row del{
+opacity:.82;
+font-size:11px;
+}
+
+.offer-price-row b{
+font-size:16px;
+color:#fff;
+}
+
+.offer-off{
+background:#e91e63;
+color:white;
+font-size:10px;
+font-weight:800;
+padding:3px 7px;
+border-radius:20px;
+position:absolute;
+top:10px;
+left:10px;
+z-index:4;
+box-shadow:0 3px 8px rgba(233,30,99,.3);
+}
+
+.offer-reel-label{
+position:absolute;
+top:10px;
+right:10px;
+z-index:5;
+background:rgba(255,255,255,.92);
+color:#e91e63;
+font-size:9px;
+font-weight:800;
+padding:5px 7px;
+border-radius:20px;
+box-shadow:0 3px 8px rgba(0,0,0,.08);
+letter-spacing:.2px;
+}
+
+.offer-reel-dots{
+position:absolute;
+right:10px;
+bottom:9px;
+z-index:5;
+display:flex;
+gap:4px;
+}
+
+.offer-dot{
+width:5px;
+height:5px;
+border-radius:50%;
+background:rgba(255,255,255,.55);
+transition:all .25s ease;
+}
+
+.offer-dot.active{
+width:13px;
+border-radius:5px;
+background:#fff;
+}
+
+.offer-reel-progress{
+position:absolute;
+left:0;
+bottom:0;
+height:3px;
+width:0;
+z-index:6;
+background:#e91e63;
+}
+
+.offer-reel-progress.running{
+animation:offerProgress 3.6s linear infinite;
+}
+
+@keyframes offerProgress{
+from{width:0}
+to{width:100%}
+}
+
+@media(max-width:650px){
+.offer-reel{
+max-width:100%;
+height:205px;
+}
+.offer-slide img{
+padding:24px 28px 50px;
+}
+}
+
 .container{
 max-width:1200px;
 margin:auto;
@@ -648,15 +842,25 @@ Shop Now / কিনুন
 
 <div class="hero-box">
 
-<video
-class="hero-video"
-autoplay
-muted
-loop
-playsinline
-preload="auto"
-src="./SLS_Store_hero_lipstick_video.mp4">
-</video>
+<div class="offer-reel" id="offerReel" aria-label="SLS Store Offer Products">
+  <div class="offer-reel-fallback" id="offerReelFallback">
+    <video
+      class="hero-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      src="./SLS_Store_hero_lipstick_video.mp4">
+    </video>
+  </div>
+
+  <div class="offer-reel-track" id="offerReelTrack"></div>
+
+  <div class="offer-reel-label">🔥 TODAY'S OFFER</div>
+  <div class="offer-reel-dots" id="offerReelDots"></div>
+  <div class="offer-reel-progress" id="offerReelProgress"></div>
+</div>
 
 <h2>SLS Store</h2>
 
@@ -3882,6 +4086,180 @@ Date: ${escapeHTML(date)}
 <div class="total grand"><span>Grand Total</span><span>${money(order.grandTotal)}</span></div>
 </div>
 </div>
+
+<script>
+/************************************************************
+ * HERO OFFER VIDEO REEL
+ * Uses the same live Products Sheet data already used by the
+ * product catalog. Only products with MRP > Offer Price are
+ * shown here. Existing hero video remains the fallback.
+ ************************************************************/
+(function(){
+  let offerTimer = null;
+  let currentIndex = 0;
+  let lastSignature = "";
+
+  function safe(v){
+    if(typeof escapeHTML === "function") return escapeHTML(v == null ? "" : v);
+    return String(v == null ? "" : v).replace(/[&<>"']/g,function(ch){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch];
+    });
+  }
+
+  function moneySafe(v){
+    const n = Number(v || 0);
+    return Number.isFinite(n) ? "৳" + n.toLocaleString("en-BD") : "৳0";
+  }
+
+  function imageSafe(v){
+    let s = String(v || "").trim();
+    const marker = "](";
+    const pos = s.indexOf(marker);
+    if(pos >= 0){
+      const end = s.indexOf(")", pos + marker.length);
+      if(end > pos) s = s.slice(pos + marker.length, end);
+    }
+    const match = s.match(/https?:\\/\\/[^\\s)\\]]+/i);
+    return (match ? match[0] : s).replace(/[)\\]]+$/,"");
+  }
+
+  function getOfferProducts(){
+    if(!Array.isArray(window.products)) return [];
+
+    return window.products
+      .filter(function(p){
+        const mrp = Number(p && p.mrp || 0);
+        const offer = Number(p && (p.offerPrice != null ? p.offerPrice : p.price) || 0);
+        const img = imageSafe(p && p.image);
+        return mrp > 0 && offer > 0 && mrp > offer && img;
+      })
+      .map(function(p){
+        const mrp = Number(p.mrp || 0);
+        const offer = Number(p.offerPrice != null ? p.offerPrice : p.price || 0);
+        return Object.assign({}, p, {
+          mrp: mrp,
+          offerPrice: offer,
+          discount: Math.round(((mrp - offer) / mrp) * 100),
+          image: imageSafe(p.image)
+        });
+      })
+      .sort(function(a,b){
+        return (b.discount - a.discount) || (b.mrp - a.mrp);
+      })
+      .slice(0,8);
+  }
+
+  function signature(list){
+    return list.map(function(p){
+      return String(p.id || p.name) + "|" + p.offerPrice + "|" + p.mrp + "|" + p.image;
+    }).join("||");
+  }
+
+  function showFallback(){
+    const reel = document.getElementById("offerReel");
+    if(!reel) return;
+    reel.classList.remove("has-offers");
+    const track = document.getElementById("offerReelTrack");
+    const dots = document.getElementById("offerReelDots");
+    const progress = document.getElementById("offerReelProgress");
+    if(track) track.innerHTML = "";
+    if(dots) dots.innerHTML = "";
+    if(progress) progress.classList.remove("running");
+    if(offerTimer){
+      clearInterval(offerTimer);
+      offerTimer = null;
+    }
+  }
+
+  function renderOffers(list){
+    const reel = document.getElementById("offerReel");
+    const track = document.getElementById("offerReelTrack");
+    const dots = document.getElementById("offerReelDots");
+    const progress = document.getElementById("offerReelProgress");
+
+    if(!reel || !track || !dots || !progress) return;
+
+    if(!list.length){
+      showFallback();
+      return;
+    }
+
+    reel.classList.add("has-offers");
+    currentIndex = Math.min(currentIndex, list.length - 1);
+
+    track.innerHTML = list.map(function(p,i){
+      return '<div class="offer-slide ' + (i === currentIndex ? "active" : "") + '" data-offer-index="' + i + '">' +
+        '<span class="offer-off">' + safe(p.discount) + '% OFF</span>' +
+        '<img src="' + safe(p.image) + '" alt="' + safe(p.name) + '" loading="eager">' +
+        '<div class="offer-caption">' +
+          '<div class="offer-name">' + safe(p.name) + '</div>' +
+          '<div class="offer-price-row">' +
+            '<del>' + moneySafe(p.mrp) + '</del>' +
+            '<b>' + moneySafe(p.offerPrice) + '</b>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    dots.innerHTML = list.map(function(_,i){
+      return '<span class="offer-dot ' + (i === currentIndex ? "active" : "") + '"></span>';
+    }).join("");
+
+    track.querySelectorAll("img").forEach(function(img){
+      img.addEventListener("error",function(){
+        this.style.display = "none";
+        const slide = this.closest(".offer-slide");
+        if(slide) slide.style.background = "linear-gradient(135deg,#fff0f5,#ffe1eb)";
+      });
+    });
+
+    progress.classList.remove("running");
+    void progress.offsetWidth;
+    progress.classList.add("running");
+
+    if(offerTimer) clearInterval(offerTimer);
+    if(list.length > 1){
+      offerTimer = setInterval(function(){
+        currentIndex = (currentIndex + 1) % list.length;
+
+        track.querySelectorAll(".offer-slide").forEach(function(slide,i){
+          slide.classList.toggle("active", i === currentIndex);
+        });
+
+        dots.querySelectorAll(".offer-dot").forEach(function(dot,i){
+          dot.classList.toggle("active", i === currentIndex);
+        });
+
+        progress.classList.remove("running");
+        void progress.offsetWidth;
+        progress.classList.add("running");
+      },3600);
+    }
+  }
+
+  function refreshOfferReel(){
+    const list = getOfferProducts();
+    const sig = signature(list);
+
+    if(sig !== lastSignature){
+      lastSignature = sig;
+      renderOffers(list);
+    }
+  }
+
+  function start(){
+    refreshOfferReel();
+    setInterval(refreshOfferReel,5000);
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded",start);
+  }else{
+    start();
+  }
+})();
+</script>
+
 </body>
 </html>
 `;
