@@ -2040,11 +2040,13 @@ const SHWAPNO_PRODUCT_IMAGES = {
 };
 
 function getProductImage(product){
-return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[String(product.id)] || "";
+const catalogId = String(product.catalogId || product.id || "");
+return product.image || SHWAPNO_PRODUCT_IMAGES[catalogId] || productImages[catalogId] || "";
 }
 
 function getFallbackProductImage(product){
-return SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[String(product.id)] || "";
+const catalogId = String(product.catalogId || product.id || "");
+return SHWAPNO_PRODUCT_IMAGES[catalogId] || productImages[catalogId] || "";
 }
 
 function imageProxyUrl(url){
@@ -2432,9 +2434,13 @@ function loadProductsFromSheet(){
         const id = String(product.id || "").trim();
         const live = sheetById[id] || sheetByName[normalizeName(product.name)];
 
-        if(!live) return product;
+        if(!live) {
+          if(!product.catalogId) product.catalogId = product.id;
+          return product;
+        }
 
         return Object.assign({}, product, {
+          catalogId: product.catalogId || product.id,
           id: live.id || product.id,
           name: live.name || product.name,
           category: live.category || product.category,
@@ -2461,6 +2467,7 @@ function loadProductsFromSheet(){
         if(exists) return;
 
         products.push({
+          catalogId: live.id,
           id: live.id,
           name: live.name,
           category: live.category,
