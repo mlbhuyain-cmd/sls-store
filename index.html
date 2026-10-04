@@ -507,6 +507,94 @@ font-size:38px;
 }
 }
 
+/* Discount-product video/reel */
+.offer-product-reel{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#fff;
+}
+.offer-reel-slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transform:scale(1.04);
+  transition:opacity .65s ease, transform .65s ease;
+}
+.offer-reel-slide.active{
+  opacity:1;
+  transform:scale(1);
+}
+.offer-reel-slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.offer-reel-info{
+  position:absolute;
+  left:18px;
+  top:18px;
+  max-width:70%;
+  background:rgba(255,255,255,.94);
+  border-radius:16px;
+  padding:10px 14px;
+  box-shadow:0 5px 18px rgba(0,0,0,.12);
+}
+.offer-reel-title{
+  font-size:17px;
+  font-weight:800;
+  color:#222;
+  margin-bottom:5px;
+}
+.offer-reel-price{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.offer-reel-mrp{
+  color:#888;
+  text-decoration:line-through;
+  font-size:13px;
+}
+.offer-reel-offer{
+  color:#e91e63;
+  font-size:21px;
+  font-weight:900;
+}
+.offer-reel-badge{
+  position:absolute;
+  right:16px;
+  top:16px;
+  background:#ff2368;
+  color:#fff;
+  font-weight:900;
+  padding:8px 12px;
+  border-radius:22px;
+  box-shadow:0 5px 16px rgba(255,35,104,.28);
+}
+.offer-reel-empty{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#777;
+  padding:20px;
+  text-align:center;
+}
+.offer-reel-loading{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#777;
+}
 .container{
 max-width:1200px;
 margin:auto;
@@ -1098,25 +1186,16 @@ Shop Now / কিনুন
 
 </div>
 
-<div class="hero-video-panel">
-
-<video
-class="hero-video"
-autoplay
-muted
-loop
-playsinline
-preload="auto"
-src="./SLS_Store_hero_lipstick_video.mp4">
-</video>
-
+<div class="hero-video-panel" id="offerVideoPanel">
+<div id="offerProductReel" class="offer-product-reel">
+  <div class="offer-reel-loading">Loading offers...</div>
+</div>
 <div class="hero-video-caption">
 <span>🔥</span>
-<b>Special Offer</b>
+<b>TODAY'S OFFER</b>
 <span>•</span>
 <span>Limited Time</span>
 </div>
-
 </div>
 
 </div>
@@ -1968,6 +2047,67 @@ function getProductDetails(product){
 return product.details || productDetails[product.id] || "Beauty product for everyday personal care.";
 }
 
+let offerReelTimer = null;
+let offerReelIndex = 0;
+
+function getDiscountProducts(){
+  return products.filter(function(product){
+    const offer = Number(product.offerPrice || 0);
+    const mrp = Number(product.mrp || 0);
+    return offer > 0 && mrp > 0 && offer < mrp && !!getProductImage(product);
+  });
+}
+
+function startOfferProductReel(){
+  const reel = document.getElementById("offerProductReel");
+  if(!reel) return;
+
+  const offers = getDiscountProducts();
+
+  if(offerReelTimer){
+    clearInterval(offerReelTimer);
+    offerReelTimer = null;
+  }
+
+  if(!offers.length){
+    reel.innerHTML = '<div class="offer-reel-empty">🎁 এখন কোনো Discount Offer পাওয়া যায়নি।<br>Products Sheet-এ Offer Price MRP-এর চেয়ে কম দিন।</div>';
+    return;
+  }
+
+  reel.innerHTML = offers.map(function(product,index){
+    const image = getProductImage(product);
+    const name = escapeHTML(product.name || "");
+    const mrp = money(product.mrp);
+    const offer = money(product.offerPrice);
+    const save = Math.max(0, Math.round((1 - Number(product.offerPrice)/Number(product.mrp))*100));
+    return `
+      <div class="offer-reel-slide ${index === 0 ? "active" : ""}">
+        <img src="${image}" alt="${name}" loading="eager"
+          onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#ffe4ef,#fff)'">
+        <div class="offer-reel-info">
+          <div class="offer-reel-title">${name}</div>
+          <div class="offer-reel-price">
+            <span class="offer-reel-mrp">MRP ${mrp}</span>
+            <span class="offer-reel-offer">${offer}</span>
+          </div>
+        </div>
+        <div class="offer-reel-badge">${save}% OFF</div>
+      </div>`;
+  }).join("");
+
+  offerReelIndex = 0;
+
+  if(offers.length > 1){
+    offerReelTimer = setInterval(function(){
+      const slides = reel.querySelectorAll(".offer-reel-slide");
+      if(!slides.length) return;
+      slides[offerReelIndex].classList.remove("active");
+      offerReelIndex = (offerReelIndex + 1) % slides.length;
+      slides[offerReelIndex].classList.add("active");
+    }, 3500);
+  }
+}
+
 function renderProducts(){
 
 const input = document.getElementById("searchInput");
@@ -2075,6 +2215,8 @@ ${outOfStock ? "Out of Stock / স্টক শেষ" : "Add to Cart / কা�
 
 }).join("");
 
+startOfferProductReel();
+
 }
 
 /************************************************************
@@ -2094,8 +2236,8 @@ function loadProductsFromSheet(){
    * F Stock Quantity
    * G Stock
    * H Description
-   * I SKU
-   * J Image URL
+   * I Image URL
+   * J (optional/unused)
    */
 
   const callbackName = "slsProductsSheetCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
@@ -2198,7 +2340,11 @@ function loadProductsFromSheet(){
           status: Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : cell(row,6),
           details: cell(row,7),
           sku: cell(row,8),
-          image: cleanImage(cell(row,9))
+          image: (function(){
+          const colI = cleanImage(cell(row,8));
+          const colJ = cleanImage(cell(row,9));
+          return colI || colJ;
+        })()
         };
 
         sheetById[id] = record;
@@ -2254,6 +2400,7 @@ function loadProductsFromSheet(){
       });
 
       renderProducts();
+      startOfferProductReel();
       loadStockDirectlyFromGoogleSheet();
 
     }catch(error){
