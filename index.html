@@ -2040,7 +2040,11 @@ const SHWAPNO_PRODUCT_IMAGES = {
 };
 
 function getProductImage(product){
-return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[product.id] || "";
+return product.image || SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[String(product.id)] || "";
+}
+
+function getFallbackProductImage(product){
+return SHWAPNO_PRODUCT_IMAGES[String(product.id)] || productImages[String(product.id)] || "";
 }
 
 function imageProxyUrl(url){
@@ -2060,9 +2064,8 @@ function offerImageCandidates(product){
   const direct = getProductImage(product);
   add(direct);
 
-  // Use the existing built-in product image if the Sheet URL fails.
-  add(SHWAPNO_PRODUCT_IMAGES[String(product.id)]);
-  add(productImages[String(product.id)]);
+  // Built-in image is a guaranteed fallback for the original catalog.
+  add(getFallbackProductImage(product));
 
   const originals = list.slice();
   originals.forEach(function(url){ add(imageProxyUrl(url)); });
@@ -2217,7 +2220,7 @@ const outOfStock = stockKnown
 return `
 <div class="product">
 <div class="product-image">
-${image ? `<img src="${image}" alt="${escapeHTML(product.name || "")}" loading="lazy" style="max-width:100%;max-height:180px;width:auto;height:auto;object-fit:contain;" onerror="if(this.dataset.proxy!=="1" && this.src){this.dataset.proxy="1";this.src=imageProxyUrl(this.src);}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
+${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-fallback="${getFallbackProductImage(product)}" onerror="if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else if(this.dataset.step!=="proxy"){this.dataset.step="proxy";this.src=imageProxyUrl(this.src);}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
 <span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
 </div>
 <div class="product-content">
