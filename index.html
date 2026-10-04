@@ -2524,7 +2524,8 @@ function loadProductsFromSheet(){
     "gid=" + encodeURIComponent(STOCK_SHEET_GID) +
     "&headers=1" +
     "&tqx=out:json;responseHandler:" + encodeURIComponent(callbackName) +
-    "&tq=" + encodeURIComponent(query);
+    "&tq=" + encodeURIComponent(query) +
+    "&t=" + Date.now();
 
   document.head.appendChild(script);
 }
