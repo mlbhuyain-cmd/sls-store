@@ -1925,7 +1925,7 @@ function loadProductsFromSheet(){
           status: Number.isFinite(stockQty) ? (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK") : cell(row,6),
           details: cell(row,7),
           sku: cell(row,8),
-          image: cleanImage(cell(row,9))
+          image: cleanImage(cell(row,8)) || cleanImage(cell(row,9))
         };
 
         sheetById[id] = record;
@@ -4128,8 +4128,8 @@ Date: ${escapeHTML(date)}
 
     return window.products
       .filter(function(p){
-        const mrp = Number(p && p.mrp || 0);
-        const offer = Number(p && (p.offerPrice != null ? p.offerPrice : p.price) || 0);
+        const mrp = Number(String(p && p.mrp || 0).replace(/[^0-9.]/g,""));
+        const offer = Number(String(p && (p.offerPrice != null ? p.offerPrice : p.price) || 0).replace(/[^0-9.]/g,""));
         const img = imageSafe(p && p.image);
         return mrp > 0 && offer > 0 && mrp > offer && img;
       })
