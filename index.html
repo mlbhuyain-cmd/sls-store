@@ -24,6 +24,46 @@ background:#fff7fa;
 color:#222;
 }
 
+.hero-offer-video{
+position:relative;
+width:100%;
+max-width:420px;
+height:170px;
+margin:8px 0 20px;
+border-radius:18px;
+overflow:hidden;
+background:#fff;
+box-shadow:0 8px 24px rgba(0,0,0,.10);
+}
+
+.hero-offer-video video{
+width:100%;
+height:100%;
+display:block;
+object-fit:cover;
+}
+
+.hero-offer-video-label{
+position:absolute;
+top:10px;
+right:10px;
+background:#ff2f67;
+color:#fff;
+font-size:11px;
+font-weight:800;
+padding:6px 10px;
+border-radius:18px;
+box-shadow:0 3px 10px rgba(255,47,103,.28);
+}
+
+@media(max-width:650px){
+.hero-offer-video{
+max-width:100%;
+height:150px;
+margin-bottom:16px;
+}
+}
+
 .site-header{
 position:sticky;
 top:0;
@@ -857,6 +897,18 @@ oninput="syncHeaderSearch(this.value)">
 class="hero-logo"
 src="./assets/sls-logo-real.webp?v=final"
 alt="SLS Store Logo">
+
+<div class="hero-offer-video">
+<video
+autoplay
+muted
+loop
+playsinline
+preload="auto"
+src="./SLS_Store_hero_lipstick_video.mp4">
+</video>
+<div class="hero-offer-video-label">🔥 TODAY'S OFFER</div>
+</div>
 
 <h1>
 Beauty You’ll Love 💕
