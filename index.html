@@ -2047,14 +2047,13 @@ return product.image || SHWAPNO_PRODUCT_IMAGES[catalogId] || productImages[catal
 function imageProxyUrl(url){
   url = String(url || "").trim();
   if(!/^https?:\/\//i.test(url)) return "";
-  return "https://wsrv.nl/?url=" + encodeURIComponent(url) + "&w=900&h=900&fit=contain&output=webp";
+  return "https://images.weserv.nl/?url=" + encodeURIComponent(url) + "&w=900&h=900&fit=contain&output=webp";
 }
 
 function getProductImage(product){
-  const raw = rawProductImage(product);
-  // Load remote product pictures through a neutral image proxy first.
-  // This fixes hosts that block direct hotlinking from GitHub Pages.
-  return imageProxyUrl(raw) || raw;
+  // Keep the original Column-I URL as the first choice.
+  // If that host blocks hotlinking, the card will switch to weserv.
+  return rawProductImage(product);
 }
 
 function getFallbackProductImage(product){
@@ -2230,7 +2229,7 @@ const outOfStock = stockKnown
 return `
 <div class="product">
 <div class="product-image">
-${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-fallback="${getFallbackProductImage(product)}" onerror="if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
+${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-proxy="${imageProxyUrl(image)}" data-fallback="${getFallbackProductImage(product)}" onerror="if(this.dataset.proxy && this.dataset.step!=="proxy"){this.dataset.step="proxy";this.src=this.dataset.proxy;}else if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
 <span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
 </div>
 <div class="product-content">
