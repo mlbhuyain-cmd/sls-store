@@ -27,10 +27,9 @@ color:#222;
 .hero-offer-video{
 position:relative;
 width:100%;
-max-width:420px;
-height:170px;
-margin:8px 0 20px;
-border-radius:18px;
+max-width:380px;
+height:250px;
+border-radius:22px;
 overflow:hidden;
 background:#fff;
 box-shadow:0 8px 24px rgba(0,0,0,.10);
@@ -45,8 +44,8 @@ object-fit:cover;
 
 .hero-offer-video-label{
 position:absolute;
-top:10px;
-right:10px;
+top:12px;
+right:12px;
 background:#ff2f67;
 color:#fff;
 font-size:11px;
@@ -325,16 +324,27 @@ font-size:12px;
 
 .hero{
 background:linear-gradient(135deg,#ffe0eb,#fff);
-padding:55px 18px;
+padding:45px 18px;
 }
 
 .hero-inner{
-max-width:1200px;
+max-width:1500px;
 margin:auto;
 display:grid;
-grid-template-columns:1.3fr .7fr;
-gap:30px;
+grid-template-columns:.75fr 1.45fr .75fr;
+gap:55px;
 align-items:center;
+}
+
+.hero-offer-column{
+display:flex;
+align-items:center;
+justify-content:center;
+min-width:0;
+}
+
+.hero-content-column{
+min-width:0;
 }
 
 .hero-logo{
@@ -823,6 +833,55 @@ width:100%;
 
 }
 
+
+@media(max-width:1000px){
+.hero-inner{
+grid-template-columns:1fr 1.4fr;
+gap:28px;
+}
+.hero-box{
+grid-column:2;
+grid-row:1;
+}
+.hero-offer-column{
+grid-column:1;
+grid-row:1;
+}
+.hero-content-column{
+grid-column:1 / -1;
+grid-row:2;
+}
+}
+
+@media(max-width:650px){
+.hero{
+padding:30px 15px;
+}
+.hero-inner{
+display:flex;
+flex-direction:column;
+gap:28px;
+}
+.hero-offer-column,
+.hero-content-column,
+.hero-box{
+width:100%;
+}
+.hero-offer-video{
+max-width:100%;
+height:210px;
+}
+.hero-content-column{
+text-align:center;
+}
+.hero-logo{
+margin-left:auto;
+margin-right:auto;
+}
+.hero-box{
+order:3;
+}
+}
 </style>
 
 </head>
@@ -891,12 +950,7 @@ oninput="syncHeaderSearch(this.value)">
 
 <div class="hero-inner">
 
-<div>
-
-<img
-class="hero-logo"
-src="./assets/sls-logo-real.webp?v=final"
-alt="SLS Store Logo">
+<div class="hero-offer-column">
 
 <div class="hero-offer-video">
 <video
@@ -909,6 +963,15 @@ src="./SLS_Store_hero_lipstick_video.mp4">
 </video>
 <div class="hero-offer-video-label">🔥 TODAY'S OFFER</div>
 </div>
+
+</div>
+
+<div class="hero-content-column">
+
+<img
+class="hero-logo"
+src="./assets/sls-logo-real.webp?v=final"
+alt="SLS Store Logo">
 
 <h1>
 Beauty You’ll Love 💕
