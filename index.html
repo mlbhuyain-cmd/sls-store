@@ -1806,6 +1806,10 @@ let statusTimers =
 let orderHistoryCache =
 {};
 
+/* Small live-status cache: keeps My Orders responsive without hiding real updates. */
+let liveStatusCache = {};
+const LIVE_STATUS_CACHE_MS = 5000;
+
 
 /************************************************************
  * HELPERS
@@ -3865,6 +3869,19 @@ phone
 
 return new Promise(function(resolve){
 
+const cacheKey =
+String(clientOrderId || "") + "|" + String(phone || "");
+
+const cached = liveStatusCache[cacheKey];
+
+if(
+cached &&
+(Date.now() - cached.time) < LIVE_STATUS_CACHE_MS
+){
+resolve(cached.data);
+return;
+}
+
 const attempts = ["status","getStatus","getOrderStatus"];
 let attemptIndex = 0;
 let finished = false;
@@ -3903,6 +3920,10 @@ cleanup();
 
 if(data && data.success && data.found){
 finished = true;
+liveStatusCache[cacheKey] = {
+  time: Date.now(),
+  data: data
+};
 resolve(data);
 }else{
 tryNext();
@@ -3912,7 +3933,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 8000);
+}, 5000);
 
 const params = new URLSearchParams();
 params.set("action", action);
