@@ -1917,7 +1917,7 @@ if(mainSearch){
 mainSearch.readOnly = false;
 mainSearch.value = value || "";
 }
-renderProducts();
+queueProductRender();
 }
 
 function filterHeaderCategory(category){
@@ -5017,8 +5017,8 @@ event.target
  * START
  ************************************************************/
 
+/* Render the existing in-memory catalog once; the sheet sync runs in the background. */
 renderProducts();
-startOfferProductReel();
 
 /* One cached/live catalog sync. Stock is already included in Products!F. */
 loadProductsFromSheet();
