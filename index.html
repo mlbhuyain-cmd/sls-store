@@ -1358,100 +1358,58 @@ Place Order / অর্ডার করুন
 
 
 <!-- AUTH -->
-
-<div
-class="modal"
-id="authModal">
-
+<div class="modal" id="authModal">
 <div class="modal-box">
+<button class="close" onclick="closeModal('authModal')">×</button>
 
-<button
-class="close"
-onclick="closeModal('authModal')">
-×
-</button>
-
-<h2 id="authTitle">
-Login / লগইন
-</h2>
-
+<h2 id="authTitle">Login / লগইন</h2>
 <div id="authMessage"></div>
 
-<div
-class="field"
-id="nameField"
-style="display:none">
-
-<label>
-Name / নাম
-</label>
-
-<input
-id="authName"
-type="text"
-placeholder="Your name">
-
+<div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap">
+<button type="button" class="secondary" id="emailAuthTab" style="width:auto" onclick="switchAuthMethod('email')">Email</button>
+<button type="button" class="secondary" id="phoneAuthTab" style="width:auto" onclick="switchAuthMethod('phone')">Mobile OTP</button>
 </div>
 
+<div id="emailAuthPanel">
+<div class="field" id="nameField" style="display:none">
+<label>Name / নাম</label>
+<input id="authName" type="text" placeholder="Your name">
+</div>
 
 <div class="field">
-
-<label>
-Email / ইমেইল
-</label>
-
-<input
-id="authEmail"
-type="email"
-placeholder="you@example.com">
-
+<label>Email / ইমেইল</label>
+<input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email">
 </div>
-
 
 <div class="field">
-
-<label>
-Password / পাসওয়ার্ড
-</label>
-
-<input
-id="authPassword"
-type="password"
-placeholder="Minimum 6 characters">
-
+<label>Password / পাসওয়ার্ড</label>
+<input id="authPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password">
 </div>
 
-
-<button
-class="primary"
-id="authSubmit"
-onclick="submitAuth()">
-
-Login / লগইন
-
-</button>
-
-
-<button
-class="secondary"
-id="authToggle"
-onclick="toggleAuthMode()">
-
-Create Account / নতুন অ্যাকাউন্ট
-
-</button>
-
-
-<button
-class="secondary"
-onclick="resetPassword()">
-
-Forgot Password / পাসওয়ার্ড ভুলে গেছেন?
-
-</button>
-
+<button class="primary" id="authSubmit" onclick="submitAuth()">Login / লগইন</button>
+<button class="secondary" id="authToggle" onclick="toggleAuthMode()">Create Account / নতুন অ্যাকাউন্ট</button>
+<button class="secondary" onclick="resetPassword()">Forgot Password / পাসওয়ার্ড ভুলে গেছেন?</button>
 </div>
 
+<div id="phoneAuthPanel" style="display:none">
+<div class="field">
+<label>Mobile Number / মোবাইল</label>
+<input id="authPhone" type="tel" placeholder="+8801XXXXXXXXX" autocomplete="tel">
+</div>
+
+<div id="recaptcha-container" style="margin:10px 0"></div>
+
+<button class="primary" id="sendPhoneOtpBtn" onclick="sendPhoneOTP()">Send OTP / OTP পাঠান</button>
+
+<div class="field" id="phoneOtpField" style="display:none">
+<label>OTP / OTP কোড</label>
+<input id="authPhoneOtp" type="text" inputmode="numeric" maxlength="6" placeholder="6 digit OTP" autocomplete="one-time-code">
+</div>
+
+<button class="primary" id="verifyPhoneOtpBtn" style="display:none" onclick="verifyPhoneOTP()">Verify & Create/Login / যাচাই করুন</button>
+</div>
+
+</div>
 </div>
 
 
@@ -3027,239 +2985,199 @@ openModal(
  * AUTH
  ************************************************************/
 
+let authMethod = "email";
+let phoneConfirmationResult = null;
+let phoneRecaptchaVerifier = null;
+
 function openAuth(){
-
-openModal(
-"authModal"
-);
-
+  openModal("authModal");
 }
-
 
 function authButtonClick(){
-
-if(currentUser){
-
-if(
-confirm(
-"Logout করবেন?"
-)
-){
-
-auth.signOut();
-
+  if(currentUser){
+    if(confirm("Logout করবেন?")) auth.signOut();
+  }else{
+    openAuth();
+  }
 }
 
-}else{
+function switchAuthMethod(method){
+  authMethod = method === "phone" ? "phone" : "email";
 
-openAuth();
+  const emailPanel = document.getElementById("emailAuthPanel");
+  const phonePanel = document.getElementById("phoneAuthPanel");
+  const title = document.getElementById("authTitle");
 
+  if(authMethod === "phone"){
+    emailPanel.style.display = "none";
+    phonePanel.style.display = "block";
+    title.textContent = "Mobile OTP / মোবাইল OTP";
+    preparePhoneRecaptcha();
+  }else{
+    emailPanel.style.display = "block";
+    phonePanel.style.display = "none";
+    title.textContent = authMode === "register"
+      ? "Create Account / নতুন অ্যাকাউন্ট"
+      : "Login / লগইন";
+  }
 }
-
-}
-
 
 function toggleAuthMode(){
+  authMode = authMode === "login" ? "register" : "login";
 
-authMode =
-authMode === "login"
-? "register"
-: "login";
+  const title = document.getElementById("authTitle");
+  const nameField = document.getElementById("nameField");
+  const submit = document.getElementById("authSubmit");
+  const toggle = document.getElementById("authToggle");
 
-const title =
-document.getElementById(
-"authTitle"
-);
-
-const nameField =
-document.getElementById(
-"nameField"
-);
-
-const submit =
-document.getElementById(
-"authSubmit"
-);
-
-const toggle =
-document.getElementById(
-"authToggle"
-);
-
-if(authMode === "register"){
-
-title.textContent =
-"Create Account / নতুন অ্যাকাউন্ট";
-
-nameField.style.display =
-"block";
-
-submit.textContent =
-"Create Account / অ্যাকাউন্ট তৈরি করুন";
-
-toggle.textContent =
-"Login / লগইন";
-
-}else{
-
-title.textContent =
-"Login / লগইন";
-
-nameField.style.display =
-"none";
-
-submit.textContent =
-"Login / লগইন";
-
-toggle.textContent =
-"Create Account / নতুন অ্যাকাউন্ট";
-
+  if(authMode === "register"){
+    title.textContent = "Create Account / নতুন অ্যাকাউন্ট";
+    nameField.style.display = "block";
+    submit.textContent = "Create Account / অ্যাকাউন্ট তৈরি করুন";
+    toggle.textContent = "Login / লগইন";
+  }else{
+    title.textContent = "Login / লগইন";
+    nameField.style.display = "none";
+    submit.textContent = "Login / লগইন";
+    toggle.textContent = "Create Account / নতুন অ্যাকাউন্ট";
+  }
 }
-
-}
-
 
 async function submitAuth(){
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  const name = document.getElementById("authName").value.trim();
+  const message = document.getElementById("authMessage");
 
-const email =
-document.getElementById(
-"authEmail"
-)
-.value
-.trim();
+  if(!email || !password){
+    message.innerHTML = '<div class="notice error">Email এবং Password দিন।</div>';
+    return;
+  }
 
-const password =
-document.getElementById(
-"authPassword"
-)
-.value;
+  try{
+    if(authMode === "register"){
+      if(password.length < 6) throw new Error("Password কমপক্ষে 6 characters হতে হবে।");
 
-const name =
-document.getElementById(
-"authName"
-)
-.value
-.trim();
+      const result = await auth.createUserWithEmailAndPassword(email,password);
 
-const message =
-document.getElementById(
-"authMessage"
-);
+      if(name){
+        await result.user.updateProfile({displayName:name});
+      }
 
-if(!email || !password){
+      message.innerHTML = '<div class="notice success">Account তৈরি হয়েছে।</div>';
+    }else{
+      await auth.signInWithEmailAndPassword(email,password);
+      message.innerHTML = '<div class="notice success">Login successful.</div>';
+    }
 
-message.innerHTML =
-'<div class="notice error">Email এবং Password দিন।</div>';
-
-return;
-
+    setTimeout(function(){ closeModal("authModal"); },500);
+  }catch(error){
+    message.innerHTML = '<div class="notice error">'+escapeHTML(error.message)+'</div>';
+  }
 }
 
-try{
-
-if(authMode === "register"){
-
-if(password.length < 6){
-
-throw new Error(
-"Password কমপক্ষে 6 characters হতে হবে।"
-);
-
+function normalizeBdPhone(phone){
+  let p = String(phone || "").replace(/[^0-9+]/g,"");
+  if(p.startsWith("01")) p = "+88" + p;
+  else if(p.startsWith("8801")) p = "+" + p;
+  return p;
 }
 
-const result =
-await auth
-.createUserWithEmailAndPassword(
-email,
-password
-);
+function preparePhoneRecaptcha(){
+  if(!auth || !window.firebase) return;
 
-if(name){
+  try{
+    if(phoneRecaptchaVerifier){
+      phoneRecaptchaVerifier.clear();
+    }
+  }catch(e){}
 
-await result.user
-.updateProfile({
-displayName:name
-});
+  phoneRecaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+    "recaptcha-container",
+    {size:"normal"},
+    auth
+  );
 
+  phoneRecaptchaVerifier.render().catch(function(e){
+    console.warn("reCAPTCHA render failed:",e);
+  });
 }
 
-message.innerHTML =
-'<div class="notice success">Account তৈরি হয়েছে।</div>';
+async function sendPhoneOTP(){
+  const message = document.getElementById("authMessage");
+  const phone = normalizeBdPhone(document.getElementById("authPhone").value);
 
-}else{
+  if(!/^\+8801[3-9]\d{8}$/.test(phone)){
+    message.innerHTML = '<div class="notice error">সঠিক Bangladesh mobile number দিন। উদাহরণ: +8801XXXXXXXXX</div>';
+    return;
+  }
 
-await auth
-.signInWithEmailAndPassword(
-email,
-password
-);
+  try{
+    if(!phoneRecaptchaVerifier) preparePhoneRecaptcha();
 
-message.innerHTML =
-'<div class="notice success">Login successful.</div>';
+    phoneConfirmationResult = await auth.signInWithPhoneNumber(
+      phone,
+      phoneRecaptchaVerifier
+    );
 
+    document.getElementById("phoneOtpField").style.display = "block";
+    document.getElementById("verifyPhoneOtpBtn").style.display = "block";
+    document.getElementById("sendPhoneOtpBtn").textContent = "Resend OTP / আবার OTP";
+    message.innerHTML = '<div class="notice success">OTP আপনার মোবাইলে পাঠানো হয়েছে।</div>';
+  }catch(error){
+    console.error(error);
+    message.innerHTML = '<div class="notice error">'+escapeHTML(error.message)+'</div>';
+    try{
+      if(phoneRecaptchaVerifier) phoneRecaptchaVerifier.clear();
+      phoneRecaptchaVerifier = null;
+      preparePhoneRecaptcha();
+    }catch(e){}
+  }
 }
 
-setTimeout(
-function(){
-closeModal(
-"authModal"
-);
-},
-500
-);
+async function verifyPhoneOTP(){
+  const message = document.getElementById("authMessage");
+  const code = document.getElementById("authPhoneOtp").value.trim();
 
-}catch(error){
+  if(!phoneConfirmationResult){
+    message.innerHTML = '<div class="notice error">আগে OTP পাঠান।</div>';
+    return;
+  }
 
-message.innerHTML =
-'<div class="notice error">' +
-escapeHTML(
-error.message
-) +
-'</div>';
+  if(!/^\d{6}$/.test(code)){
+    message.innerHTML = '<div class="notice error">৬ সংখ্যার OTP দিন।</div>';
+    return;
+  }
 
+  try{
+    const result = await phoneConfirmationResult.confirm(code);
+
+    message.innerHTML = '<div class="notice success">Mobile account verified. Login successful.</div>';
+
+    /*
+     * Firebase Phone Auth creates the customer account automatically on
+     * first successful OTP verification, so no password is required.
+     */
+    setTimeout(function(){ closeModal("authModal"); },500);
+  }catch(error){
+    message.innerHTML = '<div class="notice error">OTP সঠিক নয় বা মেয়াদ শেষ হয়েছে। আবার চেষ্টা করুন।</div>';
+  }
 }
-
-}
-
 
 async function resetPassword(){
+  const email = document.getElementById("authEmail").value.trim();
 
-const email =
-document.getElementById(
-"authEmail"
-)
-.value
-.trim();
+  if(!email){
+    alert("প্রথমে Email লিখুন।");
+    return;
+  }
 
-if(!email){
-
-alert(
-"প্রথমে Email লিখুন।"
-);
-
-return;
-
-}
-
-try{
-
-await auth
-.sendPasswordResetEmail(
-email
-);
-
-alert(
-"Password reset email পাঠানো হয়েছে।"
-);
-
-}catch(error){
-
-alert(
-error.message
-);
-
-}
-
+  try{
+    await auth.sendPasswordResetEmail(email);
+    alert("Password reset email পাঠানো হয়েছে।");
+  }catch(error){
+    alert(error.message);
+  }
 }
 
 
@@ -3952,7 +3870,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 2500);
+}, 8000);
 
 const params = new URLSearchParams();
 params.set("action", action);
