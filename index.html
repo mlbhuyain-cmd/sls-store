@@ -4,12 +4,16 @@
 <head>
 
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>SLS Store - Cosmetics</title>
+<!-- SLS_BUILD_VERSION: 2026-10-06-cancel-permission-speed-fix -->
 
 <style>
 
@@ -1808,7 +1812,8 @@ let orderHistoryCache =
 
 /* Small live-status cache: keeps My Orders responsive without hiding real updates. */
 let liveStatusCache = {};
-const LIVE_STATUS_CACHE_MS = 5000;
+const LIVE_STATUS_CACHE_MS = 10000;
+const liveStatusInFlight = {};
 
 
 /************************************************************
@@ -3882,6 +3887,20 @@ resolve(cached.data);
 return;
 }
 
+/* Never run duplicate live-status requests for the same order at once. */
+if(liveStatusInFlight[cacheKey]){
+  liveStatusInFlight[cacheKey].push(resolve);
+  return;
+}
+
+liveStatusInFlight[cacheKey] = [resolve];
+
+function finishLiveStatus(data){
+  const waiters = liveStatusInFlight[cacheKey] || [];
+  delete liveStatusInFlight[cacheKey];
+  waiters.forEach(function(fn){ try{ fn(data); }catch(e){} });
+}
+
 const attempts = ["status","getStatus","getOrderStatus"];
 let attemptIndex = 0;
 let finished = false;
@@ -3892,7 +3911,7 @@ if(finished)return;
 
 if(attemptIndex >= attempts.length){
 finished = true;
-resolve(null);
+finishLiveStatus(null);
 return;
 }
 
@@ -3924,7 +3943,7 @@ liveStatusCache[cacheKey] = {
   time: Date.now(),
   data: data
 };
-resolve(data);
+finishLiveStatus(data);
 }else{
 tryNext();
 }
@@ -3933,7 +3952,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 5000);
+}, 2500);
 
 const params = new URLSearchParams();
 params.set("action", action);
@@ -4711,7 +4730,7 @@ card
 }
 
 },
-30000
+60000
 );
 
 });
