@@ -4275,9 +4275,7 @@ const cancelNote = prompt(
   "অর্ডার Cancel করার কারণ / Note লিখুন (অবশ্যই পূরণ করতে হবে):"
 );
 
-if(cancelNote === null){
-  return;
-}
+if(cancelNote === null)return;
 
 const note = String(cancelNote).trim();
 
@@ -4291,58 +4289,33 @@ if(button){
   button.textContent = "Cancelling...";
 }
 
-let firestoreSaved = false;
-let backendQueued = false;
-
 try{
   /*
-   * Customer cancellation is confirmed from Firestore first.
-   * The Apps Script sync is only a background mirror, so a network
-   * problem there cannot incorrectly tell the customer that cancel failed.
+   * IMPORTANT:
+   * Do NOT write the customer's order document directly from the browser.
+   * Firestore security rules may allow reading the order but deny customer
+   * updates, which causes "Missing or insufficient permissions".
+   *
+   * Cancellation is therefore sent to the existing Apps Script order
+   * endpoint, just like order submission. This keeps the customer's
+   * Firebase permissions unchanged.
    */
-  if(db && currentUser){
-    await db.collection("orders").doc(String(orderId)).set({
+  await fetch(APPS_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({
+      action:"cancelCustomerOrder",
+      clientOrderId:String(orderId),
+      phone:phone||"",
+      uid:currentUser?currentUser.uid:"",
       status:"Cancelled",
-      customerCancelled:true,
-      customerCancelNote:note,
-      customerCancelledAt:firebase.firestore.FieldValue.serverTimestamp()
-    },{merge:true});
-    firestoreSaved = true;
-  }
+      cancelNote:note
+    })
+  });
 
-  /*
-   * Keep Google Sheet/Delivery Manager in sync when the backend supports
-   * the customer-cancellation action. Do not block the customer on it.
-   */
-  try{
-    fetch(APPS_SCRIPT_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify({
-        action:"cancelCustomerOrder",
-        clientOrderId:String(orderId),
-        phone:phone||"",
-        uid:currentUser?currentUser.uid:"",
-        status:"Cancelled",
-        cancelNote:note
-      })
-    }).then(function(){
-      backendQueued = true;
-    }).catch(function(error){
-      console.warn("Customer cancellation Sheet sync failed:",error);
-    });
-  }catch(syncError){
-    console.warn("Customer cancellation Sheet sync could not start:",syncError);
-  }
-
-  if(!firestoreSaved){
-    throw new Error("অর্ডার Cancel সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।");
-  }
-
-  /* Clear the short live-status cache so the cancelled state is not overwritten. */
-  const cacheKeys = Object.keys(liveStatusCache || {});
-  cacheKeys.forEach(function(key){
+  /* Clear live-status cache so an old Confirmed/Pending value is not reused. */
+  Object.keys(liveStatusCache || {}).forEach(function(key){
     if(key.indexOf(String(orderId) + "|") === 0){
       delete liveStatusCache[key];
     }
@@ -4376,7 +4349,7 @@ try{
     }
   }
 
-  alert("অর্ডারটি Cancel করা হয়েছে।");
+  alert("অর্ডারটি Cancel করার অনুরোধ পাঠানো হয়েছে।");
 }catch(error){
   console.error(error);
 
@@ -4385,7 +4358,7 @@ try{
     button.textContent="✕ Cancel Order";
   }
 
-  alert(error.message || "অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
+  alert("অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
 }
 }
 /************************************************************
