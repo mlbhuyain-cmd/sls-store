@@ -1233,7 +1233,7 @@ inputmode="search"
 readonly
 placeholder="Search products / পণ্য খুঁজুন..."
 onfocus="if(this.readOnly){this.readOnly=false;this.value='';}"
-oninput="renderProducts()">
+oninput="queueProductRender()">
 
 <div
 id="productGrid"
@@ -1704,6 +1704,51 @@ const STOCK_SHEET_ID = "1BYDHVHOv6rxdp0bGJQftkLeRD1h9yuRq_xDwlauL1Bs";
 const STOCK_SHEET_GID = "1827426276";
 const STOCK_SHEET_NAME = "Products";
 
+/* FAST WEBSITE MODE
+ * - show cached catalog immediately
+ * - one background Google Sheet sync
+ * - avoid duplicate stock/catalog requests
+ * - refresh only when the cache is stale
+ */
+const PRODUCT_CACHE_KEY = "sls_store_products_fast_v1";
+const PRODUCT_SYNC_INTERVAL = 120000; // 2 minutes
+let productSyncInFlight = false;
+let lastProductSyncAt = 0;
+let productRenderTimer = null;
+let lastRenderedSearch = null;
+
+function readProductCache(){
+  try{
+    const raw = localStorage.getItem(PRODUCT_CACHE_KEY);
+    if(!raw) return null;
+    const data = JSON.parse(raw);
+    if(!data || !Array.isArray(data.products) || !data.savedAt) return null;
+    return data;
+  }catch(e){
+    return null;
+  }
+}
+
+function writeProductCache(){
+  try{
+    localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      products: products
+    }));
+  }catch(e){
+    /* Storage can be full/private; the live catalog still works. */
+  }
+}
+
+function queueProductRender(){
+  if(productRenderTimer) clearTimeout(productRenderTimer);
+  productRenderTimer = setTimeout(function(){
+    productRenderTimer = null;
+    renderProducts();
+  }, 80);
+}
+
+
 let products = [
 {id:"sw001",name:"Himalaya Brightening Vitamin-C Orange Face Wash 100ml",bn:"হিমালয়া ব্রাইটেনিং ভিটামিন-সি অরেঞ্জ ফেস ওয়াশ",price:220,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Vitamin-C orange face wash for daily cleansing. Shwapno regular price ৳220."},
 {id:"sw002",name:"Himalaya Intense Oil Clear Lemon Face Wash 100ml",bn:"হিমালয়া ইনটেন্স অয়েল ক্লিয়ার লেমন ফেস ওয়াশ",price:299,stock:10,status:"IN STOCK",category:"Skincare",details:"100ml • Lemon face wash for oil-control cleansing. Shwapno regular price ৳299."},
@@ -2131,7 +2176,7 @@ function startOfferProductReel(){
     const save = Math.max(0, Math.round((1 - Number(product.offerPrice)/Number(product.mrp))*100));
     return `
       <div class="offer-reel-slide ${index === 0 ? "active" : ""}">
-        <img src="${image}" alt="${name}" loading="eager"
+        <img src="${image}" alt="${name}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async"
           onerror="if(this.dataset.step==='0'){this.dataset.step='1';this.src='${proxyImage}';}else if(this.dataset.step==='1' && '${fallbackImage}'){this.dataset.step='2';this.src='${fallbackImage}';}else{this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#ffe4ef,#fff)';}">
         <div class="offer-reel-info">
           <div class="offer-reel-title">${name}</div>
@@ -2236,7 +2281,7 @@ const outOfStock = stockKnown
 return `
 <div class="product">
 <div class="product-image">
-${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" referrerpolicy="no-referrer" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-proxies="${encodeURIComponent(JSON.stringify(imageProxyUrls(image)))}" data-proxy-index="0" data-fallback="${getFallbackProductImage(product)}" onerror="try{const a=JSON.parse(decodeURIComponent(this.dataset.proxies||"%5B%5D"));const n=Number(this.dataset.proxyIndex||0);if(a[n]){this.dataset.proxyIndex=String(n+1);this.src=a[n];return;}}catch(e){} if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
+${image ? `<img src="${image}" alt="" aria-label="${escapeHTML(product.name || "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="display:block;width:100%;height:190px;object-fit:contain;font-size:0;" data-proxies="${encodeURIComponent(JSON.stringify(imageProxyUrls(image)))}" data-proxy-index="0" data-fallback="${getFallbackProductImage(product)}" onerror="try{const a=JSON.parse(decodeURIComponent(this.dataset.proxies||"%5B%5D"));const n=Number(this.dataset.proxyIndex||0);if(a[n]){this.dataset.proxyIndex=String(n+1);this.src=a[n];return;}}catch(e){} if(this.dataset.fallback && this.dataset.step!=="fallback"){this.dataset.step="fallback";this.src=this.dataset.fallback;}else{this.style.display="none";this.nextElementSibling.style.display="block";}">` : ""}
 <span style="display:${image ? "none" : "block"}">${product.emoji || "🛍️"}</span>
 </div>
 <div class="product-content">
@@ -2272,7 +2317,30 @@ startOfferProductReel();
  * LIVE PRODUCTS FROM GOOGLE SHEET
  ************************************************************/
 
-function loadProductsFromSheet(){
+function loadProductsFromSheet(force){
+
+  const now = Date.now();
+
+  if(productSyncInFlight) return;
+
+  const cached = readProductCache();
+
+  if(cached && cached.products.length){
+    products = cached.products;
+    lastProductSyncAt = Number(cached.savedAt) || 0;
+    renderProducts();
+    startOfferProductReel();
+
+    if(!force && now - lastProductSyncAt < PRODUCT_SYNC_INTERVAL){
+      return;
+    }
+  }
+
+  if(!force && lastProductSyncAt && now - lastProductSyncAt < PRODUCT_SYNC_INTERVAL){
+    return;
+  }
+
+  productSyncInFlight = true;
 
   /*
    * Google Sheet is the single source of truth.
@@ -2304,7 +2372,7 @@ function loadProductsFromSheet(){
     finished = true;
     cleanup();
     console.error("Products Sheet request timed out.");
-    loadStockDirectlyFromGoogleSheet();
+    productSyncInFlight = false;
   },15000);
 
   window[callbackName] = function(data){
@@ -2497,13 +2565,15 @@ function loadProductsFromSheet(){
         });
       });
 
+      writeProductCache();
+      lastProductSyncAt = Date.now();
+      productSyncInFlight = false;
       renderProducts();
       startOfferProductReel();
-      loadStockDirectlyFromGoogleSheet();
 
     }catch(error){
       console.error("Products Sheet sync error:",error);
-      loadStockDirectlyFromGoogleSheet();
+      productSyncInFlight = false;
     }
   };
 
@@ -2512,7 +2582,7 @@ function loadProductsFromSheet(){
     finished = true;
     cleanup();
     console.error("Products Sheet connection failed.");
-    loadStockDirectlyFromGoogleSheet();
+    productSyncInFlight = false;
   };
 
   // Request the exact A:J range. gid is the Products sheet tab supplied by the user.
@@ -4927,32 +4997,20 @@ event.target
  ************************************************************/
 
 renderProducts();
+startOfferProductReel();
 
-/*
- * Load products and stock independently.
- * Stock comes directly from Products!F, so a stale/unavailable
- * product API cannot block IN STOCK / OUT OF STOCK updates.
- */
+/* One cached/live catalog sync. Stock is already included in Products!F. */
 loadProductsFromSheet();
-loadStockDirectlyFromGoogleSheet();
 
-/*
- * Keep product stock/status synchronized with Google Sheets.
- * Only Stock Qty / status is changed here.
- */
+/* Quiet background refresh; it never creates duplicate requests. */
 setInterval(function(){
   loadProductsFromSheet();
-  loadStockDirectlyFromGoogleSheet();
-}, 30000);
+}, PRODUCT_SYNC_INTERVAL);
 
-/*
- * Re-check stock whenever the customer returns to the website.
- * This does not change any other website functionality.
- */
+/* Refresh only when the page has been away long enough to need fresh data. */
 document.addEventListener("visibilitychange", function(){
-  if(!document.hidden){
+  if(!document.hidden && Date.now() - lastProductSyncAt >= PRODUCT_SYNC_INTERVAL){
     loadProductsFromSheet();
-    loadStockDirectlyFromGoogleSheet();
   }
 });
 
@@ -5120,9 +5178,8 @@ updateCheckoutSummary();
 
   function start(){
     grid=document.getElementById("productGrid");
+    /* Main catalog loader already handles Google Sheets + cache. */
     if(!grid)return;
-    render(fallbackProducts);
-    loadLiveSheet();
   }
 
   if(document.readyState==="loading"){
