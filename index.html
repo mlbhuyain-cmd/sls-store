@@ -4287,11 +4287,19 @@ if(!note){
 }
 
 if(button){
-  button.disabled=true;
-  button.textContent="Cancelling...";
+  button.disabled = true;
+  button.textContent = "Cancelling...";
 }
 
+let firestoreSaved = false;
+let backendQueued = false;
+
 try{
+  /*
+   * Customer cancellation is confirmed from Firestore first.
+   * The Apps Script sync is only a background mirror, so a network
+   * problem there cannot incorrectly tell the customer that cancel failed.
+   */
   if(db && currentUser){
     await db.collection("orders").doc(String(orderId)).set({
       status:"Cancelled",
@@ -4299,25 +4307,51 @@ try{
       customerCancelNote:note,
       customerCancelledAt:firebase.firestore.FieldValue.serverTimestamp()
     },{merge:true});
+    firestoreSaved = true;
   }
 
-  await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action:"cancelCustomerOrder",
-      clientOrderId:String(orderId),
-      phone:phone||"",
-      uid:currentUser?currentUser.uid:"",
-      status:"Cancelled",
-      cancelNote:note
-    })
+  /*
+   * Keep Google Sheet/Delivery Manager in sync when the backend supports
+   * the customer-cancellation action. Do not block the customer on it.
+   */
+  try{
+    fetch(APPS_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({
+        action:"cancelCustomerOrder",
+        clientOrderId:String(orderId),
+        phone:phone||"",
+        uid:currentUser?currentUser.uid:"",
+        status:"Cancelled",
+        cancelNote:note
+      })
+    }).then(function(){
+      backendQueued = true;
+    }).catch(function(error){
+      console.warn("Customer cancellation Sheet sync failed:",error);
+    });
+  }catch(syncError){
+    console.warn("Customer cancellation Sheet sync could not start:",syncError);
+  }
+
+  if(!firestoreSaved){
+    throw new Error("অর্ডার Cancel সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।");
+  }
+
+  /* Clear the short live-status cache so the cancelled state is not overwritten. */
+  const cacheKeys = Object.keys(liveStatusCache || {});
+  cacheKeys.forEach(function(key){
+    if(key.indexOf(String(orderId) + "|") === 0){
+      delete liveStatusCache[key];
+    }
   });
 
   if(button){
-    button.textContent="✕ Cancelled";
-    button.style.background="#6b7280";
+    button.textContent = "✕ Cancelled";
+    button.style.background = "#6b7280";
+    button.disabled = true;
   }
 
   const card=document.getElementById(
@@ -4351,7 +4385,7 @@ try{
     button.textContent="✕ Cancel Order";
   }
 
-  alert("অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
+  alert(error.message || "অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
 }
 }
 /************************************************************
