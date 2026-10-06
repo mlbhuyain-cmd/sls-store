@@ -929,7 +929,7 @@ background:#e91e63;
 color:white;
 }
 
-.order-actions{
+.customer-cancel{background:#dc2626;color:#fff;padding:9px 13px;border-radius:9px;border:0;cursor:pointer;font-weight:700}.customer-cancel:hover{background:#b91c1c}.customer-cancel:disabled{opacity:.65;cursor:not-allowed}.order-actions{
 display:flex;
 gap:8px;
 flex-wrap:wrap;
@@ -4107,6 +4107,15 @@ statusClass(status);
 
 }
 
+/* Customer may cancel only while Pending/Confirmed/Picking/Processing. */
+const cancelButton = card.querySelector("[data-cancel-order]");
+if(cancelButton){
+const normalizedStatus = String(status || "").trim().toLowerCase();
+const customerCanCancel = ["pending","confirmed","picking","processing"].includes(normalizedStatus);
+cancelButton.style.display = customerCanCancel ? "inline-block" : "none";
+if(!customerCanCancel) cancelButton.disabled = true;
+}
+
 const track =
 card.querySelector(
 ".track-box"
@@ -4167,6 +4176,20 @@ Refresh Status চাপুন।
 }
 
 
+/* CUSTOMER CANCEL ORDER - customer only through Processing */
+async function cancelCustomerOrder(orderId, phone, button){
+if(!orderId)return;
+if(!confirm("আপনি কি এই অর্ডারটি Cancel করতে চান?\\n\\nভুল করে অর্ডার করা হলে Cancel করতে পারবেন।"))return;
+if(button){button.disabled=true;button.textContent="Cancelling...";}
+try{
+if(db && currentUser){await db.collection("orders").doc(String(orderId)).set({status:"Cancelled",customerCancelled:true,customerCancelledAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}
+await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"cancelCustomerOrder",clientOrderId:String(orderId),phone:phone||"",uid:currentUser?currentUser.uid:"",status:"Cancelled"})});
+if(button){button.textContent="✕ Cancelled";button.style.background="#6b7280";}
+const card=document.getElementById("order-"+String(orderId).replace(/[^a-zA-Z0-9_-]/g,"_"));
+if(card){const badge=card.querySelector(".badge");if(badge){badge.textContent="Cancelled";badge.className="badge";}const track=card.querySelector(".track-box");if(track)track.innerHTML='<div class="status-step active" style="background:#dc2626;color:#fff">Cancelled</div>';const live=card.querySelector(".live-status");if(live)live.innerHTML="Live Status: <b>Cancelled</b>";}
+alert("অর্ডারটি Cancel করা হয়েছে।");
+}catch(error){console.error(error);if(button){button.disabled=false;button.textContent="✕ Cancel Order";}alert("অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");}
+}
 /************************************************************
  * MY ORDERS
  ************************************************************/
@@ -4433,6 +4456,16 @@ class="refresh"
 onclick="refreshSingleOrder('${escapeHTML(orderId)}')">
 
 🔄 Refresh Status
+
+</button>
+
+<button
+class="customer-cancel"
+style="display:none"
+data-cancel-order="${safeId}"
+onclick="cancelCustomerOrder('${escapeHTML(orderId)}','${escapeHTML(order.phone || "")}',this)">
+
+✕ Cancel Order
 
 </button>
 
