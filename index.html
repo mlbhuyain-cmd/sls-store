@@ -13,7 +13,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>SLS Store - Cosmetics</title>
-<!-- SLS_BUILD_VERSION: 2026-10-06-cancel-permission-speed-fix -->
+<!-- SLS_BUILD_VERSION: 2026-10-07-product-price-stock-live-fix -->
 
 <style>
 
@@ -1826,7 +1826,7 @@ const STOCK_SHEET_NAME = "Products";
  * - avoid duplicate stock/catalog requests
  * - refresh only when the cache is stale
  */
-const PRODUCT_CACHE_KEY = "sls_store_products_fast_v1";
+const PRODUCT_CACHE_KEY = "sls_store_products_fast_v2";
 const PRODUCT_SYNC_INTERVAL = 120000; // 2 minutes
 let productSyncInFlight = false;
 let lastProductSyncAt = 0;
@@ -2452,13 +2452,8 @@ function loadProductsFromSheet(force){
     renderProducts();
     startOfferProductReel();
 
-    if(!force && now - lastProductSyncAt < PRODUCT_SYNC_INTERVAL){
-      return;
-    }
-  }
-
-  if(!force && lastProductSyncAt && now - lastProductSyncAt < PRODUCT_SYNC_INTERVAL){
-    return;
+    /* Never trust cached price/stock as the final source of truth.
+       Always perform one live Sheet sync on page load. */
   }
 
   productSyncInFlight = true;
