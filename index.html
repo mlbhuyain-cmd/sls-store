@@ -4264,7 +4264,7 @@ function finishLiveStatus(data){
   waiters.forEach(function(fn){ try{ fn(data); }catch(e){} });
 }
 
-const attempts = ["getOrderStatus"];
+const attempts = ["status"];
 let attemptIndex = 0;
 let finished = false;
 
