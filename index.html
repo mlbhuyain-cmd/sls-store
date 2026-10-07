@@ -4319,8 +4319,13 @@ tryNext();
 
 const params = new URLSearchParams();
 params.set("action", action);
+params.set("type", action);
 params.set("clientOrderId", clientOrderId || "");
+params.set("orderId", clientOrderId || "");
+params.set("orderID", clientOrderId || "");
 params.set("phone", phone || "");
+params.set("customerPhone", phone || "");
+params.set("customer_phone", phone || "");
 params.set("prefix", callbackName);
 params.set("callback", callbackName);
 params.set("t", Date.now());
