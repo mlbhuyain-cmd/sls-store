@@ -2628,44 +2628,12 @@ function loadProductsFromSheet(force){
         sheetByName[normalizeName(name)] = record;
       });
 
-      // Replace/update products from the Sheet.
-      products = products.map(function(product){
-        const id = String(product.id || "").trim();
-        const live = sheetById[id] || sheetByName[normalizeName(product.name)];
-
-        if(!live) {
-          if(!product.catalogId) product.catalogId = product.id;
-          return product;
-        }
-
-        return Object.assign({}, product, {
-          catalogId: product.catalogId || product.id,
-          id: live.id || product.id,
-          name: live.name || product.name,
-          category: live.category || product.category,
-          price: live.price,
-          mrp: live.mrp,
-          offerPrice: live.offerPrice,
-          stock: live.stock !== null ? live.stock : product.stock,
-          status: live.status || product.status,
-          details: live.details || product.details,
-          sku: live.sku || product.sku || "",
-          image: live.image || product.image || ""
-        });
-      });
-
-      // Add every Sheet product that is not already in the built-in list.
-      Object.keys(sheetById).forEach(function(id){
+      // Google Sheet is the single source of truth for the customer catalog.
+      // Do NOT keep built-in products that are missing from Products!A:J.
+      // This prevents old/demo products from appearing on the website.
+      products = Object.keys(sheetById).map(function(id){
         const live = sheetById[id];
-
-        const exists = products.some(function(product){
-          return String(product.id || "").trim() === id ||
-                 normalizeName(product.name) === normalizeName(live.name);
-        });
-
-        if(exists) return;
-
-        products.push({
+        return {
           catalogId: live.id,
           id: live.id,
           name: live.name,
@@ -2678,7 +2646,7 @@ function loadProductsFromSheet(force){
           details: live.details,
           sku: live.sku,
           image: live.image
-        });
+        };
       });
 
       writeProductCache();
@@ -5623,16 +5591,8 @@ updateCheckoutSummary();
           });
         });
         if(live.length){
-          if(Array.isArray(window.products)){
-            live.forEach(function(lp){
-              var existing = window.products.find(function(p){
-                return String(p.id||"").trim() === String(lp.id).trim() ||
-                       String(p.name||"").trim().toLowerCase() === String(lp.name||"").trim().toLowerCase();
-              });
-              if(existing) Object.assign(existing, lp);
-              else window.products.push(lp);
-            });
-          }
+          // Sheet-only catalog: remove any old/demo products from the safety layer too.
+          window.products = live.slice();
           render(live);
         }
       }catch(e){
@@ -5657,8 +5617,7 @@ updateCheckoutSummary();
   function start(){
     grid=document.getElementById("productGrid");
     if(!grid)return;
-    /* Safety catalog: render products immediately even if another script fails. */
-    render(fallbackProducts);
+    /* Do not render fallback/demo products. The Products sheet is authoritative. */
     loadLiveSheet();
   }
 
