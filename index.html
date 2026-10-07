@@ -1029,6 +1029,11 @@ background:#d9fbe8;
 color:#116b38;
 }
 
+.badge.cancel-requested{
+background:#fff3cd;
+color:#8a4b00;
+}
+
 .status-track{
 display:grid;
 grid-template-columns:repeat(5,minmax(0,1fr));
@@ -4265,7 +4270,7 @@ function finishLiveStatus(data){
   waiters.forEach(function(fn){ try{ fn(data); }catch(e){} });
 }
 
-const attempts = ["getOrderStatus"];
+const attempts = ["getOrderStatus","status"];
 let attemptIndex = 0;
 let finished = false;
 
@@ -4316,7 +4321,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 4500);
+}, 3000);
 
 const params = new URLSearchParams();
 params.set("action", action);
@@ -4386,6 +4391,13 @@ if(
 value === "delivered"
 )
 return "delivered";
+
+if(
+value === "cancel requested" ||
+value === "cancel_request" ||
+value === "cancellation requested"
+)
+return "cancel-requested";
 
 return "";
 
@@ -4469,6 +4481,16 @@ live.innerHTML =
 "Live Status: <b>" +
 escapeHTML(knownStatus) +
 "</b><br><span class=\"muted\">Updating...</span>";
+
+/* Show the customer cancel option immediately from the known order status.
+ * It must not depend on the live-status API succeeding first. */
+const initialCancelButton = card.querySelector("[data-cancel-order]");
+if(initialCancelButton){
+  const initialStatus = String(knownStatus || "").trim().toLowerCase();
+  const initialCanCancel = ["pending","confirmed","picking","processing"].includes(initialStatus);
+  initialCancelButton.style.display = initialCanCancel ? "inline-block" : "none";
+  initialCancelButton.disabled = !initialCanCancel;
+}
 
 let result =
 await getLiveStatus(
@@ -4573,6 +4595,14 @@ live.innerHTML =
 escapeHTML(status) +
 "</b>";
 
+const refreshCancel = card.querySelector("[data-cancel-order]");
+if(refreshCancel){
+  const s = String(status || "").trim().toLowerCase();
+  const can = ["pending","confirmed","picking","processing"].includes(s);
+  refreshCancel.style.display = can ? "inline-block" : "none";
+  refreshCancel.disabled = !can;
+}
+
 const badge =
 card.querySelector(
 ".badge"
@@ -4638,38 +4668,91 @@ invoice.innerHTML = "";
 
 }else{
 
-live.innerHTML = `
+/* If the order was created in Firebase before Sheet sync was available,
+ * send the existing order once to the Manager backend, then retry live status. */
+try{
+  const synced = await syncExistingOrderToManager(order);
+  if(synced){
+    const retry = await getLiveStatus(order.clientOrderId || order.id, order.phone || "");
+    if(retry && retry.success && retry.found){
+      const retryStatus = retry.status || retry.orderStatus || knownStatus;
+      live.innerHTML = "Live Status: <b>" + escapeHTML(retryStatus) + "</b>";
+      const retryBadge = card.querySelector(".badge");
+      if(retryBadge){ retryBadge.textContent = retryStatus; retryBadge.className = "badge " + statusClass(retryStatus); }
+      const retryCancel = card.querySelector("[data-cancel-order]");
+      if(retryCancel){
+        const s = String(retryStatus || "").trim().toLowerCase();
+        const can = ["pending","confirmed","picking","processing"].includes(s);
+        retryCancel.style.display = can ? "inline-block" : "none";
+        retryCancel.disabled = !can;
+      }
+      const retryTrack = card.querySelector(".track-box");
+      if(retryTrack){ retryTrack.innerHTML = createStatusTrack(retryStatus); }
+      return;
+    }
+  }
+}catch(syncError){
+  console.warn("Existing order Sheet sync skipped:", syncError);
+}
 
-Live status এখনও পাওয়া যায়নি।
-
-<br>
-
-<span class="muted">
-
-Google Sheet-এর Status update করার পর
-Refresh Status চাপুন।
-
-</span>
-
-`;
+live.innerHTML =
+"Live Status: <b>" + escapeHTML(knownStatus) + "</b>" +
+"<br><span class=\"muted\">Live server status এখনও পাওয়া যায়নি। Refresh Status আবার চাপুন।</span>";
 
 }
 
 }
 
 
-/* CUSTOMER CANCEL ORDER - customer only through Processing */
+/* Sync an already-created Firebase order into the Delivery Manager Orders sheet. */
+async function syncExistingOrderToManager(order){
+  if(!order) return false;
+  const orderId = String(order.clientOrderId || order.id || "").trim();
+  if(!orderId) return false;
+  try{
+    const payload = {
+      uid: order.uid || (currentUser ? currentUser.uid : ""),
+      email: order.email || (currentUser ? (currentUser.email || "") : ""),
+      clientOrderId: orderId,
+      name: order.name || order.customerName || "",
+      customerName: order.customerName || order.name || "",
+      phone: order.phone || "",
+      address: order.address || order.deliveryAddress || "",
+      deliveryArea: order.deliveryArea || order.area || "",
+      deliveryLocation: order.deliveryLocation || order.address || "",
+      items: Array.isArray(order.items) ? order.items : [],
+      productTotal: order.productTotal || order.subtotal || 0,
+      deliveryCharge: order.deliveryCharge || 0,
+      grandTotal: order.grandTotal || order.total || 0,
+      total: order.total || order.grandTotal || 0,
+      paymentMethod: order.paymentMethod || "Cash on Delivery",
+      status: order.status || "Confirmed"
+    };
+    await fetch(APPS_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    });
+    await new Promise(function(resolve){ setTimeout(resolve,700); });
+    return true;
+  }catch(e){
+    console.warn("Manager order sync failed:",e);
+    return false;
+  }
+}
+
+
+/* CUSTOMER CANCEL ORDER - request only; Manager must approve it */
 async function cancelCustomerOrder(orderId, phone, button){
 if(!orderId)return;
 
 const cancelNote = prompt(
   "অর্ডার Cancel করার কারণ / Note লিখুন (অবশ্যই পূরণ করতে হবে):"
 );
-
 if(cancelNote === null)return;
 
 const note = String(cancelNote).trim();
-
 if(!note){
   alert("Cancel করার আগে Note / কারণ লিখতে হবে।");
   return;
@@ -4677,80 +4760,74 @@ if(!note){
 
 if(button){
   button.disabled = true;
-  button.textContent = "Cancelling...";
+  button.textContent = "Requesting...";
 }
 
 try{
-  /*
-   * IMPORTANT:
-   * Do NOT write the customer's order document directly from the browser.
-   * Firestore security rules may allow reading the order but deny customer
-   * updates, which causes "Missing or insufficient permissions".
-   *
-   * Cancellation is therefore sent to the existing Apps Script order
-   * endpoint, just like order submission. This keeps the customer's
-   * Firebase permissions unchanged.
-   */
-  await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action:"cancelCustomerOrder",
-      clientOrderId:String(orderId),
-      phone:phone||"",
-      uid:currentUser?currentUser.uid:"",
-      status:"Cancelled",
-      cancelNote:note
-    })
-  });
+  const result = await requestCustomerCancel(orderId, phone || "", note);
 
-  /* Clear live-status cache so an old Confirmed/Pending value is not reused. */
   Object.keys(liveStatusCache || {}).forEach(function(key){
-    if(key.indexOf(String(orderId) + "|") === 0){
-      delete liveStatusCache[key];
-    }
+    if(key.indexOf(String(orderId) + "|") === 0) delete liveStatusCache[key];
   });
-
-  if(button){
-    button.textContent = "✕ Cancelled";
-    button.style.background = "#6b7280";
-    button.disabled = true;
-  }
 
   const card=document.getElementById(
     "order-"+String(orderId).replace(/[^a-zA-Z0-9_-]/g,"_")
   );
 
-  if(card){
-    const badge=card.querySelector(".badge");
-    if(badge){
-      badge.textContent="Cancelled";
-      badge.className="badge";
+  if(result && result.success){
+    const status = result.status || "Cancel Requested";
+    if(button){
+      button.textContent = "⏳ Cancel Requested";
+      button.style.background = "#b7791f";
+      button.disabled = true;
     }
-
-    const track=card.querySelector(".track-box");
-    if(track){
-      track.innerHTML='<div class="status-step active" style="background:#dc2626;color:#fff">Cancelled</div>';
+    if(card){
+      const badge=card.querySelector(".badge");
+      if(badge){ badge.textContent=status; badge.className="badge " + statusClass(status); }
+      const live=card.querySelector(".live-status");
+      if(live){ live.innerHTML="Live Status: <b>" + escapeHTML(status) + "</b><br><span class=\"muted\">Manager approval pending.</span>"; }
     }
-
-    const live=card.querySelector(".live-status");
-    if(live){
-      live.innerHTML="Live Status: <b>Cancelled</b>";
-    }
+    alert("Cancel request পাঠানো হয়েছে। Manager approve করলে order Cancel হবে।");
+  }else{
+    throw new Error((result && result.error) || "Cancel request পাঠানো যায়নি।");
   }
-
-  alert("অর্ডারটি Cancel করার অনুরোধ পাঠানো হয়েছে।");
 }catch(error){
   console.error(error);
-
   if(button){
     button.disabled=false;
     button.textContent="✕ Cancel Order";
   }
-
-  alert("অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
+  alert("Cancel request করা যায়নি।\n\n" + (error.message || error));
 }
+}
+
+function requestCustomerCancel(orderId, phone, note){
+  return new Promise(function(resolve,reject){
+    const callbackName = "slsCancelCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    const script = document.createElement("script");
+    let timer = null;
+    function cleanup(){
+      if(timer) clearTimeout(timer);
+      try{ delete window[callbackName]; }catch(e){}
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[callbackName] = function(data){ cleanup(); resolve(data || null); };
+    script.onerror = function(){ cleanup(); reject(new Error("Cancel API connection failed.")); };
+    timer = setTimeout(function(){ cleanup(); reject(new Error("Cancel request timed out. Please try again.")); }, 7000);
+    const params = new URLSearchParams();
+    params.set("action","cancelCustomerOrder");
+    params.set("clientOrderId",String(orderId));
+    params.set("orderId",String(orderId));
+    params.set("phone",phone || "");
+    params.set("customerPhone",phone || "");
+    params.set("uid",currentUser ? (currentUser.uid || "") : "");
+    params.set("cancelNote",note || "");
+    params.set("prefix",callbackName);
+    params.set("callback",callbackName);
+    params.set("t",Date.now());
+    script.src = APPS_SCRIPT_URL + "?" + params.toString();
+    document.head.appendChild(script);
+  });
 }
 /************************************************************
  * MY ORDERS
