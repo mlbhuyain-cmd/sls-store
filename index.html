@@ -3106,7 +3106,7 @@ function normalizeBdPhone(phone){
  * The customer still sees and uses only mobile number + password.
  */
 function phoneIdentityEmail(phone){
-  const digits = normalizeBdPhone(phone).replace(/\\D/g,"");
+  const digits = normalizeBdPhone(phone).replace(/\D/g,"");
   return digits + "@slsstore.app";
 }
 
@@ -3116,7 +3116,7 @@ async function submitPhoneAuth(){
   const password = document.getElementById("authPhonePassword").value;
   const name = document.getElementById("authPhoneName").value.trim();
 
-  if(!/^\\+8801[3-9]\\d{8}$/.test(phone)){
+  if(!/^\+8801[3-9]\d{8}$/.test(phone)){
     message.innerHTML = '<div class="notice error">সঠিক Bangladesh mobile number দিন। উদাহরণ: 018XXXXXXXX</div>';
     return;
   }
