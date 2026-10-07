@@ -3079,8 +3079,15 @@ function preparePhoneRecaptcha(){
 
   phoneRecaptchaVerifier = new firebase.auth.RecaptchaVerifier(
     "recaptcha-container",
-    {size:"normal"},
-    auth
+    {
+      size: "normal",
+      callback: function(response){
+        console.log("reCAPTCHA verified");
+      },
+      "expired-callback": function(){
+        console.warn("reCAPTCHA expired");
+      }
+    }
   );
 
   phoneRecaptchaVerifier.render().catch(function(e){
