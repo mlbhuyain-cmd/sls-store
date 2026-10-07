@@ -1924,7 +1924,7 @@ let orderHistoryCache =
 
 /* Small live-status cache: keeps My Orders responsive without hiding real updates. */
 let liveStatusCache = {};
-const LIVE_STATUS_CACHE_MS = 10000;
+const LIVE_STATUS_CACHE_MS = 3000;
 const liveStatusInFlight = {};
 
 
@@ -4264,7 +4264,7 @@ function finishLiveStatus(data){
   waiters.forEach(function(fn){ try{ fn(data); }catch(e){} });
 }
 
-const attempts = ["status","getStatus","getOrderStatus"];
+const attempts = ["getOrderStatus"];
 let attemptIndex = 0;
 let finished = false;
 
@@ -4315,7 +4315,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 8000);
+}, 4500);
 
 const params = new URLSearchParams();
 params.set("action", action);
@@ -4463,8 +4463,11 @@ card.querySelector(
 ".invoice-box"
 );
 
+const knownStatus = order.status || order.orderStatus || "Confirmed";
 live.innerHTML =
-"Checking live status...";
+"Live Status: <b>" +
+escapeHTML(knownStatus) +
+"</b><br><span class="muted">Updating...</span>";
 
 let result =
 await getLiveStatus(
