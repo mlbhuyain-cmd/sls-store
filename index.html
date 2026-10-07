@@ -5602,15 +5602,29 @@ updateCheckoutSummary();
         rows.forEach(function(row){
           var cells=row.c||[];
           function v(i){return cells[i]&&cells[i].v!=null?String(cells[i].v).trim():"";}
-          var name=v(0);
+          var id=v(0);
+          var name=v(1);
           if(!name)return;
-          var sku=v(7);
-          var id=sku || ("sheet-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));
+          var category=v(2);
+          var offerPrice=Number(String(v(3)).replace(/,/g,"").replace(/৳/g,""))||0;
+          var mrp=Number(String(v(4)).replace(/,/g,"").replace(/৳/g,""))||0;
+          var stockText=v(5);
+          var stock=stockText===""?null:Number(String(stockText).replace(/,/g,""));
+          var status=v(6);
+          var details=v(7);
+          var sku=v(8);
           live.push({
-            id:id,name:name,category:v(1),price:Number(v(2))||0,
-            offerPrice:Number(v(2))||0,mrp:Number(v(3))||0,
-            stock:v(4)===""?null:Number(v(4)),
-            status:v(5),details:v(6),sku:sku,image:cleanImage(v(9))
+            id:id || sku || ("sheet-"+name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")),
+            name:name,
+            category:category,
+            price:offerPrice,
+            offerPrice:offerPrice,
+            mrp:mrp,
+            stock:Number.isFinite(stock)?stock:null,
+            status:status || (Number.isFinite(stock)?(stock>0?"IN STOCK":"OUT OF STOCK"):""),
+            details:details,
+            sku:sku,
+            image:cleanImage(v(9))
           });
         });
         if(live.length){
