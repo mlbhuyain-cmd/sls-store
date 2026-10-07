@@ -1240,8 +1240,8 @@ autocomplete="off"
 oninput="syncHeaderSearch(this.value)">
 </div>
 
-<button class="header-pill wishlist-button" onclick="openOrders()">
-♡ <span>WISHLIST</span>
+<button class="header-pill wishlist-button" onclick="openOrders()" aria-label="Orders">
+🧾 <span>ORDERS</span>
 </button>
 
 <div class="account-wrap" id="accountWrap">
@@ -3108,12 +3108,30 @@ return;
 
 }
 
+const checkoutProfile = getCachedCustomerProfile();
+
 document
 .getElementById(
 "orderName"
 )
 .value =
+checkoutProfile.name ||
 currentUser.displayName ||
+"";
+
+document
+.getElementById(
+"orderPhone"
+)
+.value =
+displayBdPhone(checkoutProfile.phone || phoneFromCurrentUser());
+
+document
+.getElementById(
+"orderAddress"
+)
+.value =
+checkoutProfile.address ||
 "";
 
 document
@@ -3221,21 +3239,214 @@ function openAccountInfo(title, html){
   openModal("accountInfoModal");
 }
 
-function openPersonalInfo(){
-  const name = escapeHTML(currentUser.displayName || "Customer");
-  const email = escapeHTML(currentUser.email || "Mobile account");
-  openAccountInfo(
-    "Personal Info / ব্যক্তিগত তথ্য",
-    '<div class="field"><label>Name / নাম</label><input value="'+name+'" readonly></div>' +
-    '<div class="field"><label>Account / অ্যাকাউন্ট</label><input value="'+email+'" readonly></div>'
-  );
+const CUSTOMER_PROFILE_KEY = "sls_store_customer_profile_v1";
+
+function profileLocalKey(){
+  return CUSTOMER_PROFILE_KEY + "_" + (currentUser ? currentUser.uid : "guest");
 }
 
-function openAddressBook(){
+function getCachedCustomerProfile(){
+  try{
+    const raw = localStorage.getItem(profileLocalKey());
+    const data = raw ? JSON.parse(raw) : {};
+    return data && typeof data === "object" ? data : {};
+  }catch(e){
+    return {};
+  }
+}
+
+function normalizeProfilePhone(value){
+  const p = normalizeBdPhone(value);
+  return p ? p : "";
+}
+
+function displayBdPhone(value){
+  const p = normalizeProfilePhone(value);
+  if(/^\+8801[3-9]\d{8}$/.test(p)){
+    return "0" + p.slice(3);
+  }
+  return String(value || "").trim();
+}
+
+function phoneFromCurrentUser(){
+  const cached = getCachedCustomerProfile();
+  if(cached.phone) return cached.phone;
+
+  const email = String(currentUser && currentUser.email || "");
+  const digits = email.split("@")[0].replace(/\D/g,"");
+  if(/^8801[3-9]\d{8}$/.test(digits)) return "+" + digits;
+  if(/^01[3-9]\d{8}$/.test(digits)) return "+88" + digits;
+  return "";
+}
+
+async function loadCustomerProfile(){
+  const cached = getCachedCustomerProfile();
+  let profile = Object.assign({}, cached);
+
+  if(currentUser){
+    profile.uid = currentUser.uid;
+    profile.phone = profile.phone || phoneFromCurrentUser();
+    profile.name = profile.name || currentUser.displayName || "";
+  }
+
+  if(db && currentUser){
+    try{
+      const snap = await db.collection("customers").doc(currentUser.uid).get();
+      if(snap.exists){
+        profile = Object.assign(profile, snap.data() || {});
+      }
+    }catch(e){
+      console.warn("Customer profile cloud read skipped:", e);
+    }
+  }
+
+  try{
+    localStorage.setItem(profileLocalKey(), JSON.stringify(profile));
+  }catch(e){}
+
+  return profile;
+}
+
+async function saveCustomerProfile(profile){
+  const clean = {
+    uid: currentUser.uid,
+    name: String(profile.name || "").trim(),
+    phone: normalizeProfilePhone(profile.phone || phoneFromCurrentUser()),
+    alternativePhone: normalizeProfilePhone(profile.alternativePhone || ""),
+    address: String(profile.address || "").trim(),
+    updatedAtClient: new Date().toISOString()
+  };
+
+  try{
+    localStorage.setItem(profileLocalKey(), JSON.stringify(clean));
+  }catch(e){}
+
+  if(db && currentUser){
+    try{
+      await db.collection("customers").doc(currentUser.uid).set(clean,{merge:true});
+    }catch(e){
+      console.warn("Customer profile cloud save skipped:", e);
+    }
+  }
+
+  return clean;
+}
+
+async function openPersonalInfo(){
+  closeAccountMenu();
+  openAccountInfo(
+    "Personal Info / ব্যক্তিগত তথ্য",
+    '<div class="muted">Loading...</div>'
+  );
+
+  const profile = await loadCustomerProfile();
+  const name = escapeHTML(profile.name || currentUser.displayName || "Customer");
+  const phone = escapeHTML(displayBdPhone(profile.phone || phoneFromCurrentUser()));
+  const alternative = escapeHTML(displayBdPhone(profile.alternativePhone || ""));
+
+  document.getElementById("accountInfoContent").innerHTML =
+    '<div class="field">' +
+      '<label>Name / নাম</label>' +
+      '<input id="profileName" value="'+name+'" placeholder="আপনার নাম">' +
+    '</div>' +
+    '<div class="field">' +
+      '<label>Mobile Number / মোবাইল নম্বর</label>' +
+      '<input value="'+phone+'" readonly style="background:#f7f7f7">' +
+      '<div class="muted" style="margin-top:5px">এই নম্বরটি আপনার login number। এটি পরিবর্তন করা যাবে না।</div>' +
+    '</div>' +
+    '<div class="field">' +
+      '<label>Alternative Number / বিকল্প নম্বর <span class="muted">(Optional)</span></label>' +
+      '<input id="profileAlternativePhone" type="tel" value="'+alternative+'" placeholder="01XXXXXXXXX">' +
+    '</div>' +
+    '<div id="profileSaveMessage"></div>' +
+    '<button class="primary" onclick="savePersonalInfo()">Save Changes / পরিবর্তন সংরক্ষণ</button>';
+}
+
+async function savePersonalInfo(){
+  if(!currentUser) return;
+
+  const nameEl = document.getElementById("profileName");
+  const altEl = document.getElementById("profileAlternativePhone");
+  const msg = document.getElementById("profileSaveMessage");
+
+  const name = nameEl ? nameEl.value.trim() : "";
+  const altRaw = altEl ? altEl.value.trim() : "";
+
+  if(!name){
+    msg.innerHTML = '<div class="notice error">Name / নাম দিতে হবে।</div>';
+    return;
+  }
+
+  if(altRaw && !/^\+8801[3-9]\d{8}$/.test(normalizeBdPhone(altRaw))){
+    msg.innerHTML = '<div class="notice error">সঠিক alternative mobile number দিন।</div>';
+    return;
+  }
+
+  try{
+    const profile = await loadCustomerProfile();
+    profile.name = name;
+    profile.alternativePhone = altRaw ? normalizeBdPhone(altRaw) : "";
+
+    await saveCustomerProfile(profile);
+    await currentUser.updateProfile({displayName:name});
+
+    const button = document.getElementById("authButton");
+    if(button){
+      button.innerHTML =
+        '<span class="account-avatar" id="accountAvatar">'+escapeHTML(name.charAt(0).toUpperCase())+'</span>' +
+        '<span class="account-name" id="authButtonText">'+escapeHTML(name)+'</span>' +
+        '<span class="account-arrow">▾</span>';
+    }
+
+    msg.innerHTML = '<div class="notice success">Personal information saved successfully.</div>';
+  }catch(e){
+    console.error(e);
+    msg.innerHTML = '<div class="notice error">তথ্য save করা যায়নি। আবার চেষ্টা করুন।</div>';
+  }
+}
+
+async function openAddressBook(){
+  closeAccountMenu();
   openAccountInfo(
     "Address Book / ঠিকানা",
-    '<div class="notice" style="margin:0">Your saved delivery address will appear here.<br><small>Checkout-এর সময় দেওয়া address বর্তমানে order-এর সঙ্গে save হয়।</small></div>'
+    '<div class="muted">Loading...</div>'
   );
+
+  const profile = await loadCustomerProfile();
+  const address = escapeHTML(profile.address || "");
+
+  document.getElementById("accountInfoContent").innerHTML =
+    '<div class="field">' +
+      '<label>Delivery Address / ডেলিভারি ঠিকানা</label>' +
+      '<textarea id="profileAddress" placeholder="House, Road, Area, City">'+address+'</textarea>' +
+      '<div class="muted" style="margin-top:5px">আপনার saved address পরের checkout-এ automatically ব্যবহার হবে।</div>' +
+    '</div>' +
+    '<div id="addressSaveMessage"></div>' +
+    '<button class="primary" onclick="saveAddressBook()">Save Address / ঠিকানা সংরক্ষণ</button>';
+}
+
+async function saveAddressBook(){
+  if(!currentUser) return;
+
+  const el = document.getElementById("profileAddress");
+  const msg = document.getElementById("addressSaveMessage");
+  const address = el ? el.value.trim() : "";
+
+  if(!address){
+    msg.innerHTML = '<div class="notice error">Address / ঠিকানা দিতে হবে।</div>';
+    return;
+  }
+
+  try{
+    const profile = await loadCustomerProfile();
+    profile.address = address;
+    await saveCustomerProfile(profile);
+
+    msg.innerHTML = '<div class="notice success">Address saved successfully.</div>';
+  }catch(e){
+    console.error(e);
+    msg.innerHTML = '<div class="notice error">Address save করা যায়নি। আবার চেষ্টা করুন।</div>';
+  }
 }
 
 function openWishlist(){
@@ -3395,6 +3606,22 @@ async function submitPhoneAuth(){
 
       if(name){
         await result.user.updateProfile({displayName:name});
+      }
+
+      try{
+        const initialProfile = {
+          uid: result.user.uid,
+          name: name || result.user.displayName || "",
+          phone: phone,
+          alternativePhone: "",
+          address: ""
+        };
+        localStorage.setItem(CUSTOMER_PROFILE_KEY + "_" + result.user.uid, JSON.stringify(initialProfile));
+        if(db){
+          await db.collection("customers").doc(result.user.uid).set(initialProfile,{merge:true});
+        }
+      }catch(profileError){
+        console.warn("Initial customer profile save skipped:", profileError);
       }
 
       message.innerHTML = '<div class="notice success">Mobile account তৈরি হয়েছে। Login successful.</div>';
@@ -5174,6 +5401,16 @@ document.getElementById(
 );
 
 if(user){
+loadCustomerProfile().then(function(profile){
+  const savedName = profile && profile.name ? profile.name : (user.displayName || "Customer");
+  const btn = document.getElementById("authButton");
+  if(btn){
+    btn.innerHTML =
+      '<span class="account-avatar" id="accountAvatar">'+escapeHTML(savedName.charAt(0).toUpperCase())+'</span>' +
+      '<span class="account-name" id="authButtonText">'+escapeHTML(savedName)+'</span>' +
+      '<span class="account-arrow">▾</span>';
+  }
+}).catch(function(e){ console.warn("Profile load skipped:",e);
 
 const name = user.displayName || "Customer";
 const avatar = document.getElementById("accountAvatar");
