@@ -162,6 +162,121 @@ color:#111;
 font-size:14px;
 }
 
+.account-wrap{
+position:relative;
+display:inline-flex;
+align-items:center;
+}
+
+.account-button{
+height:46px;
+border:0;
+border-radius:24px;
+background:#f4f4f4;
+color:#111;
+padding:0 13px;
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:800;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.account-avatar{
+width:30px;
+height:30px;
+border-radius:50%;
+background:#ff3b70;
+color:#fff;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+font-size:15px;
+font-weight:900;
+}
+
+.account-name{
+max-width:90px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.account-arrow{
+font-size:13px;
+transition:transform .2s ease;
+}
+
+.account-wrap.open .account-arrow{
+transform:rotate(180deg);
+}
+
+.account-menu{
+position:absolute;
+right:0;
+top:54px;
+width:260px;
+background:#fff;
+border:1px solid #eee;
+border-radius:12px;
+box-shadow:0 12px 35px rgba(0,0,0,.16);
+padding:7px;
+z-index:5000;
+display:none;
+}
+
+.account-wrap.open .account-menu{
+display:block;
+}
+
+.account-menu-item{
+width:100%;
+display:flex;
+align-items:center;
+gap:13px;
+padding:13px 12px;
+border:0;
+border-radius:9px;
+background:#fff;
+color:#222;
+font-size:14px;
+font-weight:700;
+text-align:left;
+cursor:pointer;
+}
+
+.account-menu-item:hover{
+background:#f7f7f7;
+}
+
+.account-menu-icon{
+width:24px;
+font-size:18px;
+text-align:center;
+flex:none;
+}
+
+.account-menu-divider{
+height:1px;
+background:#eee;
+margin:5px 4px;
+}
+
+.account-menu-logout{
+color:#d71920;
+}
+
+@media(max-width:700px){
+.account-name{
+display:none;
+}
+.account-menu{
+right:-8px;
+width:245px;
+}
+}
+
 .header-bag{
 height:46px;
 border:0;
@@ -1129,9 +1244,47 @@ oninput="syncHeaderSearch(this.value)">
 ♡ <span>WISHLIST</span>
 </button>
 
-<button class="header-pill login-button" id="authButton" onclick="authButtonClick()">
-<span id="authButtonText">LOGIN</span>
+<div class="account-wrap" id="accountWrap">
+<button class="account-button" id="authButton" onclick="authButtonClick()" aria-haspopup="true" aria-expanded="false">
+<span class="account-avatar" id="accountAvatar">👤</span>
+<span class="account-name" id="authButtonText">LOGIN</span>
+<span class="account-arrow">▾</span>
 </button>
+
+<div class="account-menu" id="accountMenu">
+<button class="account-menu-item" onclick="accountMenuAction('orders')">
+<span class="account-menu-icon">🧾</span>
+<span>Order History</span>
+</button>
+
+<button class="account-menu-item" onclick="accountMenuAction('personal')">
+<span class="account-menu-icon">👤</span>
+<span>Personal Info</span>
+</button>
+
+<button class="account-menu-item" onclick="accountMenuAction('rewards')">
+<span class="account-menu-icon">🎁</span>
+<span>Reward Points</span>
+</button>
+
+<button class="account-menu-item" onclick="accountMenuAction('address')">
+<span class="account-menu-icon">📍</span>
+<span>Address Book</span>
+</button>
+
+<button class="account-menu-item" onclick="accountMenuAction('wishlist')">
+<span class="account-menu-icon">♥</span>
+<span>Wishlist</span>
+</button>
+
+<div class="account-menu-divider"></div>
+
+<button class="account-menu-item account-menu-logout" onclick="accountMenuAction('logout')">
+<span class="account-menu-icon">↪</span>
+<span>Logout</span>
+</button>
+</div>
+</div>
 
 <button class="header-bag" onclick="openCart()">
 <span class="bag-icon">♧</span>
@@ -1544,6 +1697,16 @@ Confirm Order / অর্ডার নিশ্চিত করুন
 <button class="secondary" style="width:auto" onclick="closeModal('orderSuccessModal');goHome()">Continue Shopping</button>
 <button class="primary" style="width:auto" onclick="closeModal('orderSuccessModal');openOrders()">My Orders / আমার অর্ডার</button>
 </div>
+</div>
+</div>
+
+<!-- ACCOUNT INFO MODALS -->
+
+<div class="modal" id="accountInfoModal">
+<div class="modal-box">
+<button class="close" onclick="closeModal('accountInfoModal')">×</button>
+<h2 id="accountInfoTitle">Personal Info</h2>
+<div id="accountInfoContent"></div>
 </div>
 </div>
 
@@ -2984,13 +3147,111 @@ function openAuth(){
   openModal("authModal");
 }
 
+function closeAccountMenu(){
+  const wrap = document.getElementById("accountWrap");
+  const button = document.getElementById("authButton");
+  if(wrap) wrap.classList.remove("open");
+  if(button) button.setAttribute("aria-expanded","false");
+}
+
+function toggleAccountMenu(){
+  if(!currentUser){
+    openAuth();
+    return;
+  }
+
+  const wrap = document.getElementById("accountWrap");
+  const button = document.getElementById("authButton");
+  if(!wrap) return;
+
+  const willOpen = !wrap.classList.contains("open");
+  wrap.classList.toggle("open", willOpen);
+  if(button) button.setAttribute("aria-expanded", willOpen ? "true" : "false");
+}
+
 function authButtonClick(){
   if(currentUser){
-    if(confirm("Logout করবেন?")) auth.signOut();
+    toggleAccountMenu();
   }else{
     openAuth();
   }
 }
+
+function accountMenuAction(action){
+  closeAccountMenu();
+
+  if(!currentUser){
+    openAuth();
+    return;
+  }
+
+  if(action === "orders"){
+    openOrders();
+    return;
+  }
+
+  if(action === "personal"){
+    openPersonalInfo();
+    return;
+  }
+
+  if(action === "rewards"){
+    openAccountInfo("Reward Points", '<div class="notice success" style="margin:0">Reward Points: <strong>0</strong><br><small>Reward points feature is ready for future store rewards.</small></div>');
+    return;
+  }
+
+  if(action === "address"){
+    openAddressBook();
+    return;
+  }
+
+  if(action === "wishlist"){
+    openWishlist();
+    return;
+  }
+
+  if(action === "logout"){
+    if(confirm("Logout করবেন?")) auth.signOut();
+  }
+}
+
+function openAccountInfo(title, html){
+  document.getElementById("accountInfoTitle").textContent = title;
+  document.getElementById("accountInfoContent").innerHTML = html;
+  openModal("accountInfoModal");
+}
+
+function openPersonalInfo(){
+  const name = escapeHTML(currentUser.displayName || "Customer");
+  const email = escapeHTML(currentUser.email || "Mobile account");
+  openAccountInfo(
+    "Personal Info / ব্যক্তিগত তথ্য",
+    '<div class="field"><label>Name / নাম</label><input value="'+name+'" readonly></div>' +
+    '<div class="field"><label>Account / অ্যাকাউন্ট</label><input value="'+email+'" readonly></div>'
+  );
+}
+
+function openAddressBook(){
+  openAccountInfo(
+    "Address Book / ঠিকানা",
+    '<div class="notice" style="margin:0">Your saved delivery address will appear here.<br><small>Checkout-এর সময় দেওয়া address বর্তমানে order-এর সঙ্গে save হয়।</small></div>'
+  );
+}
+
+function openWishlist(){
+  closeAccountMenu();
+  openAccountInfo(
+    "Wishlist / পছন্দের তালিকা",
+    '<div class="empty">Wishlist-এ এখনো কোনো product নেই।</div>'
+  );
+}
+
+document.addEventListener("click", function(event){
+  const wrap = document.getElementById("accountWrap");
+  if(wrap && !wrap.contains(event.target)){
+    closeAccountMenu();
+  }
+});
 
 function switchAuthMethod(method){
   authMethod = method === "phone" ? "phone" : "email";
@@ -4914,13 +5175,30 @@ document.getElementById(
 
 if(user){
 
-button.textContent =
-"Logout / লগআউট";
+const name = user.displayName || "Customer";
+const avatar = document.getElementById("accountAvatar");
+
+button.innerHTML =
+'<span class="account-avatar" id="accountAvatar">'+
+escapeHTML(name.charAt(0).toUpperCase())+
+'</span>'+
+'<span class="account-name" id="authButtonText">'+
+escapeHTML(name)+
+'</span>'+
+'<span class="account-arrow">▾</span>';
+
+button.setAttribute("aria-label","Account menu");
 
 }else{
 
-button.textContent =
-"Login / লগইন";
+button.innerHTML =
+'<span class="account-avatar" id="accountAvatar">👤</span>'+
+'<span class="account-name" id="authButtonText">LOGIN</span>'+
+'<span class="account-arrow">▾</span>';
+
+button.setAttribute("aria-label","Login");
+
+closeAccountMenu();
 
 }
 
