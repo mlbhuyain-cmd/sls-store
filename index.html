@@ -4467,7 +4467,7 @@ const knownStatus = order.status || order.orderStatus || "Confirmed";
 live.innerHTML =
 "Live Status: <b>" +
 escapeHTML(knownStatus) +
-"</b><br><span class="muted">Updating...</span>";
+"</b><br><span class=\"muted\">Updating...</span>";
 
 let result =
 await getLiveStatus(
