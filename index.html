@@ -3577,7 +3577,7 @@ function phoneIdentityEmail(phone){
   return digits + "@slsstore.app";
 }
 
-async async function submitPhoneAuth(){
+async function submitPhoneAuth(){
   const message = document.getElementById("authMessage");
   const phone = normalizeBdPhone(document.getElementById("authPhone").value);
   const password = document.getElementById("authPhonePassword").value;
@@ -5384,58 +5384,53 @@ return;
  ************************************************************/
 
 if(auth){
-auth.onAuthStateChanged(
-function(user){
+  auth.onAuthStateChanged(function(user){
+    currentUser = user || null;
 
-currentUser =
-user || null;
+    const button = document.getElementById("authButton");
+    if(!button) return;
 
-const button =
-document.getElementById(
-"authButton"
-);
+    if(user){
+      loadCustomerProfile().then(function(profile){
+        const savedName = profile && profile.name
+          ? profile.name
+          : (user.displayName || "Customer");
 
-if(user){
-loadCustomerProfile().then(function(profile){
-  const savedName = profile && profile.name ? profile.name : (user.displayName || "Customer");
-  const btn = document.getElementById("authButton");
-  if(btn){
-    btn.innerHTML =
-      '<span class="account-avatar" id="accountAvatar">'+escapeHTML(savedName.charAt(0).toUpperCase())+'</span>' +
-      '<span class="account-name" id="authButtonText">'+escapeHTML(savedName)+'</span>' +
-      '<span class="account-arrow">▾</span>';
-  }
-}).catch(function(e){ console.warn("Profile load skipped:",e);
+        button.innerHTML =
+          '<span class="account-avatar" id="accountAvatar">' +
+          escapeHTML(savedName.charAt(0).toUpperCase()) +
+          '</span>' +
+          '<span class="account-name" id="authButtonText">' +
+          escapeHTML(savedName) +
+          '</span>' +
+          '<span class="account-arrow">▾</span>';
 
-const name = user.displayName || "Customer";
-const avatar = document.getElementById("accountAvatar");
+        button.setAttribute("aria-label","Account menu");
+      }).catch(function(e){
+        console.warn("Profile load skipped:",e);
 
-button.innerHTML =
-'<span class="account-avatar" id="accountAvatar">'+
-escapeHTML(name.charAt(0).toUpperCase())+
-'</span>'+
-'<span class="account-name" id="authButtonText">'+
-escapeHTML(name)+
-'</span>'+
-'<span class="account-arrow">▾</span>';
+        const name = user.displayName || "Customer";
+        button.innerHTML =
+          '<span class="account-avatar" id="accountAvatar">' +
+          escapeHTML(name.charAt(0).toUpperCase()) +
+          '</span>' +
+          '<span class="account-name" id="authButtonText">' +
+          escapeHTML(name) +
+          '</span>' +
+          '<span class="account-arrow">▾</span>';
 
-button.setAttribute("aria-label","Account menu");
+        button.setAttribute("aria-label","Account menu");
+      });
+    }else{
+      button.innerHTML =
+        '<span class="account-avatar" id="accountAvatar">👤</span>' +
+        '<span class="account-name" id="authButtonText">LOGIN</span>' +
+        '<span class="account-arrow">▾</span>';
 
-}else{
-
-button.innerHTML =
-'<span class="account-avatar" id="accountAvatar">👤</span>'+
-'<span class="account-name" id="authButtonText">LOGIN</span>'+
-'<span class="account-arrow">▾</span>';
-
-button.setAttribute("aria-label","Login");
-
-closeAccountMenu();
-
-}
-
-}
-);
+      button.setAttribute("aria-label","Login");
+      closeAccountMenu();
+    }
+  });
 }
 
 /************************************************************
