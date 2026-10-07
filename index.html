@@ -4659,97 +4659,122 @@ Refresh Status চাপুন।
 
 /* CUSTOMER CANCEL ORDER - customer only through Processing */
 async function cancelCustomerOrder(orderId, phone, button){
-if(!orderId)return;
+  if(!orderId || !currentUser) return;
 
-const cancelNote = prompt(
-  "অর্ডার Cancel করার কারণ / Note লিখুন (অবশ্যই পূরণ করতে হবে):"
-);
-
-if(cancelNote === null)return;
-
-const note = String(cancelNote).trim();
-
-if(!note){
-  alert("Cancel করার আগে Note / কারণ লিখতে হবে।");
-  return;
-}
-
-if(button){
-  button.disabled = true;
-  button.textContent = "Cancelling...";
-}
-
-try{
-  /*
-   * IMPORTANT:
-   * Do NOT write the customer's order document directly from the browser.
-   * Firestore security rules may allow reading the order but deny customer
-   * updates, which causes "Missing or insufficient permissions".
-   *
-   * Cancellation is therefore sent to the existing Apps Script order
-   * endpoint, just like order submission. This keeps the customer's
-   * Firebase permissions unchanged.
-   */
-  await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action:"cancelCustomerOrder",
-      clientOrderId:String(orderId),
-      phone:phone||"",
-      uid:currentUser?currentUser.uid:"",
-      status:"Cancelled",
-      cancelNote:note
-    })
-  });
-
-  /* Clear live-status cache so an old Confirmed/Pending value is not reused. */
-  Object.keys(liveStatusCache || {}).forEach(function(key){
-    if(key.indexOf(String(orderId) + "|") === 0){
-      delete liveStatusCache[key];
-    }
-  });
-
-  if(button){
-    button.textContent = "✕ Cancelled";
-    button.style.background = "#6b7280";
-    button.disabled = true;
-  }
-
-  const card=document.getElementById(
-    "order-"+String(orderId).replace(/[^a-zA-Z0-9_-]/g,"_")
+  const cancelNote = prompt(
+    "অর্ডার Cancel করার কারণ / Note লিখুন (অবশ্যই পূরণ করতে হবে):"
   );
+  if(cancelNote === null) return;
 
-  if(card){
-    const badge=card.querySelector(".badge");
-    if(badge){
-      badge.textContent="Cancelled";
-      badge.className="badge";
-    }
-
-    const track=card.querySelector(".track-box");
-    if(track){
-      track.innerHTML='<div class="status-step active" style="background:#dc2626;color:#fff">Cancelled</div>';
-    }
-
-    const live=card.querySelector(".live-status");
-    if(live){
-      live.innerHTML="Live Status: <b>Cancelled</b>";
-    }
+  const note = String(cancelNote).trim();
+  if(!note){
+    alert("Cancel করার আগে Note / কারণ লিখতে হবে।");
+    return;
   }
-
-  alert("অর্ডারটি Cancel করার অনুরোধ পাঠানো হয়েছে।");
-}catch(error){
-  console.error(error);
 
   if(button){
-    button.disabled=false;
-    button.textContent="✕ Cancel Order";
+    button.disabled = true;
+    button.textContent = "Cancelling...";
   }
 
-  alert("অর্ডার Cancel করা যায়নি। আবার চেষ্টা করুন।");
-}
+  const callbackName =
+    "slsCancelCallback_" +
+    Date.now() +
+    "_" +
+    Math.random().toString(36).slice(2);
+
+  const script = document.createElement("script");
+  let timer = null;
+
+  function cleanup(){
+    if(timer) clearTimeout(timer);
+    try{ delete window[callbackName]; }catch(e){}
+    if(script.parentNode) script.parentNode.removeChild(script);
+  }
+
+  window[callbackName] = function(result){
+    cleanup();
+
+    if(result && result.success){
+      Object.keys(liveStatusCache || {}).forEach(function(key){
+        if(key.indexOf(String(orderId) + "|") === 0) delete liveStatusCache[key];
+      });
+
+      if(button){
+        button.textContent = "✕ Cancelled";
+        button.style.background = "#dc2626";
+        button.style.color = "#fff";
+        button.disabled = true;
+      }
+
+      const card=document.getElementById(
+        "order-"+String(orderId).replace(/[^a-zA-Z0-9_-]/g,"_")
+      );
+
+      if(card){
+        const badge=card.querySelector(".badge");
+        if(badge){
+          badge.textContent="Cancelled";
+          badge.className="badge";
+        }
+
+        const track=card.querySelector(".track-box");
+        if(track){
+          track.innerHTML='<div class="status-step active" style="background:#dc2626;color:#fff">Cancelled</div>';
+        }
+
+        const live=card.querySelector(".live-status");
+        if(live){
+          live.innerHTML="Live Status: <b>Cancelled</b>";
+        }
+      }
+
+      alert("অর্ডারটি Cancel করা হয়েছে।");
+      return;
+    }
+
+    if(button){
+      button.disabled=false;
+      button.textContent="✕ Cancel Order";
+    }
+
+    alert(
+      "অর্ডার Cancel করা যায়নি।\n" +
+      String(result && result.error ? result.error : "Server response পাওয়া যায়নি।")
+    );
+  };
+
+  timer = setTimeout(function(){
+    cleanup();
+    if(button){
+      button.disabled=false;
+      button.textContent="✕ Cancel Order";
+    }
+    alert("Cancel request-এর response পাওয়া যায়নি। আবার চেষ্টা করুন।");
+  }, 7000);
+
+  const params = new URLSearchParams();
+  params.set("action","cancelCustomerOrder");
+  params.set("clientOrderId",String(orderId));
+  params.set("orderId",String(orderId));
+  params.set("phone",phone || "");
+  params.set("uid",currentUser.uid || "");
+  params.set("cancelNote",note);
+  params.set("prefix",callbackName);
+  params.set("callback",callbackName);
+  params.set("t",Date.now());
+
+  script.src = APPS_SCRIPT_URL + "?" + params.toString();
+  script.onerror = function(){
+    cleanup();
+    if(button){
+      button.disabled=false;
+      button.textContent="✕ Cancel Order";
+    }
+    alert("Cancel server connection পাওয়া যায়নি।");
+  };
+
+  document.head.appendChild(script);
 }
 /************************************************************
  * MY ORDERS
@@ -5101,7 +5126,7 @@ card
 }
 
 },
-60000
+15000
 );
 
 });
