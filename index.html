@@ -3582,7 +3582,7 @@ function phoneIdentityEmail(phone){
   return digits + "@slsstore.app";
 }
 
-async function submitPhoneAuth(){
+async async function submitPhoneAuth(){
   const message = document.getElementById("authMessage");
   const phone = normalizeBdPhone(document.getElementById("authPhone").value);
   const password = document.getElementById("authPhonePassword").value;
