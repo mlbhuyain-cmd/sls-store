@@ -5652,8 +5652,10 @@ updateCheckoutSummary();
 
   function start(){
     grid=document.getElementById("productGrid");
-    /* Main catalog loader already handles Google Sheets + cache. */
     if(!grid)return;
+    /* Safety catalog: render products immediately even if another script fails. */
+    render(fallbackProducts);
+    loadLiveSheet();
   }
 
   if(document.readyState==="loading"){
