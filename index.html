@@ -1924,7 +1924,7 @@ let orderHistoryCache =
 
 /* Small live-status cache: keeps My Orders responsive without hiding real updates. */
 let liveStatusCache = {};
-const LIVE_STATUS_CACHE_MS = 3000;
+const LIVE_STATUS_CACHE_MS = 2500;
 const liveStatusInFlight = {};
 
 
@@ -4153,29 +4153,18 @@ firebase.firestore
 /*
  * GOOGLE SHEET
  *
- * no-cors is intentionally used.
+ * Use JSONP GET so the browser can verify that the order
+ * actually reached the Delivery Manager sheet.
  */
+const sheetResult = await syncOrderToSheet(orderData);
 
-await fetch(
-APPS_SCRIPT_URL,
-{
-
-method:"POST",
-
-mode:"no-cors",
-
-headers:{
-"Content-Type":
-"text/plain;charset=utf-8"
-},
-
-body:
-JSON.stringify(
-orderData
-)
-
+if(!sheetResult || !sheetResult.success){
+  throw new Error(
+    sheetResult && sheetResult.error
+      ? sheetResult.error
+      : "Delivery Manager order sync failed."
+  );
 }
-);
 
 
 /*
@@ -4212,6 +4201,84 @@ error.message
 
 }
 
+
+/************************************************************
+ * RELIABLE WEBSITE -> DELIVERY MANAGER ORDER SYNC
+ *
+ * Primary path: GET + JSONP.
+ * This avoids the browser no-cors problem where the website
+ * could show "Order placed" even when Apps Script rejected it.
+ ************************************************************/
+function syncOrderToSheet(orderData){
+  return new Promise(function(resolve){
+    const callbackName =
+      "slsCreateOrderCallback_" +
+      Date.now() +
+      "_" +
+      Math.random().toString(36).slice(2);
+
+    const script = document.createElement("script");
+    let timer = null;
+    let finished = false;
+
+    function cleanup(){
+      if(timer) clearTimeout(timer);
+      try{ delete window[callbackName]; }catch(e){}
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    function finish(result){
+      if(finished) return;
+      finished = true;
+      cleanup();
+      resolve(result || {success:false,error:"Empty server response."});
+    }
+
+    window[callbackName] = function(result){
+      finish(result);
+    };
+
+    timer = setTimeout(function(){
+      finish({
+        success:false,
+        error:"Delivery Manager server response timeout."
+      });
+    }, 7000);
+
+    const params = new URLSearchParams();
+    params.set("action","createOrder");
+    params.set("clientOrderId",String(orderData.clientOrderId || ""));
+    params.set("orderId",String(orderData.clientOrderId || ""));
+    params.set("name",String(orderData.name || ""));
+    params.set("customerName",String(orderData.customerName || orderData.name || ""));
+    params.set("phone",String(orderData.phone || ""));
+    params.set("address",String(orderData.address || ""));
+    params.set("deliveryLocation",String(orderData.deliveryLocation || orderData.address || ""));
+    params.set("deliveryArea",String(orderData.deliveryArea || ""));
+    params.set("productTotal",String(orderData.productTotal || 0));
+    params.set("deliveryCharge",String(orderData.deliveryCharge || 0));
+    params.set("grandTotal",String(orderData.grandTotal || 0));
+    params.set("total",String(orderData.total || orderData.grandTotal || 0));
+    params.set("paymentMethod",String(orderData.paymentMethod || "Cash on Delivery"));
+    params.set("uid",String(orderData.uid || ""));
+    params.set("email",String(orderData.email || ""));
+    params.set("status","Confirmed");
+    params.set("items",JSON.stringify(Array.isArray(orderData.items) ? orderData.items : []));
+    params.set("prefix",callbackName);
+    params.set("callback",callbackName);
+    params.set("t",Date.now());
+
+    script.onerror = function(){
+      finish({
+        success:false,
+        error:"Delivery Manager server connection failed."
+      });
+    };
+
+    script.src = APPS_SCRIPT_URL + "?" + params.toString();
+    document.head.appendChild(script);
+  });
+}
 
 /************************************************************
  * ORDER SUCCESS MODAL
@@ -4315,7 +4382,7 @@ tryNext();
 timer = setTimeout(function(){
 cleanup();
 tryNext();
-}, 4500);
+}, 3000);
 
 const params = new URLSearchParams();
 params.set("action", action);
@@ -4637,20 +4704,21 @@ invoice.innerHTML = "";
 
 }else{
 
-live.innerHTML = `
+const fallbackStatus = order.status || order.orderStatus || "Confirmed";
 
-Live status এখনও পাওয়া যায়নি।
+live.innerHTML =
+"Live Status: <b>" +
+escapeHTML(fallbackStatus) +
+"</b><br><span class="muted">Live server update temporarily unavailable.</span>";
 
-<br>
-
-<span class="muted">
-
-Google Sheet-এর Status update করার পর
-Refresh Status চাপুন।
-
-</span>
-
-`;
+const cancelButton = card.querySelector("[data-cancel-order]");
+if(cancelButton){
+  const normalizedFallback = String(fallbackStatus || "").trim().toLowerCase();
+  const canCancelFallback =
+    ["pending","confirmed","picking","processing"].includes(normalizedFallback);
+  cancelButton.style.display = canCancelFallback ? "inline-block" : "none";
+  cancelButton.disabled = false;
+}
 
 }
 
