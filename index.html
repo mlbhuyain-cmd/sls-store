@@ -4404,6 +4404,15 @@ return "";
 }
 
 
+function isCancelRequestedStatus(status){
+  const value = String(status || "").trim().toLowerCase();
+  return (
+    value === "cancel requested" ||
+    value === "cancel_request" ||
+    value === "cancellation requested"
+  );
+}
+
 function createStatusTrack(
 status
 ){
@@ -4477,6 +4486,8 @@ card.querySelector(
 );
 
 const knownStatus = order.status || order.orderStatus || "Confirmed";
+const localCancelRequested = isCancelRequestedStatus(knownStatus);
+
 live.innerHTML =
 "Live Status: <b>" +
 escapeHTML(knownStatus) +
@@ -4585,10 +4596,25 @@ result.success &&
 result.found
 ){
 
-const status =
+let status =
 result.status ||
 result.orderStatus ||
 "Pending";
+
+/* Never let an older live-status response overwrite a customer's
+ * pending Cancel Requested state. Manager-approved Cancelled is
+ * still accepted normally. */
+if(
+  localCancelRequested &&
+  !isCancelRequestedStatus(status) &&
+  String(status || "").trim().toLowerCase() !== "cancelled"
+){
+  status = "Cancel Requested";
+}
+
+if(isCancelRequestedStatus(status)){
+  order.status = "Cancel Requested";
+}
 
 live.innerHTML =
 "Live Status: <b>" +
@@ -4623,7 +4649,9 @@ statusClass(status);
 const cancelButton = card.querySelector("[data-cancel-order]");
 if(cancelButton){
 const normalizedStatus = String(status || "").trim().toLowerCase();
-const customerCanCancel = ["pending","confirmed","picking","processing"].includes(normalizedStatus);
+const customerCanCancel =
+  ["pending","confirmed","picking","processing"].includes(normalizedStatus) &&
+  !isCancelRequestedStatus(status);
 cancelButton.style.display = customerCanCancel ? "inline-block" : "none";
 if(!customerCanCancel) cancelButton.disabled = true;
 }
@@ -4785,6 +4813,21 @@ try{
 
   if(result && result.success){
     const status = result.status || "Cancel Requested";
+
+    /* Persist Cancel Requested in Firebase immediately so the next
+     * My Orders refresh cannot restore the old live status. */
+    const customerOrder = orderHistoryCache[safeKey] || null;
+    if(customerOrder && customerOrder.id){
+      try{
+        customerOrder.status = status;
+        await db.collection("orders").doc(customerOrder.id).update({
+          status: status
+        });
+      }catch(firebaseError){
+        console.warn("Could not persist Cancel Requested locally:", firebaseError);
+      }
+    }
+
     if(button){
       button.textContent = "⏳ Cancel Requested";
       button.style.background = "#b7791f";
