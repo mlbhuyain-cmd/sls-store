@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply final combined product showcase
+      - name: Match supplied hero reference
         shell: bash
         run: |
           python3 - <<'PY'
@@ -19,26 +19,26 @@ jobs:
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           css='''
-          <style id="sls-combo-showcase-v7">
+          <style id="sls-reference-v8">
+          .hero-card:after{content:none!important}
           .hero{height:292px!important}
-          .hero-card{height:100%!important}
-          .hero-brand{width:62%!important;height:100%!important;right:0!important}
-          .hero-visual{height:100%!important;gap:2px!important;padding:0 14px 0 0!important;align-items:center!important}
-          .hero-products{width:58%!important;height:100%!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:0!important;padding:0 0 10px!important;position:relative!important}
-          .hero-product{width:78px!important;height:232px!important;flex:0 0 78px!important;margin:0 -10px!important;object-fit:contain!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 8px 7px rgba(0,0,0,.15))!important;position:relative!important;z-index:3!important}
-          .hero-products:after{content:""!important;position:absolute!important;left:5%!important;right:2%!important;bottom:8px!important;height:30px!important;border-radius:50%!important;background:linear-gradient(#ffd8eb,#d992bf)!important;box-shadow:0 6px 10px rgba(0,0,0,.18)!important;z-index:1!important}
-          .hero-logo-wrap{width:188px!important;height:188px!important;flex:0 0 188px!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important}
+          .hero-brand{width:64%!important;height:100%!important;right:0!important}
+          .hero-visual{height:100%!important;display:flex!important;align-items:center!important;gap:0!important;padding:0 8px 0 0!important;overflow:visible!important}
+          .hero-products{width:59%!important;height:100%!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:0!important;padding:0 0 10px!important;position:relative!important;overflow:visible!important}
+          .hero-product{width:76px!important;height:244px!important;flex:0 0 76px!important;margin:0 -13px!important;object-fit:contain!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 8px 7px rgba(0,0,0,.13))!important;position:relative!important;z-index:3!important;transform:scale(1.42)!important;transform-origin:center bottom!important}
+          .hero-products:after{content:""!important;position:absolute!important;left:4%!important;right:3%!important;bottom:8px!important;height:28px!important;border-radius:50%!important;background:linear-gradient(#ffd8eb,#df9dcc)!important;box-shadow:0 5px 9px rgba(0,0,0,.14)!important;z-index:1!important}
+          .hero-logo-wrap{width:176px!important;height:176px!important;flex:0 0 176px!important;margin:0 3px!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:5!important}
           .hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important}
-          .hero-slogan{width:125px!important;flex:0 0 125px!important;font-size:25px!important;line-height:1.02!important;text-align:center!important;color:#075e54!important}
-          .hero-slogan b{font-size:31px!important;display:block!important}
-          @media(max-width:1250px){.hero-products{width:56%!important}.hero-product{width:67px!important;height:215px!important;flex-basis:67px!important;margin:0 -9px!important}.hero-logo-wrap{width:170px!important;height:170px!important;flex-basis:170px!important}.hero-slogan{width:100px!important;flex-basis:100px!important;font-size:21px!important}.hero-slogan b{font-size:27px!important}}
-          @media(max-width:1000px){.hero{height:260px!important}.hero-brand{width:58%!important}.hero-products{width:55%!important}.hero-product{width:56px!important;height:195px!important;flex-basis:56px!important;margin:0 -7px!important}.hero-logo-wrap{width:145px!important;height:145px!important;flex-basis:145px!important}.hero-slogan{display:none!important}}
-          @media(max-width:700px){.hero{height:230px!important}.hero-copy{width:58%!important;max-width:58%!important;padding:18px 18px!important}.hero-copy h1{font-size:31px!important}.hero-brand{width:48%!important}.hero-products{display:none!important}.hero-logo-wrap{width:130px!important;height:130px!important;flex-basis:130px!important}}
+          .hero-slogan{width:116px!important;flex:0 0 116px!important;font-size:23px!important;line-height:1.03!important;text-align:center!important;color:#075e54!important}
+          .hero-slogan b{font-size:29px!important;display:block!important}
+          @media(max-width:1250px){.hero-product{width:68px!important;height:225px!important;flex-basis:68px!important;margin:0 -11px!important;transform:scale(1.34)!important}.hero-products{width:58%!important}.hero-logo-wrap{width:158px!important;height:158px!important;flex-basis:158px!important}.hero-slogan{width:95px!important;flex-basis:95px!important;font-size:20px!important}.hero-slogan b{font-size:25px!important}}
+          @media(max-width:1000px){.hero{height:260px!important}.hero-brand{width:60%!important}.hero-products{width:56%!important}.hero-product{width:57px!important;height:205px!important;flex-basis:57px!important;margin:0 -9px!important;transform:scale(1.28)!important}.hero-logo-wrap{width:140px!important;height:140px!important;flex-basis:140px!important}.hero-slogan{display:none!important}}
+          @media(max-width:700px){.hero{height:230px!important}.hero-copy{width:55%!important;max-width:55%!important;padding:18px!important}.hero-copy h1{font-size:30px!important}.hero-brand{width:48%!important}.hero-products{width:100%!important}.hero-product{width:42px!important;height:160px!important;flex-basis:42px!important;margin:0 -7px!important;transform:scale(1.18)!important}.hero-logo-wrap{display:none!important}}
           </style>
           '''
-          if 'sls-combo-showcase-v7' not in s:s=s.replace('</head>',css+'</head>',1)
+          if 'sls-reference-v8' not in s:s=s.replace('</head>',css+'</head>',1)
           js='''
-          <script id="sls-combo-products-v7">
+          <script id="sls-reference-products-v8">
           (function(){
             function pick(rx){return products.find(function(x){return rx.test(String(x.name||''))&&x.image})}
             function go(){
@@ -58,16 +58,16 @@ jobs:
               var fall=[/himalaya.*face.*wash/i,/dove.*intense.*repair/i,/pond.?s.*bright.*beauty/i,/tresemme.*580ml/i,/clear.*shampoo/i,/himalaya.*cream/i,/pond.?s.*cream/i,/himalaya.*brightening/i];
               var a=[];
               rx.forEach(function(r,i){var p=pick(r)||pick(fall[i]);if(p&&!a.some(function(q){return String(q.id)===String(p.id)}))a.push(p)});
-              b.innerHTML='<div class="hero-visual"><div class="hero-products">'+a.slice(0,8).map(function(p){return '<img class="hero-product" src="'+p.image+'" alt="">'}).join('')+'</div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=v7" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+              b.innerHTML='<div class="hero-visual"><div class="hero-products">'+a.slice(0,8).map(function(p){return '<img class="hero-product" src="'+p.image+'" alt="">'}).join('')+'</div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=v8" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
             }
             go();
           })();
           </script>
           '''
-          if 'sls-combo-products-v7' not in s:s=s.replace('</body>',js+'</body>',1)
+          if 'sls-reference-products-v8' not in s:s=s.replace('</body>',js+'</body>',1)
           p.write_text(s,encoding='utf-8')
           PY
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || (git commit -m 'Create larger combined beauty product showcase' && git push)
+          git diff --cached --quiet || (git commit -m 'Match supplied hero reference with larger unified product cluster' && git push)
