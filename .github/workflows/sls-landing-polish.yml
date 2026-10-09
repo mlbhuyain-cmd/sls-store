@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Scale all hero combo products up uniformly
+      - name: Make hero product combo substantially larger
         shell: bash
         run: |
           python3 - <<'PY'
@@ -19,22 +19,23 @@ jobs:
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           css='''
-          <style id="sls-hero-all-products-big-v11">
-          .hero-products{width:68%!important;height:100%!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:0!important;padding:0 6px 5px!important;overflow:visible!important;position:relative!important}
-          .hero-product{width:118px!important;height:310px!important;flex:0 0 118px!important;margin:0 -24px!important;object-fit:contain!important;transform:scale(1.22)!important;transform-origin:center bottom!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 10px 8px rgba(0,0,0,.14))!important;z-index:3!important}
-          .hero-products:after{left:0!important;right:0!important;bottom:4px!important;height:34px!important;border-radius:50%!important;z-index:1!important}
-          .hero-logo-wrap{width:190px!important;height:190px!important;flex:0 0 190px!important;margin:0 0!important}
+          <style id="sls-hero-combo-huge-v12">
+          /* Exact highlighted hero area: large, dense, unified product combo */
+          .hero-products{width:68%!important;height:100%!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:0!important;padding:0 0 4px!important;overflow:visible!important;position:relative!important}
+          .hero-product{width:155px!important;height:350px!important;flex:0 0 155px!important;margin:0 -47px!important;object-fit:contain!important;transform:scale(1.55)!important;transform-origin:center bottom!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 12px 9px rgba(0,0,0,.16))!important;z-index:4!important}
+          .hero-products:after{left:0!important;right:0!important;bottom:3px!important;height:38px!important;border-radius:50%!important;z-index:1!important}
+          .hero-logo-wrap{width:190px!important;height:190px!important;flex:0 0 190px!important;margin:0!important}
           .hero-slogan{width:122px!important;flex:0 0 122px!important;font-size:23px!important}
           .hero-slogan b{font-size:30px!important}
-          @media(max-width:1250px){.hero-products{width:66%!important}.hero-product{width:104px!important;height:285px!important;flex-basis:104px!important;margin:0 -21px!important;transform:scale(1.18)!important}.hero-logo-wrap{width:170px!important;height:170px!important;flex-basis:170px!important}.hero-slogan{width:100px!important;flex-basis:100px!important;font-size:20px!important}.hero-slogan b{font-size:26px!important}}
-          @media(max-width:1000px){.hero-products{width:62%!important}.hero-product{width:84px!important;height:250px!important;flex-basis:84px!important;margin:0 -16px!important;transform:scale(1.13)!important}.hero-logo-wrap{width:150px!important;height:150px!important;flex-basis:150px!important}.hero-slogan{display:none!important}}
-          @media(max-width:700px){.hero-products{width:100%!important}.hero-product{width:62px!important;height:205px!important;flex-basis:62px!important;margin:0 -11px!important;transform:scale(1.08)!important}.hero-logo-wrap{display:none!important}}
+          @media(max-width:1250px){.hero-products{width:66%!important}.hero-product{width:140px!important;height:325px!important;flex-basis:140px!important;margin:0 -43px!important;transform:scale(1.45)!important}.hero-logo-wrap{width:170px!important;height:170px!important;flex-basis:170px!important}.hero-slogan{width:100px!important;flex-basis:100px!important;font-size:20px!important}.hero-slogan b{font-size:26px!important}}
+          @media(max-width:1000px){.hero-products{width:62%!important}.hero-product{width:115px!important;height:290px!important;flex-basis:115px!important;margin:0 -35px!important;transform:scale(1.3)!important}.hero-logo-wrap{width:150px!important;height:150px!important;flex-basis:150px!important}.hero-slogan{display:none!important}}
+          @media(max-width:700px){.hero-products{width:100%!important}.hero-product{width:82px!important;height:230px!important;flex-basis:82px!important;margin:0 -25px!important;transform:scale(1.2)!important}.hero-logo-wrap{display:none!important}}
           </style>
           '''
-          if 'sls-hero-all-products-big-v11' not in s:s=s.replace('</head>',css+'</head>',1)
+          if 'sls-hero-combo-huge-v12' not in s:s=s.replace('</head>',css+'</head>',1)
           p.write_text(s,encoding='utf-8')
           PY
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || (git commit -m 'Scale all hero combo products up uniformly' && git push)
+          git diff --cached --quiet || (git commit -m 'Make hero product combo substantially larger' && git push)
