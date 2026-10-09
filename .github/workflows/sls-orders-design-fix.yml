@@ -1,0 +1,75 @@
+name: SLS Orders Design Fix
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          # Seven-color pink/mint/rose/violet/sky/gold/teal palette for My Orders.
+          old='#ordersModal{background:linear-gradient(135deg,#032f3dE8,#008f7AD9,#087fc1E8)}#ordersModal .modal-box{width:min(1080px,100%);padding:0;overflow:hidden;border:1px solid #ffffff88;background:#f7fcff}'
+          new='#ordersModal{background:linear-gradient(135deg,rgba(255,20,147,.88),rgba(255,105,180,.84),rgba(190,120,255,.82),rgba(90,190,255,.82),rgba(70,220,190,.82),rgba(255,205,90,.80),rgba(255,75,130,.86));background-size:400% 400%;animation:slsPinkFlow 12s ease infinite}#ordersModal .modal-box{width:min(1080px,100%);padding:0;overflow:hidden;border:2px solid rgba(255,255,255,.8);background:linear-gradient(135deg,#fff7fb,#f0fff9 38%,#fff 70%,#fff4fa);box-shadow:0 30px 90px rgba(255,20,147,.30)}@keyframes slsPinkFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}'
+          if old in s and 'slsPinkFlow' not in s:
+              s=s.replace(old,new,1)
+
+          old='.orders-list{padding:22px;background:linear-gradient(135deg,#f3fdff,#effff8,#fff7fb)}'
+          new='.orders-list{padding:22px;background:linear-gradient(135deg,#fff0f8,#effff9 28%,#f1f7ff 52%,#fff5df 76%,#ffeaf5);background-size:250% 250%;animation:slsListFlow 14s ease infinite}@keyframes slsListFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}'
+          if old in s and 'slsListFlow' not in s:
+              s=s.replace(old,new,1)
+
+          old='.order{border:1px solid #d8ebef;padding:18px;margin:0 0 18px;border-radius:20px;background:#fff;box-shadow:0 12px 32px #007b7b16;overflow:hidden}'
+          new='.order{border:2px solid #ffd0e5;padding:18px;margin:0 0 18px;border-radius:22px;background:linear-gradient(145deg,#fff,#fff5fa 38%,#f1fffb 100%);box-shadow:0 14px 34px rgba(255,20,147,.13),0 5px 18px rgba(0,170,145,.08);overflow:hidden;position:relative}.order:first-child{border-color:#ff62aa;box-shadow:0 0 0 3px rgba(255,98,170,.12),0 18px 42px rgba(255,20,147,.22);animation:slsLatestPulse 2.8s ease-in-out infinite}.order:first-child:before{content:"LATEST ORDER • সর্বশেষ অর্ডার";display:inline-block;margin:-5px 0 10px;padding:6px 12px;border-radius:20px;background:linear-gradient(90deg,#ff2f92,#ff6b9f,#a855f7,#22c7a5);color:#fff;font-size:11px;font-weight:900;letter-spacing:.3px}.order:first-child .order-id{color:#d31370}.order:first-child .summary-total{background:linear-gradient(90deg,#ffd6ea,#d8fff2,#dbeeff,#fff0c2);color:#a10b59}@keyframes slsLatestPulse{0%,100%{transform:translateY(0);box-shadow:0 0 0 3px rgba(255,98,170,.12),0 18px 42px rgba(255,20,147,.20)}50%{transform:translateY(-2px);box-shadow:0 0 0 5px rgba(255,98,170,.16),0 22px 50px rgba(255,20,147,.28)}}'
+          if old in s and 'LATEST ORDER' not in s:
+              s=s.replace(old,new,1)
+
+          # Pink/mint/violet accents throughout the order cards.
+          s=s.replace('.order-products,.order-progress,.order-summary{border-radius:16px;padding:15px;background:linear-gradient(145deg,#f0fffb,#f7fcff);border:1px solid #dceff0}', '.order-products,.order-progress,.order-summary{border-radius:17px;padding:15px;background:linear-gradient(145deg,#fff7fb,#f1fff9,#f4f7ff);border:1px solid #f3cde0;box-shadow:0 5px 16px rgba(255,80,150,.06)}')
+          s=s.replace('.address-box{margin-top:14px;padding:13px 15px;border-radius:14px;background:linear-gradient(90deg,#e8f5ff,#effff9);border:1px solid #d7eaf2}', '.address-box{margin-top:14px;padding:13px 15px;border-radius:15px;background:linear-gradient(90deg,#ffeaf5,#e5fff7,#eaf2ff);border:1px solid #f1c9df}')
+          s=s.replace('.order-actions button{background:#eef6f8;padding:9px 13px;border-radius:20px;font-weight:800;color:#075e54}', '.order-actions button{background:linear-gradient(90deg,#fff0f7,#eafff8);padding:9px 13px;border-radius:20px;font-weight:800;color:#9b1760;border:1px solid #f2c6dd}')
+
+          # Robust newest-first sorting for ISO dates, Firestore timestamps and numeric timestamps.
+          marker='let orderCache={};'
+          helper='function orderTime(o){try{const v=o?.createdAt??o?.timestamp??o?.date??o?.orderDate??o?.created; if(v&&typeof v.toMillis==="function")return v.toMillis(); if(v&&typeof v.toDate==="function")return v.toDate().getTime(); if(v&&typeof v.seconds==="number")return v.seconds*1000; if(v&&typeof v._seconds==="number")return v._seconds*1000; const n=Number(v); if(Number.isFinite(n)&&n>0)return n; const t=Date.parse(v); return Number.isFinite(t)?t:0}catch(e){return 0}}\n'
+          if marker in s and 'function orderTime(o)' not in s:
+              s=s.replace(marker,marker+helper,1)
+          s=s.replace('arr.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));','arr.sort((a,b)=>orderTime(b)-orderTime(a));')
+
+          # After a successful order, switch automatically to My Orders and put the new order at the top.
+          old='setTimeout(()=>{btn.disabled=false;btn.dataset.busy="";btn.textContent="Place Order / অর্ডার কনফার্ম করুন";closeModal("checkoutModal");openOrders()},900)'
+          new='setTimeout(()=>{btn.disabled=false;btn.dataset.busy="";btn.textContent="Place Order / অর্ডার কনফার্ম করুন";closeModal("checkoutModal");openOrders();window.scrollTo({top:0,behavior:"smooth"})},700)'
+          s=s.replace(old,new)
+
+          p.write_text(s,encoding='utf-8')
+
+      - name: Commit patched site
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then echo "No patch needed"; exit 0; fi
+          git commit -m "Polish My Orders with latest-first pink multi-color design"
+          git push
+
+      - name: Remove temporary workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/sls-orders-design-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/sls-orders-design-fix.yml
+          git commit -m "Remove temporary orders design workflow"
+          git push
