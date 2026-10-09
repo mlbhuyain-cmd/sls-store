@@ -14,43 +14,74 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Apply exact logo landing design
+      - name: Apply final landing design
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
-          marker='/* SLS EXACT LOGO LANDING DESIGN */'
-          css='''
-          /* SLS EXACT LOGO LANDING DESIGN */
+          marker='/* SLS LANDING DESIGN V2 */'
+          css=r'''
+          /* SLS LANDING DESIGN V2 */
           .top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}
-          .page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important}
-          .page-title .title-logo{width:72px!important;height:56px!important;object-fit:contain!important;display:block!important}
-          .hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important}
+          .page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important;color:#075e54!important;font-size:32px!important}
+          .page-title .title-logo{width:72px!important;height:60px!important;object-fit:contain!important;display:block!important}
+          .hero{height:225px!important}
+          .hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important;background:linear-gradient(115deg,#ffe0ef 0%,#e2fff6 47%,#dff3ff 76%,#fff0aa 100%)!important}
+          .hero-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.75),transparent 28%),radial-gradient(circle at 7% 92%,rgba(255,255,255,.7),transparent 25%);z-index:0;pointer-events:none}
           .hero-card:after{display:none!important}
-          .hero-copy{position:relative!important;z-index:3!important;max-width:58%!important}
-          .hero-brand{position:absolute!important;right:28px!important;top:50%!important;transform:translateY(-50%)!important;width:330px!important;height:180px!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important}
-          .hero-brand img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+          .hero-copy{position:relative!important;z-index:5!important;max-width:54%!important;padding:25px 45px!important}
+          .hero-copy small{font-size:12px!important;letter-spacing:.2px!important}
+          .hero-copy h1{font-size:40px!important;line-height:1.02!important;margin:5px 0 10px!important}
+          .hero-copy p{margin:0 0 14px!important}
+          .hero-brand{position:absolute!important;right:12px!important;top:0!important;width:57%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important;transform:none!important}
+          .hero-visual{width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:8px 14px 8px 0!important}
+          .hero-products{height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;flex:1!important;min-width:0!important}
+          .hero-product{width:70px!important;height:145px!important;object-fit:contain!important;filter:drop-shadow(0 8px 8px rgba(0,0,0,.16))!important}
+          .hero-logo-wrap{width:155px!important;height:155px!important;flex:none!important;display:flex!important;align-items:center!important;justify-content:center!important}
+          .hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;filter:drop-shadow(0 6px 6px rgba(0,0,0,.08))!important}
+          .hero-slogan{width:105px!important;flex:none!important;color:#075e54!important;font-family:cursive!important;font-size:22px!important;line-height:1.05!important;text-align:center!important;transform:rotate(-3deg)!important}
+          .hero-slogan b{font-size:28px!important;display:block!important;margin-top:5px!important}
           .featured{overflow:hidden!important}
           .feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}
           .fcard{min-width:0!important;width:auto!important;max-width:none!important;overflow:hidden!important}
           .fimg{min-width:0!important;width:100%!important;overflow:hidden!important}
           .fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}
-          @media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:62px!important;height:50px!important}.hero-brand{width:250px!important;height:140px!important;right:12px!important}.hero-copy{max-width:62%!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
-          @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero-brand{width:145px!important;height:105px!important;right:7px!important}.hero-copy{max-width:78%!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-          @media(max-width:450px){.hero-brand{width:105px!important;height:80px!important;right:3px!important}.hero-copy{max-width:82%!important}}
+          @media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:62px!important;height:50px!important}.hero{height:210px!important}.hero-copy{max-width:52%!important;padding:22px 28px!important}.hero-copy h1{font-size:34px!important}.hero-brand{width:58%!important}.hero-product{width:55px!important;height:125px!important}.hero-logo-wrap{width:120px!important;height:120px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+          @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title{font-size:26px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero{height:190px!important}.hero-copy{max-width:75%!important;padding:15px 20px!important}.hero-copy h1{font-size:28px!important}.hero-brand{width:48%!important}.hero-products{display:none!important}.hero-logo-wrap{width:125px!important;height:125px!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+          @media(max-width:450px){.hero-brand{width:38%!important}.hero-logo-wrap{width:100px!important;height:100px!important}.hero-copy{max-width:82%!important}.hero-copy h1{font-size:25px!important}}
           '''
           if marker not in s:
               s=s.replace('</style>',css+'\n</style>',1)
-          old_title='<h1 class="page-title" id="pageTitle">SLS Store</h1>'
-          new_title='<h1 class="page-title" id="pageTitle"><img class="title-logo" src="./assets/sls-logo-real.webp?v=landing-final" alt="SLS Store"><span>SLS Store</span></h1>'
-          if old_title in s:
-              s=s.replace(old_title,new_title,1)
-          old_hero='<section class="hero"><div class="hero-card"><div class="hero-copy"><small>SLS STORE • SPECIAL OFFER</small><h1>Beauty Savings<br>You\'ll Love</h1><p>আপনার পছন্দের cosmetics ও personal care পণ্য একসাথে।</p><button class="primary" id="shopNow">SHOP NOW</button></div></div></section>'
-          new_hero='<section class="hero"><div class="hero-card"><div class="hero-copy"><small>SLS STORE • SPECIAL OFFER</small><h1>Beauty Savings<br>You\'ll Love</h1><p>আপনার পছন্দের cosmetics ও personal care পণ্য একসাথে।</p><button class="primary" id="shopNow">SHOP NOW</button></div><div class="hero-brand"><img src="./assets/sls-logo-real.webp?v=landing-final" alt="SLS Store Company Logo"></div></div></section>'
-          if old_hero in s:
-              s=s.replace(old_hero,new_hero,1)
+          script_marker='// SLS LANDING HERO V2'
+          js=r'''
+          // SLS LANDING HERO V2
+          (function(){
+            function makeHero(){
+              const card=document.querySelector('.hero-card');
+              if(!card) return;
+              let brand=card.querySelector('.hero-brand');
+              if(!brand){brand=document.createElement('div');brand.className='hero-brand';card.appendChild(brand)}
+              brand.innerHTML='<div class="hero-visual"><div class="hero-products"></div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=landing-v2" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+              if(typeof products==='undefined'||!Array.isArray(products)||!products.length) return;
+              const wanted=[/himalaya.*face wash/i,/dove.*repair/i,/pond.?s/i,/tresemme/i];
+              const picks=[];
+              wanted.forEach(rx=>{const p=products.find(x=>rx.test(String(x.name||''))&&x.image);if(p&&!picks.some(y=>String(y.id)===String(p.id)))picks.push(p)});
+              const more=products.filter(x=>x.image&&!picks.some(y=>String(y.id)===String(x.id))).slice(0,4);
+              const all=picks.concat(more).slice(0,4);
+              brand.querySelector('.hero-products').innerHTML=all.map(p=>'<img class="hero-product" src="'+String(p.image).replace(/"/g,'&quot;')+'" alt="">').join('');
+            }
+            function wait(){makeHero();if(!document.querySelector('.hero-products img'))setTimeout(wait,900)}
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
+          })();
+          '''
+          if script_marker not in s:
+              s=s.replace('</body>','<script>\n'+js+'\n</script>\n</body>',1)
+          # Make sure the centered brand title has the original-color logo.
+          old='<h1 class="page-title" id="pageTitle">SLS Store</h1>'
+          new='<h1 class="page-title" id="pageTitle"><img class="title-logo" src="./assets/sls-logo-real.webp?v=landing-v2" alt="SLS Store"><span>SLS Store</span></h1>'
+          if old in s:s=s.replace(old,new,1)
           p.write_text(s,encoding='utf-8')
           PY
       - name: Commit final page
@@ -58,4 +89,4 @@ jobs:
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Place original SLS logo in landing hero and title'; git push; fi
+          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Match SLS landing hero design'; git push; fi
