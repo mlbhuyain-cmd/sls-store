@@ -61,12 +61,20 @@ box-shadow:0 3px 10px rgba(255,47,103,.28);
 }
 
 .site-header{
-position:sticky;
-top:0;
-z-index:100;
-background:#fff;
-border-bottom:1px solid #e5e5e5;
-box-shadow:0 2px 10px rgba(0,0,0,.04);
+ position:sticky;
+ top:0;
+ z-index:99999;
+ isolation:isolate;
+ pointer-events:auto;
+ background:#fff;
+ border-bottom:1px solid #e5e5e5;
+ box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+.site-header button,
+.site-header a,
+.site-header input,
+.site-header nav{
+ pointer-events:auto;
 }
 
 .top-nav{
@@ -5841,9 +5849,9 @@ updateCheckoutSummary();
     if (target.matches(".account-button")) {
       event.preventDefault();
       if (!callIfAvailable("authButtonClick")) {
-        var accountMenu = document.getElementById("accountMenu");
-        if (accountMenu) accountMenu.classList.toggle("show");
-        target.setAttribute("aria-expanded", accountMenu && accountMenu.classList.contains("show") ? "true" : "false");
+        var accountWrap = document.getElementById("accountWrap");
+        if (accountWrap) accountWrap.classList.toggle("open");
+        target.setAttribute("aria-expanded", accountWrap && accountWrap.classList.contains("open") ? "true" : "false");
       }
       return;
     }
