@@ -1,10 +1,8 @@
 name: SLS landing page visual fix
 on:
   push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/sls-landing-polish.yml'
+    branches: [main]
+    paths: ['.github/workflows/sls-landing-polish.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -12,86 +10,50 @@ jobs:
   patch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Apply approved landing composition
+      - uses: actions/checkout@v4
+      - name: Apply reference design
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          marker='/* SLS APPROVED HERO V3 */'
-          css=r'''
-          /* SLS APPROVED HERO V3 */
-          .top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}
-          .page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important;color:#075e54!important;font-size:32px!important}
-          .page-title .title-logo{width:62px!important;height:58px!important;object-fit:contain!important;display:block!important}
-          .hero{height:225px!important}
-          .hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important;background:linear-gradient(115deg,#ffe0ef 0%,#e2fff6 47%,#dff3ff 76%,#fff0aa 100%)!important}
-          .hero-card:after{display:none!important}
-          .hero-copy{position:relative!important;z-index:5!important;width:44%!important;max-width:44%!important;padding:25px 45px!important}
-          .hero-copy h1{font-size:40px!important;line-height:1.02!important;margin:5px 0 10px!important}
-          .hero-copy p{margin:0 0 14px!important;white-space:nowrap!important}
-          .hero-brand{position:absolute!important;right:0!important;top:0!important;width:56%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important;transform:none!important}
-          .hero-visual{width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:6px 24px 6px 0!important}
-          .hero-products{height:100%!important;width:43%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:1px!important;flex:none!important;min-width:0!important}
-          .hero-product{width:62px!important;height:138px!important;object-fit:contain!important;filter:drop-shadow(0 7px 7px rgba(0,0,0,.15))!important;flex:none!important}
-          .hero-logo-wrap{width:150px!important;height:150px!important;flex:none!important;display:flex!important;align-items:center!important;justify-content:center!important}
-          .hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;filter:drop-shadow(0 5px 6px rgba(0,0,0,.08))!important}
-          .hero-slogan{width:92px!important;flex:none!important;color:#075e54!important;font-family:cursive!important;font-size:20px!important;line-height:1.03!important;text-align:center!important;transform:rotate(-2deg)!important}
-          .hero-slogan b{font-size:27px!important;display:block!important;margin-top:4px!important}
-          .featured{overflow:hidden!important}
-          .feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}
-          .fcard{min-width:0!important;width:auto!important;max-width:none!important;overflow:hidden!important}
-          .fimg{min-width:0!important;width:100%!important;overflow:hidden!important}
-          .fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}
-          @media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:58px!important;height:52px!important}.hero{height:210px!important}.hero-copy{width:47%!important;max-width:47%!important;padding:22px 28px!important}.hero-copy h1{font-size:34px!important}.hero-copy p{white-space:normal!important}.hero-brand{width:53%!important}.hero-products{width:40%!important}.hero-product{width:52px!important;height:122px!important}.hero-logo-wrap{width:120px!important;height:120px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
-          @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title{font-size:26px!important}.page-title .title-logo{width:52px!important;height:45px!important}.hero{height:190px!important}.hero-copy{width:70%!important;max-width:70%!important;padding:15px 20px!important}.hero-copy h1{font-size:28px!important}.hero-brand{width:45%!important}.hero-products{display:none!important}.hero-logo-wrap{width:125px!important;height:125px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-          @media(max-width:450px){.hero-brand{width:36%!important}.hero-logo-wrap{width:100px!important;height:100px!important}.hero-copy{width:82%!important;max-width:82%!important}.hero-copy h1{font-size:25px!important}}
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          css='''
+          /* SLS APPROVED REFERENCE */
+          .crumb,.page-title,.hero,.section,.shop,.featured{max-width:1520px!important}
+          .crumb{padding-left:40px!important}
+          .page-title{font-size:42px!important;min-height:82px!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:14px!important}
+          .page-title .title-logo{width:82px!important;height:72px!important;object-fit:contain!important}
+          .hero{height:248px!important;padding:0 28px!important}
+          .hero-card{display:block!important;position:relative!important;overflow:hidden!important}
+          .hero-copy{position:absolute!important;left:0!important;top:0!important;width:42%!important;max-width:42%!important;height:100%!important;padding:22px 60px!important;z-index:10!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important}
+          .hero-copy h1{font-size:46px!important;line-height:1.02!important;margin:6px 0 12px!important}
+          .hero-copy p{white-space:nowrap!important}
+          .hero-brand{position:absolute!important;right:0!important;top:0!important;width:60%!important;height:100%!important;z-index:5!important;display:flex!important;align-items:center!important;justify-content:center!important}
+          .hero-visual{width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:16px!important;padding-right:28px!important}
+          .hero-products{width:52%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important}
+          .hero-product{width:82px!important;height:190px!important;object-fit:contain!important;filter:drop-shadow(0 7px 7px rgba(0,0,0,.12))!important}
+          .hero-logo-wrap{width:190px!important;height:190px!important;flex:none!important}
+          .hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important}
+          .hero-slogan{width:145px!important;color:#075e54!important;font-family:cursive!important;font-size:25px!important;line-height:1.05!important;text-align:center!important;transform:rotate(-3deg)!important}
+          .hero-slogan b{display:block!important;font-size:31px!important}
+          .featured{margin-left:auto!important;margin-right:auto!important;padding-left:28px!important;padding-right:28px!important}
+          .feature-row{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:16px!important}
+          .fimg{height:145px!important}
+          @media(max-width:900px){.hero{height:225px!important}.hero-copy{width:47%!important;max-width:47%!important;padding:20px 25px!important}.hero-copy h1{font-size:34px!important}.hero-brand{width:53%!important}.hero-products{width:43%!important}.hero-product{width:55px!important;height:145px!important}.hero-logo-wrap{width:135px!important;height:135px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+          @media(max-width:650px){.page-title{font-size:28px!important;min-height:65px!important}.page-title .title-logo{width:58px!important;height:50px!important}.hero{height:200px!important;padding:0 12px!important}.hero-copy{width:72%!important;max-width:72%!important;padding:15px!important}.hero-copy h1{font-size:29px!important}.hero-brand{width:42%!important}.hero-products{display:none!important}.hero-logo-wrap{width:120px!important;height:120px!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
           '''
-          if marker not in s:
-              s=s.replace('</style>',css+'\n</style>',1)
-          script_marker='// SLS APPROVED HERO V3'
-          js=r'''
-          // SLS APPROVED HERO V3
-          (function(){
-            function esc(v){return String(v||'').replace(/"/g,'&quot;')}
-            function pick(rx){return products.find(x=>rx.test(String(x.name||''))&&x.image)}
-            function makeHero(){
-              const card=document.querySelector('.hero-card');
-              if(!card) return;
-              let brand=card.querySelector('.hero-brand');
-              if(!brand){brand=document.createElement('div');brand.className='hero-brand';card.appendChild(brand)}
-              brand.innerHTML='<div class="hero-visual"><div class="hero-products"></div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=approved-v3" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
-              if(typeof products==='undefined'||!Array.isArray(products)||!products.length) return;
-              const exact=[
-                /himalaya\s+brightening\s+vitamin-c\s+orange\s+face\s+wash\s+100ml/i,
-                /dove\s+intense\s+repair\s+(?:shampoo|conditioner)/i,
-                /pond.?s\s+bright\s+beauty/i,
-                /himalaya\s+intense\s+oil\s+clear\s+lemon\s+face\s+wash\s+100ml/i
-              ];
-              const all=[];
-              exact.forEach(rx=>{const p=pick(rx);if(p&&!all.some(y=>String(y.id)===String(p.id)))all.push(p)});
-              brand.querySelector('.hero-products').innerHTML=all.map(p=>'<img class="hero-product" src="'+esc(p.image)+'" alt="">').join('');
-            }
-            function wait(){
-              if(typeof products!=='undefined'&&Array.isArray(products)&&products.length){makeHero();return}
-              setTimeout(wait,700);
-            }
-            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
-          })();
+          marker='/* SLS APPROVED REFERENCE */'
+          if marker not in s: s=s.replace('</style>',css+'\n</style>',1)
+          js='''
+          <script>
+          (function(){function go(){if(typeof products==='undefined'||!Array.isArray(products)||!products.length)return setTimeout(go,700);var c=document.querySelector('.hero-card');if(!c)return;var b=c.querySelector('.hero-brand')||document.createElement('div');b.className='hero-brand';b.innerHTML='<div class="hero-visual"><div class="hero-products"></div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=ref" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';c.appendChild(b);var rx=[/himalaya.*purifying.*neem.*100ml/i,/dove.*intense.*repair.*650ml/i,/pond.?s.*bright.*beauty/i,/tresemme.*580ml/i];b.querySelector('.hero-products').innerHTML=rx.map(function(r){return products.find(function(p){return r.test(String(p.name||''))&&p.image})}).filter(Boolean).slice(0,4).map(function(p){return '<img class="hero-product" src="'+String(p.image).replace(/"/g,'&quot;')+'" alt="">'}).join('')}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go()})();
+          </script>
           '''
-          if script_marker not in s:
-              s=s.replace('</body>','<script>\n'+js+'\n</script>\n</body>',1)
-          old='<h1 class="page-title" id="pageTitle">SLS Store</h1>'
-          new='<h1 class="page-title" id="pageTitle"><img class="title-logo" src="./assets/sls-logo-real.webp?v=approved-v3" alt="SLS Store"><span>SLS Store</span></h1>'
-          if old in s:s=s.replace(old,new,1)
+          if 'SLS APPROVED REFERENCE JS' not in s:s=s.replace('</body>','<!-- SLS APPROVED REFERENCE JS -->'+js+'</body>',1)
           p.write_text(s,encoding='utf-8')
           PY
-      - name: Commit approved page
+      - name: Commit
         run: |
-          git config user.name 'SLS Store Bot'
-          git config user.email 'actions@users.noreply.github.com'
+          git config user.name 'SLS Store Bot'; git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Match approved SLS hero composition'; git push; fi
+          if git diff --cached --quiet; then echo no-changes; else git commit -m 'Match approved SLS landing reference'; git push; fi
