@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Apply balanced large product combo
+      - name: Fill hero with large unified product combo
         shell: bash
         run: |
           python3 - <<'PY'
@@ -19,20 +19,40 @@ jobs:
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           css='''
-          <style id="sls-uniform-combo-v9">
-          .hero-products{align-items:flex-end!important;justify-content:center!important;gap:0!important;overflow:visible!important}
-          .hero-product{width:92px!important;height:250px!important;flex:0 0 92px!important;margin:0 -15px!important;object-fit:contain!important;transform:scale(1.18)!important;transform-origin:center bottom!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 8px 7px rgba(0,0,0,.14))!important;z-index:3!important}
-          .hero-products:after{left:2%!important;right:1%!important;bottom:7px!important;height:30px!important;z-index:1!important}
-          .hero-logo-wrap{width:184px!important;height:184px!important;flex-basis:184px!important}
-          .hero-slogan{width:120px!important;flex-basis:120px!important}
-          @media(max-width:1250px){.hero-product{width:80px!important;height:230px!important;flex-basis:80px!important;margin:0 -13px!important;transform:scale(1.14)!important}.hero-logo-wrap{width:165px!important;height:165px!important;flex-basis:165px!important}}
-          @media(max-width:1000px){.hero-product{width:68px!important;height:205px!important;flex-basis:68px!important;margin:0 -10px!important;transform:scale(1.1)!important}.hero-logo-wrap{width:145px!important;height:145px!important;flex-basis:145px!important}}
+          <style id="sls-full-combo-v10">
+          .hero-products{width:68%!important;height:100%!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;gap:0!important;padding:0 8px 8px!important;overflow:visible!important;position:relative!important}
+          .hero-product{width:100px!important;height:270px!important;flex:0 0 100px!important;margin:0 -18px!important;object-fit:contain!important;transform:scale(1.16)!important;transform-origin:center bottom!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 9px 8px rgba(0,0,0,.15))!important;z-index:3!important}
+          .hero-products:after{left:1%!important;right:0!important;bottom:6px!important;height:34px!important;border-radius:50%!important;background:linear-gradient(#ffd8eb,#df9dcc)!important;box-shadow:0 5px 10px rgba(0,0,0,.14)!important;z-index:1!important}
+          .hero-logo-wrap{width:178px!important;height:178px!important;flex:0 0 178px!important;margin:0 2px!important}
+          .hero-slogan{width:112px!important;flex:0 0 112px!important;font-size:22px!important}
+          .hero-slogan b{font-size:28px!important}
+          @media(max-width:1250px){.hero-products{width:66%!important}.hero-product{width:88px!important;height:245px!important;flex-basis:88px!important;margin:0 -16px!important;transform:scale(1.12)!important}.hero-logo-wrap{width:160px!important;height:160px!important;flex-basis:160px!important}.hero-slogan{width:95px!important;flex-basis:95px!important;font-size:20px!important}.hero-slogan b{font-size:25px!important}}
+          @media(max-width:1000px){.hero-products{width:62%!important}.hero-product{width:72px!important;height:220px!important;flex-basis:72px!important;margin:0 -12px!important;transform:scale(1.08)!important}.hero-logo-wrap{width:145px!important;height:145px!important;flex-basis:145px!important}.hero-slogan{display:none!important}}
+          @media(max-width:700px){.hero-products{width:100%!important}.hero-product{width:48px!important;height:175px!important;flex-basis:48px!important;margin:0 -8px!important;transform:scale(1.05)!important}.hero-logo-wrap{display:none!important}}
           </style>
           '''
-          if 'sls-uniform-combo-v9' not in s:s=s.replace('</head>',css+'</head>',1)
+          if 'sls-full-combo-v10' not in s:s=s.replace('</head>',css+'</head>',1)
+          js='''
+          <script id="sls-full-combo-products-v10">
+          (function(){
+            function render(){
+              if(typeof products==='undefined'||!Array.isArray(products)||!products.length)return setTimeout(render,700);
+              var c=document.querySelector('.hero-card');if(!c)return setTimeout(render,700);
+              var b=c.querySelector('.hero-brand');if(!b){b=document.createElement('div');b.className='hero-brand';c.appendChild(b)}
+              var usable=products.filter(function(p){return p&&p.image});
+              var chosen=[];
+              usable.forEach(function(p){if(chosen.length<8&&!chosen.some(function(x){return String(x.id)===String(p.id)}))chosen.push(p)});
+              if(chosen.length<8)usable.forEach(function(p){if(chosen.length<8&&!chosen.includes(p))chosen.push(p)});
+              b.innerHTML='<div class="hero-visual"><div class="hero-products">'+chosen.slice(0,8).map(function(p){return '<img class="hero-product" src="'+p.image+'" alt="'+String(p.name||'').replace(/"/g,'')+'">'}).join('')+'</div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=v10" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+            }
+            render();
+          })();
+          </script>
+          '''
+          if 'sls-full-combo-products-v10' not in s:s=s.replace('</body>',js+'</body>',1)
           p.write_text(s,encoding='utf-8')
           PY
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || (git commit -m 'Make hero product combo uniformly large and balanced' && git push)
+          git diff --cached --quiet || (git commit -m 'Fill highlighted hero area with a large unified product cluster' && git push)
