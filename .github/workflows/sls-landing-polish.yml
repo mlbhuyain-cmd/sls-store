@@ -1,58 +1,35 @@
-name: SLS landing page polish
+name: SLS landing page visual fix
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sls-landing-polish.yml'
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
-  polish:
+  patch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Apply professional logo and landing layout patch
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply final visual fix
+        shell: bash
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
-          import re
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
-          marker='/* SLS professional landing polish v3 */'
-          css=r'''\n/* SLS professional landing polish v3 */
-.top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block;filter:drop-shadow(0 5px 12px rgba(0,0,0,.16))}
-.brand-title{max-width:1150px;margin:0 auto;padding:4px 18px 14px;display:flex;justify-content:center;align-items:center}
-.brand-title img{width:180px;height:72px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(7,94,84,.14))}
-.hero-card{position:relative;overflow:hidden;isolation:isolate}
-.hero-card:after{content:"";position:absolute;right:24px;top:15px;width:350px;height:195px;background:url('./assets/sls-logo-hd.webp?v=landing3') center/contain no-repeat;filter:drop-shadow(0 12px 22px rgba(7,94,84,.16));z-index:0;pointer-events:none}
-.hero-copy{position:relative;z-index:1;max-width:60%}
-.featured{overflow:hidden;box-shadow:0 16px 42px rgba(7,94,84,.08)}
-.feature-row{grid-template-columns:repeat(6,minmax(0,1fr))!important;min-width:0!important;width:100%!important;overflow:hidden!important}
-.fcard{min-width:0!important;width:auto!important;overflow:hidden!important;box-shadow:0 8px 22px rgba(20,50,79,.07);transition:transform .2s ease,box-shadow .2s ease}
-.fcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(20,50,79,.13)}
-.fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:33px;line-height:1.25}
-.fimg{min-width:0;overflow:hidden}
-@media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.brand-title img{width:155px;height:64px}.hero-card:after{width:270px;height:150px;right:15px}.hero-copy{max-width:65%}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
-@media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.brand-title img{width:140px;height:58px}.hero-card:after{width:150px;height:110px;right:8px;top:10px;opacity:.9}.hero-copy{max-width:78%;padding-right:10px}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;display:grid!important}.fcard{min-width:0!important}}
-@media(max-width:480px){.brand-title img{width:125px;height:54px}.hero-card:after{width:105px;height:82px;right:4px;top:12px}.hero-copy{max-width:84%}}
-'''
+          marker='/* SLS FINAL LANDING LOGO FEATURED FIX */'
+          css='''\n/* SLS FINAL LANDING LOGO FEATURED FIX */\n.top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}\n.brand-title{max-width:1150px;margin:0 auto;padding:4px 18px 14px;display:flex!important;justify-content:center!important;align-items:center!important}\n.brand-title img{width:180px;height:72px;object-fit:contain;display:block}\n.hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important}\n.hero-card:after{content:"";position:absolute;right:25px;top:50%;transform:translateY(-50%);width:330px;height:175px;background:url('./assets/sls-logo-hd.webp?v=final2') center/contain no-repeat;z-index:2;pointer-events:none}\n.hero-copy{position:relative;z-index:3;max-width:60%}\n.featured{overflow:hidden!important}\n.feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}\n.fcard{min-width:0!important;width:auto!important;overflow:hidden!important}\n.fimg{min-width:0!important;width:100%!important;overflow:hidden!important}\n.fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}\n@media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.brand-title img{width:155px;height:64px}.hero-card:after{width:250px;height:135px;right:15px}.hero-copy{max-width:63%}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}\n@media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.brand-title img{width:140px;height:58px}.hero-card:after{width:145px;height:105px;right:8px}.hero-copy{max-width:78%}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}\n@media(max-width:450px){.brand-title img{width:125px;height:54px}.hero-card:after{width:105px;height:80px;right:4px}.hero-copy{max-width:82%}}\n'''
           if marker not in s:
               s=s.replace('</style>',css+'\n</style>',1)
-          old='<h1 class="page-title" id="pageTitle">SLS Store</h1>'
-          new='<div class="brand-title"><img src="./assets/sls-logo-hd.webp?v=landing3" alt="SLS Store Company Logo"></div>'
-          if old in s:
-              s=s.replace(old,new,1)
-          elif 'class="brand-title"' not in s:
-              s=s.replace('<div class="crumb">Home <span>›</span> <b id="crumbCat">All Products</b></div>', '<div class="crumb">Home <span>›</span> <b id="crumbCat">All Products</b></div>'+new, 1)
-          s=s.replace('class="logo" src="./assets/sls-logo-real.webp?v=store5"','class="logo" src="./assets/sls-logo-hd.webp?v=landing3"',1)
           p.write_text(s,encoding='utf-8')
           PY
-      - name: Commit patch and remove workflow
+      - name: Commit final page
         run: |
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          if ! git diff --cached --quiet; then git commit -m 'Add company logo and polish landing page'; git push; fi
-          rm -f .github/workflows/sls-landing-polish.yml
-          git add .github/workflows/sls-landing-polish.yml
-          git commit -m 'Remove temporary landing polish workflow' || true
-          git push || true
+          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Fix SLS company logo and featured product overflow'; git push; fi
