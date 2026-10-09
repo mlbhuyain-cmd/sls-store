@@ -4048,6 +4048,19 @@ const grandTotal =
 productTotal +
 deliveryCharge;
 
+/* DUPLICATE-SUBMISSION GUARD: one checkout request at a time. */
+if (window.__slsOrderSubmitting) {
+  return;
+}
+window.__slsOrderSubmitting = true;
+const submitButton = document.querySelector('#checkoutModal button[onclick="submitOrder()"]');
+if (submitButton) {
+  submitButton.disabled = true;
+  submitButton.textContent = "Order হচ্ছে... / Processing";
+  submitButton.style.opacity = "0.65";
+  submitButton.style.cursor = "wait";
+}
+
 const clientOrderId =
 createClientOrderId();
 
@@ -4203,9 +4216,27 @@ deliveryArea: deliveryArea,
 deliveryCharge: deliveryCharge
 });
 
+/* Release the lock after success; the cart is already cleared. */
+window.__slsOrderSubmitting = false;
+if (submitButton) {
+  submitButton.disabled = false;
+  submitButton.textContent = "Confirm Order / অর্ডার নিশ্চিত করুন";
+  submitButton.style.opacity = "";
+  submitButton.style.cursor = "";
+}
+
 }catch(error){
 
 console.error(error);
+
+/* Allow a retry only after the failed request has returned. */
+window.__slsOrderSubmitting = false;
+if (submitButton) {
+  submitButton.disabled = false;
+  submitButton.textContent = "Confirm Order / অর্ডার নিশ্চিত করুন";
+  submitButton.style.opacity = "";
+  submitButton.style.cursor = "";
+}
 
 message.innerHTML =
 '<div class="notice error">' +
