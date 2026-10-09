@@ -14,17 +14,43 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Apply final visual fix
+      - name: Apply exact logo landing design
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
-          marker='/* SLS FINAL LANDING LOGO FEATURED FIX */'
-          css='''\n/* SLS FINAL LANDING LOGO FEATURED FIX */\n.top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}\n.brand-title{max-width:1150px;margin:0 auto;padding:4px 18px 14px;display:flex!important;justify-content:center!important;align-items:center!important}\n.brand-title img{width:180px;height:72px;object-fit:contain;display:block}\n.hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important}\n.hero-card:after{content:"";position:absolute;right:25px;top:50%;transform:translateY(-50%);width:330px;height:175px;background:url('./assets/sls-logo-hd.webp?v=final2') center/contain no-repeat;z-index:2;pointer-events:none}\n.hero-copy{position:relative;z-index:3;max-width:60%}\n.featured{overflow:hidden!important}\n.feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}\n.fcard{min-width:0!important;width:auto!important;overflow:hidden!important}\n.fimg{min-width:0!important;width:100%!important;overflow:hidden!important}\n.fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}\n@media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.brand-title img{width:155px;height:64px}.hero-card:after{width:250px;height:135px;right:15px}.hero-copy{max-width:63%}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}\n@media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.brand-title img{width:140px;height:58px}.hero-card:after{width:145px;height:105px;right:8px}.hero-copy{max-width:78%}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}\n@media(max-width:450px){.brand-title img{width:125px;height:54px}.hero-card:after{width:105px;height:80px;right:4px}.hero-copy{max-width:82%}}\n'''
+          marker='/* SLS EXACT LOGO LANDING DESIGN */'
+          css='''
+          /* SLS EXACT LOGO LANDING DESIGN */
+          .top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}
+          .page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important}
+          .page-title .title-logo{width:72px!important;height:56px!important;object-fit:contain!important;display:block!important}
+          .hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important}
+          .hero-card:after{display:none!important}
+          .hero-copy{position:relative!important;z-index:3!important;max-width:58%!important}
+          .hero-brand{position:absolute!important;right:28px!important;top:50%!important;transform:translateY(-50%)!important;width:330px!important;height:180px!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important}
+          .hero-brand img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+          .featured{overflow:hidden!important}
+          .feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}
+          .fcard{min-width:0!important;width:auto!important;max-width:none!important;overflow:hidden!important}
+          .fimg{min-width:0!important;width:100%!important;overflow:hidden!important}
+          .fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}
+          @media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:62px!important;height:50px!important}.hero-brand{width:250px!important;height:140px!important;right:12px!important}.hero-copy{max-width:62%!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+          @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero-brand{width:145px!important;height:105px!important;right:7px!important}.hero-copy{max-width:78%!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+          @media(max-width:450px){.hero-brand{width:105px!important;height:80px!important;right:3px!important}.hero-copy{max-width:82%!important}}
+          '''
           if marker not in s:
               s=s.replace('</style>',css+'\n</style>',1)
+          old_title='<h1 class="page-title" id="pageTitle">SLS Store</h1>'
+          new_title='<h1 class="page-title" id="pageTitle"><img class="title-logo" src="./assets/sls-logo-real.webp?v=landing-final" alt="SLS Store"><span>SLS Store</span></h1>'
+          if old_title in s:
+              s=s.replace(old_title,new_title,1)
+          old_hero='<section class="hero"><div class="hero-card"><div class="hero-copy"><small>SLS STORE • SPECIAL OFFER</small><h1>Beauty Savings<br>You\'ll Love</h1><p>আপনার পছন্দের cosmetics ও personal care পণ্য একসাথে।</p><button class="primary" id="shopNow">SHOP NOW</button></div></div></section>'
+          new_hero='<section class="hero"><div class="hero-card"><div class="hero-copy"><small>SLS STORE • SPECIAL OFFER</small><h1>Beauty Savings<br>You\'ll Love</h1><p>আপনার পছন্দের cosmetics ও personal care পণ্য একসাথে।</p><button class="primary" id="shopNow">SHOP NOW</button></div><div class="hero-brand"><img src="./assets/sls-logo-real.webp?v=landing-final" alt="SLS Store Company Logo"></div></div></section>'
+          if old_hero in s:
+              s=s.replace(old_hero,new_hero,1)
           p.write_text(s,encoding='utf-8')
           PY
       - name: Commit final page
@@ -32,4 +58,4 @@ jobs:
           git config user.name 'SLS Store Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Fix SLS company logo and featured product overflow'; git push; fi
+          if git diff --cached --quiet; then echo 'No visual changes'; else git commit -m 'Place original SLS logo in landing hero and title'; git push; fi
