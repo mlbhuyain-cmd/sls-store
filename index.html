@@ -44,6 +44,36 @@
 @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero-brand{width:145px!important;height:105px!important;right:7px!important}.hero-copy{max-width:78%!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:450px){.hero-brand{width:105px!important;height:80px!important;right:3px!important}.hero-copy{max-width:82%!important}}
 
+
+/* SLS LANDING DESIGN V2 */
+.top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}
+.page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important;color:#075e54!important;font-size:32px!important}
+.page-title .title-logo{width:72px!important;height:60px!important;object-fit:contain!important;display:block!important}
+.hero{height:225px!important}
+.hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important;background:linear-gradient(115deg,#ffe0ef 0%,#e2fff6 47%,#dff3ff 76%,#fff0aa 100%)!important}
+.hero-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.75),transparent 28%),radial-gradient(circle at 7% 92%,rgba(255,255,255,.7),transparent 25%);z-index:0;pointer-events:none}
+.hero-card:after{display:none!important}
+.hero-copy{position:relative!important;z-index:5!important;max-width:54%!important;padding:25px 45px!important}
+.hero-copy small{font-size:12px!important;letter-spacing:.2px!important}
+.hero-copy h1{font-size:40px!important;line-height:1.02!important;margin:5px 0 10px!important}
+.hero-copy p{margin:0 0 14px!important}
+.hero-brand{position:absolute!important;right:12px!important;top:0!important;width:57%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important;transform:none!important}
+.hero-visual{width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:8px 14px 8px 0!important}
+.hero-products{height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;flex:1!important;min-width:0!important}
+.hero-product{width:70px!important;height:145px!important;object-fit:contain!important;filter:drop-shadow(0 8px 8px rgba(0,0,0,.16))!important}
+.hero-logo-wrap{width:155px!important;height:155px!important;flex:none!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;filter:drop-shadow(0 6px 6px rgba(0,0,0,.08))!important}
+.hero-slogan{width:105px!important;flex:none!important;color:#075e54!important;font-family:cursive!important;font-size:22px!important;line-height:1.05!important;text-align:center!important;transform:rotate(-3deg)!important}
+.hero-slogan b{font-size:28px!important;display:block!important;margin-top:5px!important}
+.featured{overflow:hidden!important}
+.feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}
+.fcard{min-width:0!important;width:auto!important;max-width:none!important;overflow:hidden!important}
+.fimg{min-width:0!important;width:100%!important;overflow:hidden!important}
+.fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}
+@media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:62px!important;height:50px!important}.hero{height:210px!important}.hero-copy{max-width:52%!important;padding:22px 28px!important}.hero-copy h1{font-size:34px!important}.hero-brand{width:58%!important}.hero-product{width:55px!important;height:125px!important}.hero-logo-wrap{width:120px!important;height:120px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title{font-size:26px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero{height:190px!important}.hero-copy{max-width:75%!important;padding:15px 20px!important}.hero-copy h1{font-size:28px!important}.hero-brand{width:48%!important}.hero-products{display:none!important}.hero-logo-wrap{width:125px!important;height:125px!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:450px){.hero-brand{width:38%!important}.hero-logo-wrap{width:100px!important;height:100px!important}.hero-copy{max-width:82%!important}.hero-copy h1{font-size:25px!important}}
+
 </style>
 </head>
 <body>
@@ -102,6 +132,29 @@ document.addEventListener("click",e=>{const c=e.target.closest("[data-close]");i
 document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id)}));document.getElementById("accountBtn").onclick=()=>currentUser?document.querySelector(".account").classList.toggle("open"):openModal("authModal");document.getElementById("bagBtn").onclick=openCart;document.getElementById("checkoutBtn").onclick=async()=>{if(!currentUser){closeModal("cartModal");openModal("authModal");return}await loadPersonal();document.getElementById("coName").value=document.getElementById("piName").value||currentUser.displayName||"";document.getElementById("coPhone").value=document.getElementById("piPhone").value||"";document.getElementById("coAddress").value=document.getElementById("piAddress").value||"";updateDelivery();closeModal("cartModal");openModal("checkoutModal")};document.getElementById("placeOrder").onclick=placeOrder;document.getElementById("coAddress").oninput=updateDelivery;document.getElementById("savePersonal").onclick=savePersonal;document.getElementById("emailSubmit").onclick=authEmail;document.getElementById("phoneSubmit").onclick=authPhone;
 document.getElementById("emailToggle").onclick=()=>{const b=document.getElementById("emailSubmit"),x=b.dataset.mode!=="signup";b.dataset.mode=x?"signup":"";b.textContent=x?"Create Account":"Login";document.getElementById("emailNameField").style.display=x?"block":"none"};document.getElementById("phoneToggle").onclick=()=>{const b=document.getElementById("phoneSubmit"),x=b.dataset.mode!=="signup";b.dataset.mode=x?"signup":"";b.textContent=x?"Create Account":"Login";document.getElementById("phoneNameField").style.display=x?"block":"none"};document.getElementById("emailTab").onclick=()=>{document.getElementById("emailPanel").style.display="block";document.getElementById("phonePanel").style.display="none"};document.getElementById("phoneTab").onclick=()=>{document.getElementById("emailPanel").style.display="none";document.getElementById("phonePanel").style.display="block"};document.getElementById("headerSearch").oninput=e=>syncSearch(e.target.value);document.getElementById("mainSearch").oninput=e=>syncSearch(e.target.value);document.getElementById("sort").onchange=renderGrid;document.getElementById("stockOnly").onchange=e=>{filters.stock=e.target.checked;renderGrid()};document.querySelectorAll("input[name=price]").forEach(x=>x.onchange=()=>{filters.price=x.value;renderGrid()});document.addEventListener("change",e=>{if(e.target.name==="cat"){filters.cat=e.target.value;renderGrid()}});document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>syncSearch(b.dataset.cat));document.getElementById("shopNow").onclick=()=>document.querySelector(".shop").scrollIntoView();document.getElementById("shopBy").onclick=()=>document.querySelector(".shop").scrollIntoView();document.getElementById("searchBtn").onclick=()=>document.querySelector(".shop").scrollIntoView();
 loadProducts();updateCart();setInterval(syncSheetQueue,30000);
+</script>
+<script>
+
+// SLS LANDING HERO V2
+(function(){
+  function makeHero(){
+    const card=document.querySelector('.hero-card');
+    if(!card) return;
+    let brand=card.querySelector('.hero-brand');
+    if(!brand){brand=document.createElement('div');brand.className='hero-brand';card.appendChild(brand)}
+    brand.innerHTML='<div class="hero-visual"><div class="hero-products"></div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=landing-v2" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+    if(typeof products==='undefined'||!Array.isArray(products)||!products.length) return;
+    const wanted=[/himalaya.*face wash/i,/dove.*repair/i,/pond.?s/i,/tresemme/i];
+    const picks=[];
+    wanted.forEach(rx=>{const p=products.find(x=>rx.test(String(x.name||''))&&x.image);if(p&&!picks.some(y=>String(y.id)===String(p.id)))picks.push(p)});
+    const more=products.filter(x=>x.image&&!picks.some(y=>String(y.id)===String(x.id))).slice(0,4);
+    const all=picks.concat(more).slice(0,4);
+    brand.querySelector('.hero-products').innerHTML=all.map(p=>'<img class="hero-product" src="'+String(p.image).replace(/"/g,'&quot;')+'" alt="">').join('');
+  }
+  function wait(){makeHero();if(!document.querySelector('.hero-products img'))setTimeout(wait,900)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
+})();
+
 </script>
 </body>
 </html>
