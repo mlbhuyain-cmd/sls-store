@@ -74,6 +74,34 @@
 @media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title{font-size:26px!important}.page-title .title-logo{width:54px!important;height:44px!important}.hero{height:190px!important}.hero-copy{max-width:75%!important;padding:15px 20px!important}.hero-copy h1{font-size:28px!important}.hero-brand{width:48%!important}.hero-products{display:none!important}.hero-logo-wrap{width:125px!important;height:125px!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:450px){.hero-brand{width:38%!important}.hero-logo-wrap{width:100px!important;height:100px!important}.hero-copy{max-width:82%!important}.hero-copy h1{font-size:25px!important}}
 
+
+/* SLS APPROVED HERO V3 */
+.top .logo{width:76px!important;height:58px!important;object-fit:contain!important;display:block!important}
+.page-title{display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;font-weight:900!important;color:#075e54!important;font-size:32px!important}
+.page-title .title-logo{width:62px!important;height:58px!important;object-fit:contain!important;display:block!important}
+.hero{height:225px!important}
+.hero-card{position:relative!important;overflow:hidden!important;isolation:isolate!important;background:linear-gradient(115deg,#ffe0ef 0%,#e2fff6 47%,#dff3ff 76%,#fff0aa 100%)!important}
+.hero-card:after{display:none!important}
+.hero-copy{position:relative!important;z-index:5!important;width:44%!important;max-width:44%!important;padding:25px 45px!important}
+.hero-copy h1{font-size:40px!important;line-height:1.02!important;margin:5px 0 10px!important}
+.hero-copy p{margin:0 0 14px!important;white-space:nowrap!important}
+.hero-brand{position:absolute!important;right:0!important;top:0!important;width:56%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:4!important;transform:none!important}
+.hero-visual{width:100%!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:6px 24px 6px 0!important}
+.hero-products{height:100%!important;width:43%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:1px!important;flex:none!important;min-width:0!important}
+.hero-product{width:62px!important;height:138px!important;object-fit:contain!important;filter:drop-shadow(0 7px 7px rgba(0,0,0,.15))!important;flex:none!important}
+.hero-logo-wrap{width:150px!important;height:150px!important;flex:none!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.hero-logo-wrap img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;filter:drop-shadow(0 5px 6px rgba(0,0,0,.08))!important}
+.hero-slogan{width:92px!important;flex:none!important;color:#075e54!important;font-family:cursive!important;font-size:20px!important;line-height:1.03!important;text-align:center!important;transform:rotate(-2deg)!important}
+.hero-slogan b{font-size:27px!important;display:block!important;margin-top:4px!important}
+.featured{overflow:hidden!important}
+.feature-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;width:100%!important;min-width:0!important;overflow:hidden!important}
+.fcard{min-width:0!important;width:auto!important;max-width:none!important;overflow:hidden!important}
+.fimg{min-width:0!important;width:100%!important;overflow:hidden!important}
+.fname{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;overflow:hidden!important;line-height:1.25!important;min-height:33px!important}
+@media(max-width:1000px){.top .logo{width:68px!important;height:54px!important}.page-title .title-logo{width:58px!important;height:52px!important}.hero{height:210px!important}.hero-copy{width:47%!important;max-width:47%!important;padding:22px 28px!important}.hero-copy h1{font-size:34px!important}.hero-copy p{white-space:normal!important}.hero-brand{width:53%!important}.hero-products{width:40%!important}.hero-product{width:52px!important;height:122px!important}.hero-logo-wrap{width:120px!important;height:120px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){.top .logo{width:60px!important;height:50px!important}.page-title{font-size:26px!important}.page-title .title-logo{width:52px!important;height:45px!important}.hero{height:190px!important}.hero-copy{width:70%!important;max-width:70%!important;padding:15px 20px!important}.hero-copy h1{font-size:28px!important}.hero-brand{width:45%!important}.hero-products{display:none!important}.hero-logo-wrap{width:125px!important;height:125px!important}.hero-slogan{display:none!important}.feature-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:450px){.hero-brand{width:36%!important}.hero-logo-wrap{width:100px!important;height:100px!important}.hero-copy{width:82%!important;max-width:82%!important}.hero-copy h1{font-size:25px!important}}
+
 </style>
 </head>
 <body>
@@ -152,6 +180,37 @@ loadProducts();updateCart();setInterval(syncSheetQueue,30000);
     brand.querySelector('.hero-products').innerHTML=all.map(p=>'<img class="hero-product" src="'+String(p.image).replace(/"/g,'&quot;')+'" alt="">').join('');
   }
   function wait(){makeHero();if(!document.querySelector('.hero-products img'))setTimeout(wait,900)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
+})();
+
+</script>
+<script>
+
+// SLS APPROVED HERO V3
+(function(){
+  function esc(v){return String(v||'').replace(/"/g,'&quot;')}
+  function pick(rx){return products.find(x=>rx.test(String(x.name||''))&&x.image)}
+  function makeHero(){
+    const card=document.querySelector('.hero-card');
+    if(!card) return;
+    let brand=card.querySelector('.hero-brand');
+    if(!brand){brand=document.createElement('div');brand.className='hero-brand';card.appendChild(brand)}
+    brand.innerHTML='<div class="hero-visual"><div class="hero-products"></div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=approved-v3" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+    if(typeof products==='undefined'||!Array.isArray(products)||!products.length) return;
+    const exact=[
+      /himalaya\s+brightening\s+vitamin-c\s+orange\s+face\s+wash\s+100ml/i,
+      /dove\s+intense\s+repair\s+(?:shampoo|conditioner)/i,
+      /pond.?s\s+bright\s+beauty/i,
+      /himalaya\s+intense\s+oil\s+clear\s+lemon\s+face\s+wash\s+100ml/i
+    ];
+    const all=[];
+    exact.forEach(rx=>{const p=pick(rx);if(p&&!all.some(y=>String(y.id)===String(p.id)))all.push(p)});
+    brand.querySelector('.hero-products').innerHTML=all.map(p=>'<img class="hero-product" src="'+esc(p.image)+'" alt="">').join('');
+  }
+  function wait(){
+    if(typeof products!=='undefined'&&Array.isArray(products)&&products.length){makeHero();return}
+    setTimeout(wait,700);
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
 })();
 
