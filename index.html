@@ -4768,6 +4768,24 @@ async function syncExistingOrderToManager(order){
   if(!order) return false;
   const orderId = String(order.clientOrderId || order.id || "").trim();
   if(!orderId) return false;
+
+  /*
+   * DUPLICATE-PROTECTION:
+   * This fallback runs when an existing Firebase order is missing from the
+   * Manager sheet. Never POST the same order repeatedly on every refresh.
+   * Mark the attempt before sending; the Apps Script backend should also
+   * enforce idempotency using clientOrderId.
+   */
+  const syncKey = "sls_manager_sync_attempted_" + orderId;
+  try {
+    if (localStorage.getItem(syncKey) === "1") return false;
+    localStorage.setItem(syncKey, "1");
+  } catch (storageError) {
+    window.__slsManagerSyncAttempts = window.__slsManagerSyncAttempts || {};
+    if (window.__slsManagerSyncAttempts[orderId]) return false;
+    window.__slsManagerSyncAttempts[orderId] = true;
+  }
+
   try{
     const payload = {
       uid: order.uid || (currentUser ? currentUser.uid : ""),
