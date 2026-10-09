@@ -88,5 +88,19 @@ document.getElementById("headerSearch").oninput=e=>syncSearch(e.target.value);do
 document.addEventListener("change",e=>{if(e.target.name==="cat"){filters.cat=e.target.value;document.getElementById("crumbCat").textContent=e.target.value;document.getElementById("pageTitle").textContent=e.target.value;renderGrid()}});document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const q=b.dataset.cat;filters.cat="";document.getElementById("crumbCat").textContent=q;document.getElementById("pageTitle").textContent=q;document.getElementById("mainSearch").value=q;document.getElementById("headerSearch").value=q;renderGrid()});
 loadProducts();setInterval(loadProducts,60000);updateCart();
 </script>
+<style id="sls-repair-css">
+.modal .close{z-index:99999!important;pointer-events:auto!important;cursor:pointer!important}
+#placeOrder{position:relative;z-index:5;pointer-events:auto!important}
+</style>
+<script id="sls-repair-js">
+(function(){
+  function close(id){var e=document.getElementById(id);if(e)e.classList.remove('show');}
+  function bind(){document.querySelectorAll('.modal .close[data-close]').forEach(function(b){b.onclick=function(e){e.preventDefault();e.stopPropagation();close(b.getAttribute('data-close'));};});}
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.modal .close[data-close]');if(b){e.preventDefault();e.stopImmediatePropagation();close(b.getAttribute('data-close'));}},true);
+  document.addEventListener('DOMContentLoaded',bind);setTimeout(bind,300);setTimeout(bind,1000);
+  window.closeModal=close;
+  var old=document.getElementById('placeOrder');if(old){old.type='button';old.addEventListener('click',function(){old.disabled=false;},true);}
+})();
+</script>
 </body>
 </html>
