@@ -160,6 +160,19 @@
 @media(max-width:420px){.hero-copy{width:78%!important;max-width:78%!important}.hero-copy h1{font-size:25px!important}.hero-brand{width:35%!important}.hero-logo-wrap{width:95px!important;height:95px!important}}
 
 </style>
+
+<style id="sls-reference-v6">
+.hero-products{gap:0!important;align-items:flex-end!important;justify-content:center!important;position:relative!important;padding-bottom:12px!important}
+.hero-product{width:82px!important;height:182px!important;flex:0 0 82px!important;margin:0 -9px!important;object-fit:contain!important;mix-blend-mode:multiply!important;filter:drop-shadow(0 7px 6px rgba(0,0,0,.13))!important;position:relative!important;z-index:2!important}
+.hero-products:after{content:""!important;position:absolute!important;left:8%!important;right:4%!important;bottom:8px!important;height:28px!important;border-radius:50%!important;background:linear-gradient(#ffd8eb,#df9dcc)!important;box-shadow:0 5px 8px #0002!important;z-index:1!important}
+.hero-brand{width:60%!important}
+.hero-visual{gap:4px!important;padding-right:18px!important}
+.hero-logo-wrap{width:178px!important;height:178px!important;margin-left:4px!important;flex:none!important}
+.hero-slogan{width:132px!important;font-size:24px!important;line-height:1.02!important}
+.hero-slogan b{font-size:30px!important}
+@media(max-width:1200px){.hero-product{width:68px!important;height:165px!important;flex-basis:68px!important;margin:0 -7px!important}.hero-logo-wrap{width:155px!important;height:155px!important}.hero-slogan{width:105px!important;font-size:20px!important}.hero-slogan b{font-size:25px!important}}
+@media(max-width:900px){.hero-brand{width:52%!important}.hero-product{width:53px!important;height:145px!important;flex-basis:53px!important;margin:0 -5px!important}.hero-logo-wrap{width:130px!important;height:130px!important}.hero-slogan{display:none!important}}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top"><img class="logo" src="./assets/sls-logo-real.webp?v=store5" alt="SLS Store"><div class="searchbar"><input id="headerSearch" placeholder="Search your products / পণ্য খুঁজুন"><button id="searchBtn">⌕</button></div><button class="topbtn">বাংলা</button><button class="topbtn help">❔ Help line</button><div class="account"><button class="topbtn" id="accountBtn">👤 <span id="accountText">Login</span> ▾</button><div class="account-menu"><button data-menu="orders">🧾 My Orders</button><button data-menu="personal">👤 Personal Info</button><button data-menu="logout">↪ Logout</button></div></div></div></div>
@@ -307,6 +320,22 @@ loadProducts();updateCart();setInterval(syncSheetQueue,30000);
   }
   function wait(){if(!render())setTimeout(wait,700)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wait);else wait();
+})();
+</script>
+
+<script id="sls-reference-products-v6">
+(function(){
+  function pick(rx){return products.find(x=>rx.test(String(x.name||''))&&x.image)}
+  function go(){
+    if(typeof products==='undefined'||!Array.isArray(products)||!products.length)return setTimeout(go,600);
+    var c=document.querySelector('.hero-card'); if(!c)return setTimeout(go,600);
+    var b=c.querySelector('.hero-brand'); if(!b){b=document.createElement('div');b.className='hero-brand';c.appendChild(b)}
+    var r=[/himalaya.*purifying.*neem.*face.*wash.*100ml/i,/dove.*intense.*repair.*conditioner.*180ml/i,/pond.?s.*bright.*beauty.*face.*wash.*100gm/i,/tresemme.*hd.*hair.*fall.*defense.*580ml/i];
+    var f=[/himalaya.*face.*wash/i,/dove.*intense.*repair/i,/pond.?s.*bright.*beauty/i,/tresemme.*580ml/i],a=[];
+    r.forEach(function(x,i){var p=pick(x)||pick(f[i]);if(p&&!a.some(function(q){return String(q.id)===String(p.id)}))a.push(p)});
+    b.innerHTML='<div class="hero-visual"><div class="hero-products">'+a.slice(0,4).map(function(p){return '<img class="hero-product" src="'+p.image+'" alt="">'}).join('')+'</div><div class="hero-logo-wrap"><img src="./assets/sls-logo-real.webp?v=v6" alt="SLS Store"></div><div class="hero-slogan">Better Care<b>Brighter You</b>♡</div></div>';
+  }
+  go();
 })();
 </script>
 </body>
