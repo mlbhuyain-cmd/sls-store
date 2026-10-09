@@ -1,0 +1,50 @@
+name: Fix My Orders close button
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch orders close button
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old_css = '.orders-hero .spark{position:absolute;right:145px;bottom:24px;font-size:44px;opacity:.8}'
+          new_css = old_css + '.orders-hero .close{z-index:20;pointer-events:auto;}'
+          if '.orders-hero .close{z-index:20' not in s:
+              s = s.replace(old_css, new_css, 1)
+          old_btn = '<button class="close" data-close="ordersModal">×</button>'
+          new_btn = '<button type="button" class="close" data-close="ordersModal" onclick="closeModal(\'ordersModal\')">×</button>'
+          if 'onclick="closeModal(\'ordersModal\')"' not in s:
+              s = s.replace(old_btn, new_btn, 1)
+          p.write_text(s, encoding='utf-8')
+      - name: Commit fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "Fix My Orders close button"
+          git push
+      - name: Remove temporary workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/fix-orders-close.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/fix-orders-close.yml
+          git commit -m "Remove temporary fix workflow"
+          git push
