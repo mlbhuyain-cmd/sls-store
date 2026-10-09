@@ -4189,9 +4189,10 @@ headers:{
 },
 
 body:
-JSON.stringify(
-orderData
-)
+JSON.stringify({
+  ...orderData,
+  action: "createOrder"
+})
 
 }
 );
@@ -4763,58 +4764,14 @@ live.innerHTML =
 }
 
 
-/* Sync an already-created Firebase order into the Delivery Manager Orders sheet. */
-async function syncExistingOrderToManager(order){
-  if(!order) return false;
-  const orderId = String(order.clientOrderId || order.id || "").trim();
-  if(!orderId) return false;
-
+/* Sync an already-created Firebase order into the Deasync function syncExistingOrderToManager(order){
   /*
-   * DUPLICATE-PROTECTION:
-   * This fallback runs when an existing Firebase order is missing from the
-   * Manager sheet. Never POST the same order repeatedly on every refresh.
-   * Mark the attempt before sending; the Apps Script backend should also
-   * enforce idempotency using clientOrderId.
+   * Safety stop: do not write to the Orders spreadsheet during page refresh
+   * or cancellation. Only the explicit checkout POST creates an order.
+   * Apps Script createOrder checks Order ID for duplicates.
    */
-  const syncKey = "sls_manager_sync_attempted_" + orderId;
-  try {
-    if (localStorage.getItem(syncKey) === "1") return false;
-    localStorage.setItem(syncKey, "1");
-  } catch (storageError) {
-    window.__slsManagerSyncAttempts = window.__slsManagerSyncAttempts || {};
-    if (window.__slsManagerSyncAttempts[orderId]) return false;
-    window.__slsManagerSyncAttempts[orderId] = true;
-  }
-
-  try{
-    const payload = {
-      uid: order.uid || (currentUser ? currentUser.uid : ""),
-      email: order.email || (currentUser ? (currentUser.email || "") : ""),
-      clientOrderId: orderId,
-      name: order.name || order.customerName || "",
-      customerName: order.customerName || order.name || "",
-      phone: order.phone || "",
-      address: order.address || order.deliveryAddress || "",
-      deliveryArea: order.deliveryArea || order.area || "",
-      deliveryLocation: order.deliveryLocation || order.address || "",
-      items: Array.isArray(order.items) ? order.items : [],
-      productTotal: order.productTotal || order.subtotal || 0,
-      deliveryCharge: order.deliveryCharge || 0,
-      grandTotal: order.grandTotal || order.total || 0,
-      total: order.total || order.grandTotal || 0,
-      paymentMethod: order.paymentMethod || "Cash on Delivery",
-      status: order.status || "Confirmed"
-    };
-    await fetch(APPS_SCRIPT_URL,{
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify(payload)
-    });
-    await new Promise(function(resolve){ setTimeout(resolve,700); });
-    return true;
-  }catch(e){
-    console.warn("Manager order sync failed:",e);
+  return false;
+}ed:",e);
     return false;
   }
 }
